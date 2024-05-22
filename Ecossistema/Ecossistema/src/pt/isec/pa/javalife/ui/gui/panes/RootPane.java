@@ -1,4 +1,6 @@
 package pt.isec.pa.javalife.ui.gui.panes;
 
-public class RootPane {
+import javafx.scene.Parent;
+
+public class RootPane extends Parent {
 }
