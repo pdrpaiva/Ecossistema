@@ -1,4 +1,7 @@
 package pt.isec.pa.javalife.model.data.elements;
 
-public class ElementoBase {
+public abstract sealed class ElementoBase
+        implements IElemento
+        permits Inanimado, Flora, Fauna {
+    //TODO
 }
