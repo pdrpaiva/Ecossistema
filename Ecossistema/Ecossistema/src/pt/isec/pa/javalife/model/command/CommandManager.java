@@ -4,8 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CommandManager {
-    private final List<ICommand> commandHistory = new ArrayList<>();
-    private int currentCommandIndex = -1;
+    private final List<ICommand> commandHistory;
+    private int currentCommandIndex;
+
+
+    public CommandManager(){
+        commandHistory = new ArrayList<>();
+        currentCommandIndex = -1;
+    }
 
     public void executeCommand(ICommand command) {
         if (currentCommandIndex != commandHistory.size() - 1) {
@@ -19,17 +25,13 @@ public class CommandManager {
 
     public void undo() {
         if (currentCommandIndex >= 0) {
-            ICommand command = commandHistory.get(currentCommandIndex);
-            command.undo();
-            currentCommandIndex--;
+            commandHistory.get(currentCommandIndex--).undo();
         }
     }
 
     public void redo() {
         if (currentCommandIndex < commandHistory.size() - 1) {
-            ICommand command = commandHistory.get(currentCommandIndex + 1);
-            command.execute();
-            currentCommandIndex++;
+            commandHistory.get(++currentCommandIndex).execute();
         }
     }
 
