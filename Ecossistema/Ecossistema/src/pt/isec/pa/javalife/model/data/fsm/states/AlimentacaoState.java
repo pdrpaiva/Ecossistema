@@ -5,17 +5,27 @@ import pt.isec.pa.javalife.model.data.fsm.FaunaContext;
 import pt.isec.pa.javalife.model.data.fsm.FaunaState;
 import pt.isec.pa.javalife.model.data.fsm.FaunaStateAdapter;
 
-public class MovimentoState extends FaunaStateAdapter {
+public class AlimentacaoState extends FaunaStateAdapter {
 
-    public MovimentoState(FaunaContext context, Fauna data) {
+    public AlimentacaoState(FaunaContext context, Fauna data) {
         super(context, data);
     }
 
 
     @Override
-    public boolean procurarComida() {
-        if(data.getForca() < 35){
+    public boolean procurarComida(){
+        if(data.getForca() < 80){
             changeState(FaunaState.PROCURA_COMIDA);
+            return true;
+        }
+        return false;
+    }
+
+
+    @Override
+    public boolean mover() {
+        if (data.getForca() >= 80) {
+            changeState(FaunaState.MOVIMENTO);
             return true;
         }
         return false;
@@ -23,6 +33,7 @@ public class MovimentoState extends FaunaStateAdapter {
 
     @Override
     public FaunaState getState(){
-        return FaunaState.MOVIMENTO;
+        return FaunaState.ALIMENTACAO;
     }
+
 }

@@ -2,6 +2,7 @@ package pt.isec.pa.javalife.model.data.fsm;
 
 import pt.isec.pa.javalife.model.data.elements.Fauna;
 import pt.isec.pa.javalife.model.data.fsm.states.IFaunaState;
+import pt.isec.pa.javalife.model.data.fsm.states.MovimentoState;
 
 public class FaunaContext {
     IFaunaState atual;
@@ -29,9 +30,8 @@ public class FaunaContext {
         return atual.procurarComida();
     }
 
-    public boolean alimentar() {
-        return atual.alimentar();
-    }
+
+
 
     public boolean atacar() {
         return atual.atacar();

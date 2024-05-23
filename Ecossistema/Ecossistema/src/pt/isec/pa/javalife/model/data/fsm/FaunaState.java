@@ -1,7 +1,7 @@
 package pt.isec.pa.javalife.model.data.fsm;
 
 import pt.isec.pa.javalife.model.data.elements.Fauna;
-import pt.isec.pa.javalife.model.data.fsm.states.IFaunaState;
+import pt.isec.pa.javalife.model.data.fsm.states.*;
 
 public enum FaunaState {
     MOVIMENTO, PROCURA_COMIDA, ALIMENTACAO,ATAQUE,MORTO;

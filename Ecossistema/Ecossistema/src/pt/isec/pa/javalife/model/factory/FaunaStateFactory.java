@@ -1,8 +1,9 @@
 package pt.isec.pa.javalife.model.factory;
 
+import pt.isec.pa.javalife.model.data.elements.Fauna;
 import pt.isec.pa.javalife.model.data.fsm.FaunaContext;
 import pt.isec.pa.javalife.model.data.fsm.FaunaState;
-import pt.isec.pa.javalife.model.data.fsm.states.IFaunaState;
+import pt.isec.pa.javalife.model.data.fsm.states.*;
 
 public class FaunaStateFactory {
     private FaunaStateFactory(){}
