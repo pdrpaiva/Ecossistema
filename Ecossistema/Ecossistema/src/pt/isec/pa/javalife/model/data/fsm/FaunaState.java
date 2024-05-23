@@ -4,23 +4,25 @@ import pt.isec.pa.javalife.model.data.elements.Fauna;
 import pt.isec.pa.javalife.model.data.fsm.states.IFaunaState;
 
 public enum FaunaState {
-    INITIAL, RUNNING, PAUSED,DEAD;
+    MOVIMENTO, PROCURA_COMIDA, ALIMENTACAO,ATAQUE,MORTO;
 
     public static IFaunaState getInstance(FaunaState type, FaunaContext context, Fauna data){
         return switch (type){
-            case INITIAL -> new InitialState(context,data);
-            case RUNNING -> new RunningState(context,data);
-            case PAUSED -> new PausedState(context,data);
-            case DEAD -> new DeadState(context,data);
+            case MOVIMENTO -> new MovimentoState(context,data);
+            case PROCURA_COMIDA -> new ProcuraComidaState(context,data);
+            case ALIMENTACAO -> new AlimentacaoState(context,data);
+            case ATAQUE -> new AtaqueState(context,data);
+            case MORTO -> new MortoState(context,data);
         };
     }
 
     public IFaunaState getInstance(FaunaContext context, Fauna data){
         return switch (this){
-            case INITIAL -> new InitialState(context,data);
-            case RUNNING -> new RunningState(context,data);
-            case PAUSED -> new PausedState(context,data);
-            case DEAD -> new DeadState(context,data);
+            case MOVIMENTO -> new MovimentoState(context,data);
+            case PROCURA_COMIDA -> new ProcuraComidaState(context,data);
+            case ALIMENTACAO -> new AlimentacaoState(context,data);
+            case ATAQUE -> new AtaqueState(context,data);
+            case MORTO -> new MortoState(context,data);
         };
     }
 }

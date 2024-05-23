@@ -4,8 +4,9 @@ import pt.isec.pa.javalife.model.data.fsm.FaunaState;
 
 public interface IFaunaState {
     boolean mover();
-    boolean comer();
-    boolean descansar();
+    boolean procurarComida();
+    boolean alimentar();
+    boolean atacar();
     boolean morrer();
 
     FaunaState getState();

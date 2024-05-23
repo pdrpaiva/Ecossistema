@@ -9,7 +9,7 @@ public class FaunaContext {
 
     public FaunaContext(Fauna data){
         this.data = data;
-        this.atual = new InitialState(this,data);
+        this.atual = new MovimentoState(this,data);
     }
 
     //package private
@@ -25,12 +25,16 @@ public class FaunaContext {
         return atual.mover();
     }
 
-    public boolean comer() {
-        return atual.comer();
+    public boolean procurarComida() {
+        return atual.procurarComida();
     }
 
-    public boolean descansar() {
-        return atual.descansar();
+    public boolean alimentar() {
+        return atual.alimentar();
+    }
+
+    public boolean atacar() {
+        return atual.atacar();
     }
 
     public boolean morrer() {
