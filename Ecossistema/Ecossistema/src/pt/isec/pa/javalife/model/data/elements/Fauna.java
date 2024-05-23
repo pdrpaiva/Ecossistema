@@ -2,39 +2,42 @@ package pt.isec.pa.javalife.model.data.elements;
 
 import pt.isec.pa.javalife.model.data.area.Area;
 
-public final class Fauna extends ElementoBase implements IElementoComForca, IElementoComImagem {
-    @Override
-    public int getId() {
-        return 0;
+public final class Fauna extends ElementoBase{
+
+    private double forca;
+    private String imagem;
+    private boolean vivo;
+
+    public Fauna(int id, Area area, double forca, String imagem) {
+        super(id, Elemento.FAUNA, area);
+        this.forca = forca;
+        this.imagem = imagem;
+        this.vivo = true;
     }
 
-    @Override
-    public Elemento getType() {
-        return null;
-    }
-
-    @Override
-    public Area getArea() {
-        return null;
-    }
-
-    @Override
     public double getForca() {
-        return 0;
+        return forca;
     }
 
-    @Override
     public void setForca(double forca) {
-
+        this.forca = forca;
     }
 
-    @Override
     public String getImagem() {
-        return null;
+        return imagem;
     }
 
-    @Override
     public void setImagem(String imagem) {
-
+        this.imagem = imagem;
     }
+
+    public boolean isVivo() {
+        return vivo;
+    }
+
+    public void setVivo(boolean vivo) {
+        this.vivo = vivo;
+    }
+
+
 }

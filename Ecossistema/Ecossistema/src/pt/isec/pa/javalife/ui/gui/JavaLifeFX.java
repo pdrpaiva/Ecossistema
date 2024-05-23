@@ -8,12 +8,14 @@ import pt.isec.pa.javalife.ui.gui.panes.RootPane;
 public class JavaLifeFX extends Application {
 
     @Override
-    public void start(Stage stage) throws Exception {
-        RootPane rootPane = new RootPane(); // Instanciando o RootPane
-        Scene scene = new Scene(rootPane, 400, 300);
-        stage.setScene(scene);
-        stage.setTitle("Ecossistema");
-        stage.show();
+    public void start(Stage primaryStage) {
+        primaryStage.setTitle("JavaLife");
+
+        RootPane rootPane = new RootPane();
+        Scene scene = new Scene(rootPane, 800, 600);
+
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
 
 }

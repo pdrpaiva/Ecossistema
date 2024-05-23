@@ -1,4 +1,9 @@
 package pt.isec.pa.javalife.ui.gui.panes;
 
-public class EcossistemaUI {
+import javafx.scene.layout.Pane;
+
+public class EcossistemaUI extends Pane {
+    public EcossistemaUI(){
+        // Configuração inicial da visualização do ecossistema
+    }
 }
