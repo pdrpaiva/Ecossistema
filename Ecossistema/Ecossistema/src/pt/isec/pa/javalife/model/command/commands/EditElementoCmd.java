@@ -1,10 +1,11 @@
 package pt.isec.pa.javalife.model.command.commands;
 
 import pt.isec.pa.javalife.model.command.CommandAdapter;
+import pt.isec.pa.javalife.model.command.ICommand;
 import pt.isec.pa.javalife.model.data.ecosystem.EcossistemaManager;
 import pt.isec.pa.javalife.model.data.elements.IElemento;
 
-public class EditElementoCmd extends CommandAdapter {
+public class EditElementoCmd implements ICommand {
     private final EcossistemaManager manager;
     private final IElemento original;
     private final IElemento updated;

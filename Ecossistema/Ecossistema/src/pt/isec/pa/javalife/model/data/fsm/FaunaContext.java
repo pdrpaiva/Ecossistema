@@ -11,7 +11,7 @@ import java.util.Set;
 public class FaunaContext {
     private IFaunaState atual;
     private final Set<IElemento> elementos;
-    private Fauna data;
+    private final Fauna data;
 
     public FaunaContext(Fauna data){
         this.data = data;

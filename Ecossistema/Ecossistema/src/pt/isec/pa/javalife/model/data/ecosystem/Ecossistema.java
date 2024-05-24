@@ -1,5 +1,6 @@
 package pt.isec.pa.javalife.model.data.ecosystem;
 
+import pt.isec.pa.javalife.model.data.area.Area;
 import pt.isec.pa.javalife.model.data.elements.Fauna;
 import pt.isec.pa.javalife.model.data.elements.IElemento;
 import pt.isec.pa.javalife.model.data.fsm.FaunaContext;
@@ -18,13 +19,16 @@ public class Ecossistema
         implements Serializable, IGameEngineEvolve {
     private final Set<IElemento> elementos;
     private final FaunaContext faunaContext;
-    private final SwingPropertyChangeSupport pcs;
+    private final PropertyChangeSupport pcs;
+    private final Area area;
+
 
 
     public Ecossistema() {
         this.elementos = new HashSet<>();
         this.faunaContext = new FaunaContext(null); // Inicialize com dados apropriados
-        this.pcs = (SwingPropertyChangeSupport) new PropertyChangeSupport(this);
+        this.pcs = new PropertyChangeSupport(this);
+        this.area = new Area(0, 0, 500, 500); // Inicializa com valores padrão
     }
 
     public void addElemento(IElemento elemento) {

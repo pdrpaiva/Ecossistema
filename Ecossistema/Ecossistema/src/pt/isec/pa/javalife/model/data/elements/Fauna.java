@@ -2,7 +2,7 @@ package pt.isec.pa.javalife.model.data.elements;
 
 import pt.isec.pa.javalife.model.data.area.Area;
 
-public final class Fauna extends ElementoBase{
+public final class Fauna extends ElementoBase implements IElementoComImagem, IElementoComForca {
 
     private double forca;
     private String imagem;

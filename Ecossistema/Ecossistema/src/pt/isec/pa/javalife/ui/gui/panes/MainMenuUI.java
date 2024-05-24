@@ -1,26 +1,48 @@
 package pt.isec.pa.javalife.ui.gui.panes;
 
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+import pt.isec.pa.javalife.model.facade.JavaLifeFacade;
 
-public class MainMenuUI extends HBox {
-    public MainMenuUI(){
-        Button btnStart = new Button("Start");
-        Button btnPause = new Button("Pause");
-        Button btnStop = new Button("Stop");
+public class MainMenuUI extends VBox {
+    private final JavaLifeFacade facade;
+    private final Stage primaryStage;
 
-        btnStart.setOnAction(event -> {
-            // Lógica para iniciar a simulação
-        });
+    public MainMenuUI(JavaLifeFacade facade, Stage primaryStage) {
+        this.facade = facade;
+        this.primaryStage = primaryStage;
 
-        btnPause.setOnAction(event -> {
-            // Lógica para pausar a simulação
-        });
+        Button btnNewSimulation = new Button("New Simulation");
+        Button btnLoadSimulation = new Button("Load Simulation");
+        Button btnSettings = new Button("Settings");
+        Button btnExit = new Button("Exit");
 
-        btnStop.setOnAction(event -> {
-            // Lógica para parar a simulação
-        });
+        btnNewSimulation.setOnAction(event -> startNewSimulation());
+        btnLoadSimulation.setOnAction(event -> loadSimulation());
+        btnSettings.setOnAction(event -> openSettings());
+        btnExit.setOnAction(event -> primaryStage.close());
 
-        this.getChildren().addAll(btnStart,btnPause,btnStop);
+        this.setAlignment(Pos.CENTER);
+        this.setSpacing(10);
+        this.getChildren().addAll(btnNewSimulation, btnLoadSimulation, btnSettings, btnExit);
+    }
+
+    private void startNewSimulation() {
+        EcossistemaUI ecossistemaUI = new EcossistemaUI(facade);
+        Scene scene = new Scene(ecossistemaUI, 800, 600);
+        primaryStage.setScene(scene);
+    }
+
+    private void loadSimulation() {
+        // Lógica para carregar uma simulação existente
+    }
+
+    private void openSettings() {
+        SettingsUI settingsUI = new SettingsUI(facade, primaryStage);
+        Scene scene = new Scene(settingsUI, 800, 600);
+        primaryStage.setScene(scene);
     }
 }

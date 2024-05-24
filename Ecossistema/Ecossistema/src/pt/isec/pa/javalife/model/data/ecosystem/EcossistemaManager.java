@@ -26,6 +26,11 @@ public class EcossistemaManager {
     }
 
 
+    public void evolve(long currentTime){
+        //ecossistema.evolve(currentTime);
+    }
+
+
     public void setEcossistema(Ecossistema ecossistema) {
         this.ecossistema.getElementos().clear();
         this.ecossistema.getElementos().addAll(ecossistema.getElementos());
