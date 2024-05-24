@@ -13,6 +13,7 @@ public class JavaLifeFX extends Application {
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("JavaLife");
+        System.out.println("goiaba");
 
         StackPane initialPane = new StackPane();
         Text pressAnyKeyText = new Text("Press any key to start");
