@@ -14,6 +14,7 @@ public class JavaLifeFX extends Application {
     public void start(Stage primaryStage) {
         primaryStage.setTitle("JavaLife");
         System.out.println("goiaba");
+        System.out.println("goiaba");
 
         StackPane initialPane = new StackPane();
         Text pressAnyKeyText = new Text("Press any key to start");
