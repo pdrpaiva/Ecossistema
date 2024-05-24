@@ -14,6 +14,7 @@ public class JavaLifeFX extends Application {
     public void start(Stage primaryStage) {
         primaryStage.setTitle("JavaLife");
         System.out.println("goiaba");
+        System.out.println("goiabao");
         System.out.println("goiaba");
 
         StackPane initialPane = new StackPane();
