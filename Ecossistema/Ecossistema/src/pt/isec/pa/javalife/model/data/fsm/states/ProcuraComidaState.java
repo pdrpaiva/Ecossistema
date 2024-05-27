@@ -1,6 +1,7 @@
 package pt.isec.pa.javalife.model.data.fsm.states;
 
 import pt.isec.pa.javalife.model.data.elements.Fauna;
+import pt.isec.pa.javalife.model.data.elements.Flora;
 import pt.isec.pa.javalife.model.data.fsm.FaunaContext;
 import pt.isec.pa.javalife.model.data.fsm.FaunaState;
 import pt.isec.pa.javalife.model.data.fsm.FaunaStateAdapter;
@@ -11,32 +12,35 @@ public class ProcuraComidaState extends FaunaStateAdapter {
         super(context, data);
     }
 
-    @Override
-    public boolean alimentar(){
-        // Lógica para encontrar Flora e alimentar
-        changeState(FaunaState.ALIMENTACAO);
-        return true;
-    }
-
 
     @Override
-    public boolean atacar(){
-        if (data.getForca() < 80) {
-            // Lógica para encontrar Fauna mais fraca e atacar
-            changeState(FaunaState.ATAQUE);
+    public boolean executar() {
+        Flora nearestFlora = findNearestFlora();
+        if(nearestFlora != null){
+            data.setForca(data.getForca() + nearestFlora.getForca());
+            context.removeElemento(nearestFlora.getId());
+            changeState(FaunaState.ALIMENTACAO);
             return true;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean mover() {
-        if (data.getForca() >= 80) {
+        }else if(data.getForca() >= 80){
             changeState(FaunaState.MOVIMENTO);
             return true;
         }
+
+
         return false;
     }
+
+    private Flora findNearestFlora() {
+        // Implementação para encontrar a flora mais próxima
+        return null; // Placeholder
+    }
+
+    private Fauna findWeakerFauna() {
+        // Implementação para encontrar a fauna mais fraca
+        return null; // Placeholder
+    }
+
+
 
     @Override
     public FaunaState getState() {

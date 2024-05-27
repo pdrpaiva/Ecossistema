@@ -1,64 +1,56 @@
 package pt.isec.pa.javalife.model.data.fsm;
 
+import pt.isec.pa.javalife.model.data.ecosystem.Ecossistema;
 import pt.isec.pa.javalife.model.data.elements.Fauna;
 import pt.isec.pa.javalife.model.data.elements.IElemento;
 import pt.isec.pa.javalife.model.data.fsm.states.IFaunaState;
 import pt.isec.pa.javalife.model.data.fsm.states.MovimentoState;
 
-import java.util.HashSet;
 import java.util.Set;
+import java.util.HashSet;
 
 public class FaunaContext {
-    private IFaunaState atual;
+    private IFaunaState currentState;
+    private Fauna data;
     private final Set<IElemento> elementos;
-    private final Fauna data;
+    private final Ecossistema ecossistema;
 
-    public FaunaContext(Fauna data){
+    public FaunaContext(Fauna data, Ecossistema ecossistema) {
         this.data = data;
         this.elementos = new HashSet<>();
-        this.atual = new MovimentoState(this,data);
+        this.currentState = FaunaState.MOVIMENTO.getInstance(this, data); // Estado inicial
+        this.ecossistema = ecossistema;
     }
 
-    //package private
-    void changeState(IFaunaState newState) {
-        atual = newState;
+    public void setData(Fauna data) {
+        this.data = data;
     }
 
     public FaunaState getState() {
-        return atual.getState();
+        return currentState.getState();
     }
 
-    public boolean mover() {
-        return atual.mover();
+    public void changeState(IFaunaState newState) {
+        currentState = newState;
     }
 
-    public boolean procurarComida() {
-        return atual.procurarComida();
+    public boolean executar() {
+        return currentState.executar();
     }
 
-    public boolean alimentar(){
-        return atual.alimentar();
-    }
-
-
-    public boolean atacar() {
-        return atual.atacar();
-    }
-
-    public boolean morrer() {
-        return atual.morrer();
-    }
-
-    public void addElemento(IElemento elemento){
+    public void addElemento(IElemento elemento) {
         elementos.add(elemento);
     }
 
-    public void removeElemento(int id){
+    public void removeElemento(int id) {
         elementos.removeIf(elemento -> elemento.getId() == id);
     }
 
-    public Set<IElemento> getElementos(){
+    public Set<IElemento> getElementos() {
         return new HashSet<>(elementos);
     }
 
+    public Ecossistema getEcossistema() {
+        return ecossistema;
+    }
 }

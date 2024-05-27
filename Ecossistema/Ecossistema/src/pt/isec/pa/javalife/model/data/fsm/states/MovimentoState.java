@@ -13,11 +13,12 @@ public class MovimentoState extends FaunaStateAdapter {
 
 
     @Override
-    public boolean procurarComida() {
+    public boolean executar() {
         if(data.getForca() < 35){
             changeState(FaunaState.PROCURA_COMIDA);
             return true;
         }
+        // outras lógicas
         return false;
     }
 

@@ -47,10 +47,10 @@ public class EcosystemUI {
         ecosystemDisplay.setAlignment(Pos.CENTER);
         ecosystemDisplay.setStyle("-fx-background-color: #036c4c;");
 
-       //ImageView ecosystemImageView = new ImageView(new Image("../resources/wolf.png"));
+        //ImageView ecosystemImageView = new ImageView(new Image("../resources/wolf.png"));
         //ecosystemImageView.setFitWidth(50);
         //ecosystemImageView.setFitHeight(50);
-       // ecosystemDisplay.getChildren().add(ecosystemImageView);
+        // ecosystemDisplay.getChildren().add(ecosystemImageView);
 
         root.setCenter(ecosystemDisplay);
 

@@ -7,10 +7,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class InitialMenuUI {
@@ -25,44 +23,47 @@ public class InitialMenuUI {
 
     private void createViews() {
         StackPane root = new StackPane();
-        root.setStyle("-fx-background-color: #003423;");
+        root.setStyle("-fx-background-color: #01270E;");
 
-        // Logo Image
-        //ImageView logoImageView = new ImageView(new Image("path/to/your/image.png"));
-        //logoImageView.setFitWidth(150);
-        //logoImageView.setPreserveRatio(true);
+        // Adicionando uma imagem
+        ImageView imageView = new ImageView(new Image(getClass().getResource("/pt/isec/pa/javalife/ui/gui/resources/images/logo1.png").toExternalForm()));
+        // Desativar ajuste automático da imagem
+        imageView.setPreserveRatio(true);
+        // Vincular a largura da imagem à largura da cena
+        imageView.fitWidthProperty().bind(primaryStage.widthProperty());
+        // Vincular a altura da imagem à altura da cena
+        imageView.fitHeightProperty().bind(primaryStage.heightProperty());
 
-        // Text for Institute Information
-        Label instituteLabel = new Label("Instituto Superior de Engenharia de Coimbra\n" +
-                "Licenciatura em Engenharia Informática\n" +
-                "Programação Avançada - 2023/2024");
+        // Adicionando imageView ao root
+        root.getChildren().add(imageView);
+        StackPane.setAlignment(imageView, Pos.CENTER);
 
-        instituteLabel.setTextFill(Color.WHITE);
-        instituteLabel.setFont(new Font(30));
-        instituteLabel.setAlignment(Pos.CENTER);
-
-        // JavaLife Title
-        Text titleText = new Text("JavaLife");
-        titleText.setFill(Color.WHITE);
-        titleText.setFont(new Font("Arial", 48));
-
-        // Developed by
-        Label developedByLabel = new Label("Desenvolvido por:\nChelsea Duarte; Diogo Ribeiro; e Rodrigo Reis\n" +
-                "2021100010; 2022136604; 2022137090");
-        developedByLabel.setTextFill(Color.WHITE);
-        developedByLabel.setFont(new Font(14));
-        developedByLabel.setAlignment(Pos.CENTER);
-
-        // Press any key to start
-        Text pressAnyKeyText = new Text("Press any key to start");
-        pressAnyKeyText.setFill(Color.WHITE);
-        pressAnyKeyText.setFont(new Font(20));
-
-        VBox vbox = new VBox(20, instituteLabel, titleText, developedByLabel, pressAnyKeyText);
-        vbox.setAlignment(Pos.CENTER);
-
-        root.getChildren().add(vbox);
-        StackPane.setAlignment(vbox, Pos.CENTER);
+//        // Labels para as linhas de texto
+//        Label isecLabel = new Label("Instituto Superior de Engenharia de Coimbra\n" +
+//                                       "     Licenciatura em Engenharia Informática\n" +
+//                                       "        Programação Avançada - 2023/2024");
+//
+//        // Configurando o estilo e a posição das labels
+//        isecLabel.setTextFill(Color.WHITE);
+//        isecLabel.setFont(new Font(20));
+//
+//        // Centralizando as labels horizontalmente
+//        StackPane.setAlignment(isecLabel, Pos.TOP_CENTER);
+//
+//        // Adicionando as labels ao root
+//        root.getChildren().addAll(isecLabel);
+//
+//        // Trabalho realizado por
+//        Label nomesLabel = new Label("                 Realizado por:\n" +
+//                                        "Manuel Vicente   -   2020151796 \n" +
+//                "Pedro Paiva         -   2021134625 \n" +
+//                "Tomás Ferreira    -   2021130424 ");
+//        nomesLabel.setTextFill(Color.WHITE);
+//        nomesLabel.setFont(new Font(16));
+//        StackPane.setAlignment(nomesLabel, Pos.BOTTOM_CENTER);
+//
+//        // Adicionando nomesLabel ao root
+//        root.getChildren().add(nomesLabel);
 
         scene = new Scene(root, 800, 600);
     }

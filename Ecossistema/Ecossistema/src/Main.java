@@ -4,7 +4,7 @@ import pt.isec.pa.javalife.model.gameengine.GameEngine;
 import pt.isec.pa.javalife.model.gameengine.IGameEngine;
 import pt.isec.pa.javalife.ui.gui.JavaLifeFX;
 
-import static javafx.application.Application.*;
+
 
 
 public class Main {

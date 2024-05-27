@@ -11,6 +11,12 @@ public class MortoState extends FaunaStateAdapter {
         super(context, data);
     }
 
+    @Override
+    public boolean executar() {
+        data.setVivo(false);
+        context.removeElemento(data.getId());
+        return true;
+    }
 
     @Override
     public FaunaState getState() {

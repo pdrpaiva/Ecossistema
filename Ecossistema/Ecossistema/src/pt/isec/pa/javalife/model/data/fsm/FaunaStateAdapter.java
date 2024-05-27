@@ -20,29 +20,10 @@ public abstract class   FaunaStateAdapter implements IFaunaState {
         );
     }
 
-    @Override
-    public boolean mover() {
-        return false;
-    }
 
     @Override
-    public boolean procurarComida() {
-        return false;
-    }
-
-    @Override
-    public boolean alimentar() {
-        return false;
-    }
-
-    @Override
-    public boolean atacar() {
-        return false;
-    }
-
-    @Override
-    public boolean morrer() {
-        return false;
+    public boolean executar() {
+        return false; // padrão
     }
 
     @Override

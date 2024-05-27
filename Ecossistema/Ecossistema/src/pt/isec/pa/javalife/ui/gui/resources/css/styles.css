@@ -1,0 +1,25 @@
+.button {
+    -fx-font-size: 18px; /* Aumentar o tamanho do texto dos botões */
+    -fx-pref-width: 220px; /* Aumentar a largura dos botões */
+}
+
+.button:hover {
+    -fx-background-color: #90EE90; /* Mudar a cor de fundo ao passar o mouse */
+}
+
+/* Estilos específicos para cada botão se necessário */
+#btnNewSimulation {
+    /* Adicione estilos específicos para o botão New Simulation, se necessário */
+}
+
+#btnLoadSimulation {
+    /* Adicione estilos específicos para o botão Load Simulation, se necessário */
+}
+
+#btnSettings {
+    /* Adicione estilos específicos para o botão Settings, se necessário */
+}
+
+#btnExit {
+    /* Adicione estilos específicos para o botão Exit, se necessário */
+}
