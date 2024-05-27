@@ -1,8 +1,6 @@
-package pt.isec.pa.javalife.ui.gui.panes;
+package pt.isec.pa.javalife.ui.gui.scenes;
 
 import javafx.scene.layout.BorderPane;
-import pt.isec.pa.javalife.model.facade.JavaLifeFacade;
-import javafx.stage.Stage;
 
 public class RootPane extends BorderPane {
     //public RootPane(JavaLifeFacade facade, Stage primaryStage) {

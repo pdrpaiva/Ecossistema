@@ -1,4 +1,4 @@
-package pt.isec.pa.javalife.ui.gui.panes;
+package pt.isec.pa.javalife.ui.gui.scenes;
 
 import javafx.scene.layout.Pane;
 import pt.isec.pa.javalife.model.facade.JavaLifeFacade;

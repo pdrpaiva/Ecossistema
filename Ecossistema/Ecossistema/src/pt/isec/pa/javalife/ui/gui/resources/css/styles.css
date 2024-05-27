@@ -1,25 +1,51 @@
-.button {
-    -fx-font-size: 18px; /* Aumentar o tamanho do texto dos botões */
-    -fx-pref-width: 220px; /* Aumentar a largura dos botões */
+/* Estilos para MainMenuUI */
+.MainMenuUI {
+    -fx-background-image: url('/pt/isec/pa/javalife/ui/gui/resources/images/bg.jpeg');
+    -fx-background-size: cover;
+    -fx-background-position: center;
+    -fx-effect: innershadow(three-pass-box, rgba(0, 0, 0, 0.8), 80, 0.0, 0, 0);
 }
 
-.button:hover {
-    -fx-background-color: #90EE90; /* Mudar a cor de fundo ao passar o mouse */
+.MainMenuUI .button {
+    -fx-font-size: 18px;
+    -fx-pref-width: 250px;
+    -fx-pref-height: 70px;
+    -fx-background-color: #FFFFFF;
+    -fx-text-fill: #000000;
+    -fx-border-color: #4CAF50;
+    -fx-border-width: 2px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0.5, 0.0, 0.0);
+    -fx-cursor: hand;
 }
 
-/* Estilos específicos para cada botão se necessário */
-#btnNewSimulation {
-    /* Adicione estilos específicos para o botão New Simulation, se necessário */
+.MainMenuUI .button:hover {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: #FFFFFF;
 }
 
-#btnLoadSimulation {
-    /* Adicione estilos específicos para o botão Load Simulation, se necessário */
+/* Estilos específicos para botões */
+.MainMenuUI #btnNewSimulation {
+    /* Estilos específicos para o botão New Simulation */
 }
 
-#btnSettings {
-    /* Adicione estilos específicos para o botão Settings, se necessário */
+.MainMenuUI #btnLoadSimulation {
+    /* Estilos específicos para o botão Load Simulation */
 }
 
-#btnExit {
-    /* Adicione estilos específicos para o botão Exit, se necessário */
+.MainMenuUI #btnSettings {
+    /* Estilos específicos para o botão Settings */
 }
+
+.MainMenuUI #btnExit {
+    /* Estilos específicos para o botão Exit */
+}
+
+/* Estilos para outras scenes podem ser adicionados aqui */
+.CreateEcosystemUI .button {
+    /* Estilos específicos para CreateEcosystemUI */
+}
+
+/* Adicione mais regras de estilo conforme necessário para outras scenes */

@@ -1,14 +1,11 @@
-package pt.isec.pa.javalife.ui.gui.panes;
+package pt.isec.pa.javalife.ui.gui.scenes;
 
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class InitialMenuUI {
