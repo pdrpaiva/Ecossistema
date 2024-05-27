@@ -36,7 +36,7 @@ public class InitialMenuUI {
         Label instituteLabel = new Label("Instituto Superior de Engenharia de Coimbra\n" +
                 "Licenciatura em Engenharia Informática\n" +
                 "Programação Avançada - 2023/2024");
-        
+
         instituteLabel.setTextFill(Color.WHITE);
         instituteLabel.setFont(new Font(30));
         instituteLabel.setAlignment(Pos.CENTER);

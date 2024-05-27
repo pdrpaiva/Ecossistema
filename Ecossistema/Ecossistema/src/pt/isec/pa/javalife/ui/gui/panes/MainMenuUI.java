@@ -42,7 +42,15 @@ public class MainMenuUI {
     }
 
     private void registerHandlers(){
+        Button btnNewSimulation = (Button) ((VBox) scene.getRoot()).getChildren().get(0);
+        btnNewSimulation.setOnAction(event -> {
+            NewSimulationUI newSimulation = new NewSimulationUI(primaryStage);
+            primaryStage.setScene(newSimulation.getScene());
+        });
+
+
         btnExit.setOnAction(event -> primaryStage.close());
+
     }
 
     public Scene getScene() {
