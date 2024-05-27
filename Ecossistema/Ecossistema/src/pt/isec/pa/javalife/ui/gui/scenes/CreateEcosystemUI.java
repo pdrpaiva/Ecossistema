@@ -7,11 +7,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class CreateEcosystemUI {
@@ -27,109 +26,73 @@ public class CreateEcosystemUI {
     }
 
     private void createViews() {
-        GridPane root = new GridPane();
-        root.setStyle("-fx-background-color: #4B0082;");
-        root.setPadding(new Insets(20));
-        root.setHgap(20);
-        root.setVgap(20);
+        HBox root = new HBox(20);
+        root.setAlignment(Pos.CENTER);
+        root.getStyleClass().add("CreateEcosystemUI");
 
-        // Title
+        // Adicionando uma imagem
+        ImageView imageView = new ImageView(new Image(getClass().getResource("/pt/isec/pa/javalife/ui/gui/resources/images/teste.png").toExternalForm()));
+        imageView.setFitWidth(350);
+        imageView.setPreserveRatio(true);
+
+        // Criando uma VBox para os campos de entrada e botões
+        VBox formContainer = new VBox(20);
+        formContainer.setAlignment(Pos.CENTER);
+        formContainer.setPadding(new Insets(20));
+        formContainer.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5); -fx-background-radius: 10;");
+
+        // Título
         Label title = new Label("Criação do Ecossistema");
-        title.setTextFill(Color.WHITE);
-        title.setFont(new Font(24));
-        root.add(title, 0, 0, 2, 1);
+        title.getStyleClass().add("title");
 
-        // Name
-        Label nameLabel = new Label("Nome");
-        nameLabel.setTextFill(Color.WHITE);
-        nameLabel.setFont(new Font(16));
-        TextField nameField = new TextField();
-        root.add(nameLabel, 0, 1);
-        root.add(nameField, 1, 1);
+        // Campos de entrada
+        VBox fieldsContainer = new VBox(15);
+        fieldsContainer.setAlignment(Pos.CENTER_LEFT);
+        fieldsContainer.getChildren().addAll(
+                createLabeledField("Nome", ""),
+                createLabeledField("Altura", "300"),
+                createLabeledField("Comprimento", "300"),
+                createLabeledField("Quantidade Fauna", "10"),
+                createLabeledField("Quantidade Flora", "10"),
+                createLabeledField("Quantidade Inanimados", "10"),
+                createTimeUnitField()
+        );
 
-        // Dimensions
-        Label heightLabel = new Label("Altura");
-        heightLabel.setTextFill(Color.WHITE);
-        heightLabel.setFont(new Font(16));
-        TextField heightField = new TextField("300");
-        root.add(heightLabel, 0, 2);
-        root.add(heightField, 1, 2);
-
-        Label widthLabel = new Label("Comprimento");
-        widthLabel.setTextFill(Color.WHITE);
-        widthLabel.setFont(new Font(16));
-        TextField widthField = new TextField("300");
-        root.add(widthLabel, 0, 3);
-        root.add(widthField, 1, 3);
-
-        // Quantities
-        Label faunaLabel = new Label("Quantidade Fauna");
-        faunaLabel.setTextFill(Color.WHITE);
-        faunaLabel.setFont(new Font(16));
-        TextField faunaField = new TextField("10");
-        root.add(faunaLabel, 0, 4);
-        root.add(faunaField, 1, 4);
-
-        Label floraLabel = new Label("Quantidade Flora");
-        floraLabel.setTextFill(Color.WHITE);
-        floraLabel.setFont(new Font(16));
-        TextField floraField = new TextField("10");
-        root.add(floraLabel, 0, 5);
-        root.add(floraField, 1, 5);
-
-        Label inanimateLabel = new Label("Quantidade Inanimados");
-        inanimateLabel.setTextFill(Color.WHITE);
-        inanimateLabel.setFont(new Font(16));
-        TextField inanimateField = new TextField("10");
-        root.add(inanimateLabel, 0, 6);
-        root.add(inanimateField, 1, 6);
-
-        // Time unit
-        Label timeUnitLabel = new Label("Unidade de tempo");
-        timeUnitLabel.setTextFill(Color.WHITE);
-        timeUnitLabel.setFont(new Font(16));
-        Slider timeUnitSlider = new Slider(100, 1000, 100);
-        root.add(timeUnitLabel, 0, 7);
-        root.add(timeUnitSlider, 1, 7);
-
-        // Icons
-        VBox iconsBox = new VBox(10);
-        iconsBox.setAlignment(Pos.CENTER);
-        Label iconsLabel = new Label("Selecione um ícone para a fauna");
-        iconsLabel.setTextFill(Color.WHITE);
-        iconsLabel.setFont(new Font(16));
-        iconsBox.getChildren().add(iconsLabel);
-
-        HBox iconsRow = new HBox(10);
-        iconsRow.setAlignment(Pos.CENTER);
-
-//        ImageView wolfIcon = new ImageView(new Image("path/to/wolf.png"));
-//        wolfIcon.setFitWidth(50);
-//        wolfIcon.setFitHeight(50);
-//        ImageView sheepIcon = new ImageView(new Image("path/to/sheep.png"));
-//        sheepIcon.setFitWidth(50);
-//        sheepIcon.setFitHeight(50);
-//        ImageView bearIcon = new ImageView(new Image("path/to/bear.png"));
-//        bearIcon.setFitWidth(50);
-//        bearIcon.setFitHeight(50);
-//        ImageView snakeIcon = new ImageView(new Image("path/to/snake.png"));
-//        snakeIcon.setFitWidth(50);
-//        snakeIcon.setFitHeight(50);
-//
-//        iconsRow.getChildren().addAll(wolfIcon, sheepIcon, bearIcon, snakeIcon);
-        iconsBox.getChildren().add(iconsRow);
-
-        root.add(iconsBox, 2, 1, 1, 7);
-
-        // Create button
+        // Botão Criar
         createButton = new Button("Criar");
-        root.add(createButton, 0, 8, 2, 1);
+        createButton.getStyleClass().add("create-button");
+
+        formContainer.getChildren().addAll(title, fieldsContainer, createButton);
+
+        root.getChildren().addAll(imageView, formContainer);
 
         scene = new Scene(root, 800, 600);
+        scene.getStylesheets().add(getClass().getResource("/pt/isec/pa/javalife/ui/gui/resources/css/styles.css").toExternalForm());
+    }
+
+    private HBox createLabeledField(String labelText, String textFieldValue) {
+        HBox box = new HBox(10);
+        box.setAlignment(Pos.CENTER_LEFT);
+        Label label = new Label(labelText);
+        label.getStyleClass().add("label");
+        TextField textField = new TextField(textFieldValue);
+        textField.getStyleClass().add("text-field");
+        box.getChildren().addAll(label, textField);
+        return box;
+    }
+
+    private HBox createTimeUnitField() {
+        HBox box = new HBox(10);
+        box.setAlignment(Pos.CENTER_LEFT);
+        Label label = new Label("Unidade de tempo");
+        label.getStyleClass().add("label");
+        Slider slider = new Slider(100, 1000, 100);
+        slider.getStyleClass().add("slider");
+        box.getChildren().addAll(label, slider);
+        return box;
     }
 
     private void registerHandlers() {
-        // Add event handlers if needed
         createButton.setOnAction(event -> {
             EcosystemUI ecosystemUI = new EcosystemUI(primaryStage);
             primaryStage.setScene(ecosystemUI.getScene());

@@ -42,10 +42,10 @@ public class MainMenuUI {
         VBox buttonContainer = new VBox(10); // Diminuir o espaçamento entre os botões
         buttonContainer.setAlignment(Pos.CENTER);
 
-        btnNewSimulation = new Button("NEW SIMULATION");
-        btnLoadSimulation = new Button("LOAD SIMULATION");
-        btnSettings = new Button("SETTINGS");
-        btnExit = new Button("EXIT");
+        btnNewSimulation = new Button("NOVA SIMULAÇÃO");
+        btnLoadSimulation = new Button("CARREGAR SIMULAÇÃO");
+        btnSettings = new Button("DEFINIÇÕES");
+        btnExit = new Button("SAIR");
 
         buttonContainer.getChildren().addAll(btnNewSimulation, btnLoadSimulation, btnSettings, btnExit);
 
