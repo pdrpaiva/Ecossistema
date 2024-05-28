@@ -1,4 +1,24 @@
-/* Estilos para MainMenuUI */
+/* styles.css */
+
+/* Estilos para InitialMenuUI */
+/* styles.css */
+
+/* Estilos para InitialMenuUI */
+.InitialMenuUI {
+    -fx-background-image: url('/pt/isec/pa/javalife/ui/gui/resources/images/bg.jpeg');
+    -fx-background-size: cover;
+    -fx-background-position: center;
+}
+
+.InitialMenuUI .blink-text {
+    -fx-text-fill: white;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-alignment: center;
+}
+
+
+
 .MainMenuUI {
     -fx-background-image: url('/pt/isec/pa/javalife/ui/gui/resources/images/bg.jpeg');
     -fx-background-size: cover;
@@ -42,13 +62,6 @@
 .MainMenuUI #btnExit {
     /* Estilos específicos para o botão Exit */
 }
-
-/* Estilos para outras scenes podem ser adicionados aqui */
-.CreateEcosystemUI .button {
-    /* Estilos específicos para CreateEcosystemUI */
-}
-
-/** NEW SIMULATION UI **/
 
 /* Estilos para NewSimulationUI */
 .NewSimulationUI {
@@ -130,66 +143,3 @@
     -fx-border-width: 0 0 0 2px;
     -fx-border-color: white;
 }
-
-
-/* Estilos para CreateEcosystemUI */
-.CreateEcosystemUI {
-    -fx-background-image: url('/pt/isec/pa/javalife/ui/gui/resources/images/bg.jpeg');
-    -fx-background-size: cover;
-    -fx-background-position: center;
-    -fx-padding: 20px;
-}
-
-.CreateEcosystemUI .title {
-    -fx-text-fill: white;
-    -fx-font-size: 32px;
-    -fx-font-weight: bold;
-    -fx-padding-bottom: 20px;
-}
-
-.CreateEcosystemUI .label {
-    -fx-text-fill: white;
-    -fx-font-size: 18px;
-}
-
-.CreateEcosystemUI .text-field {
-    -fx-pref-width: 300px;
-    -fx-padding: 10px;
-    -fx-font-size: 16px;
-    -fx-background-color: rgba(0,0, 0, 0.8);
-    -fx-border-color: #4CAF50;
-    -fx-border-width: 2px;
-    -fx-border-radius: 5px;
-    -fx-background-radius: 5px;
-}
-
-.CreateEcosystemUI .slider {
-    -fx-pref-width: 300px;
-}
-
-.CreateEcosystemUI .create-button {
-    -fx-font-size: 18px;
-    -fx-pref-width: 200px;
-    -fx-pref-height: 50px;
-    -fx-background-color: #FFFFFF;
-    -fx-text-fill: #000000;
-    -fx-border-color: #4CAF50;
-    -fx-border-width: 2px;
-    -fx-border-radius: 5px;
-    -fx-background-radius: 5px;
-    -fx-font-weight: bold;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0.5, 0.0, 0.0);
-    -fx-cursor: hand;
-}
-
-.CreateEcosystemUI .create-button:hover {
-    -fx-background-color: #4CAF50;
-    -fx-text-fill: #FFFFFF;
-}
-
-
-
-
-
-
-

@@ -10,6 +10,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -48,13 +49,14 @@ public class CreateEcosystemUI {
         // Campos de entrada
         VBox fieldsContainer = new VBox(15);
         fieldsContainer.setAlignment(Pos.CENTER_LEFT);
+
         fieldsContainer.getChildren().addAll(
                 createLabeledField("Nome", ""),
                 createLabeledField("Altura", "300"),
                 createLabeledField("Comprimento", "300"),
-                createLabeledField("Quantidade Fauna", "10"),
-                createLabeledField("Quantidade Flora", "10"),
-                createLabeledField("Quantidade Inanimados", "10"),
+                createLabeledField("Fauna", "10"),
+                createLabeledField("Flora", "10"),
+                createLabeledField("Inanimados", "10"),
                 createTimeUnitField()
         );
 
@@ -67,7 +69,7 @@ public class CreateEcosystemUI {
         root.getChildren().addAll(imageView, formContainer);
 
         scene = new Scene(root, 800, 600);
-        scene.getStylesheets().add(getClass().getResource("/pt/isec/pa/javalife/ui/gui/resources/css/styles.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("/pt/isec/pa/javalife/ui/gui/resources/css/styles2.css").toExternalForm());
     }
 
     private HBox createLabeledField(String labelText, String textFieldValue) {
@@ -75,8 +77,11 @@ public class CreateEcosystemUI {
         box.setAlignment(Pos.CENTER_LEFT);
         Label label = new Label(labelText);
         label.getStyleClass().add("label");
+        label.setMinWidth(120); // Define uma largura mínima para os labels
         TextField textField = new TextField(textFieldValue);
         textField.getStyleClass().add("text-field");
+        textField.setPrefWidth(200); // Define a largura das caixas de texto
+        HBox.setHgrow(textField, Priority.ALWAYS);
         box.getChildren().addAll(label, textField);
         return box;
     }
@@ -84,10 +89,13 @@ public class CreateEcosystemUI {
     private HBox createTimeUnitField() {
         HBox box = new HBox(10);
         box.setAlignment(Pos.CENTER_LEFT);
-        Label label = new Label("Unidade de tempo");
+        Label label = new Label("Tempo");
         label.getStyleClass().add("label");
+        label.setMinWidth(120); // Define uma largura mínima para os labels
         Slider slider = new Slider(100, 1000, 100);
         slider.getStyleClass().add("slider");
+        slider.setPrefWidth(200); // Define a largura do slider
+        HBox.setHgrow(slider, Priority.ALWAYS);
         box.getChildren().addAll(label, slider);
         return box;
     }
