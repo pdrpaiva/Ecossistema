@@ -60,7 +60,7 @@ public class NewSimulationUI {
         root.getChildren().addAll(leftSection, rightSection);
 
         scene = new Scene(root, 800, 600);
-        scene.getStylesheets().add(getClass().getResource("/pt/isec/pa/javalife/ui/gui/resources/css/styles.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("/pt/isec/pa/javalife/ui/gui/resources/css/NewSimulation.css").toExternalForm());
     }
 
     private void registerHandlers() {
