@@ -74,7 +74,8 @@
 }
 
 /* Barra de divisão visível */
-.NewSimulationUI > .left-section + .right-section {
+
+.NewSimulationUI > .right-section {
     -fx-border-width: 0 0 0 2px;
     -fx-border-color: white;
 }
