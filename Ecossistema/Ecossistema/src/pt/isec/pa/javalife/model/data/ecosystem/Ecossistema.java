@@ -8,16 +8,15 @@ import pt.isec.pa.javalife.model.gameengine.IGameEngineEvolve;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 public class Ecossistema implements IGameEngineEvolve {
     private final Set<IElemento> elementos;
     private int totalPassos = 0;
-
     private int escalaUnidade = 2;
     private int unidadesX = 300;
     private int unidadesY = 300;
-
     private static int nextFaunaId = 1;
     private static int nextFloraId = 1;
     private static int nextInanimadoId = 1;
@@ -65,6 +64,11 @@ public class Ecossistema implements IGameEngineEvolve {
         }
         return true;
     }
+    public Ecossistema getEcossistema() {
+        return this;
+    }
+
+
     public int getUnidadesX() {
         return unidadesX;
     }
@@ -160,7 +164,6 @@ public class Ecossistema implements IGameEngineEvolve {
                 Fauna fauna = (Fauna) elemento;
                 FaunaContext context = fauna.getFaunaContext();
                 context.setData(fauna);
-
                 boolean mudou = context.executar();
 
                 if (!fauna.isVivo()) {
@@ -214,6 +217,7 @@ public class Ecossistema implements IGameEngineEvolve {
     public void adicionarElemento(IElemento elemento) {
         elementos.add(elemento);
     }
+
     public Area encontrarAreaAdjacenteLivre(Area area) {
         // Implementar a lógica para encontrar uma área adjacente livre
         return null;
@@ -233,7 +237,6 @@ public class Ecossistema implements IGameEngineEvolve {
     }
 
     // Métodos para criação de elementos específicos
-// Métodos para criação de elementos específicos
     public Fauna criarFauna(double cima, double esquerda) {
         Fauna fauna = new Fauna(cima, esquerda, this);
         addElemento(fauna);
@@ -249,8 +252,55 @@ public class Ecossistema implements IGameEngineEvolve {
     }
 
     public Inanimado criarInanimado(Area area) {
-        Inanimado inanimado = new Inanimado(area.cima(),area.esquerda());
+        Inanimado inanimado = new Inanimado(area.cima(), area.esquerda());
         addElemento(inanimado);
         return inanimado;
+    }
+
+    public void setEcossistema(Ecossistema novoEcossistema) {
+        limparElementos();
+        elementos.addAll(novoEcossistema.obterElementos());
+    }
+
+    public void addElementToRandomFreePosition(Elemento elementType) {
+        int height = getUnidadesY();
+        int width = getUnidadesX();
+        Random random = new Random();
+
+        boolean added = false;
+        while (!added) {
+            double x = random.nextInt(width);
+            double y = random.nextInt(height);
+
+            Area area = null;
+            IElemento elemento = null;
+
+            switch (elementType) {
+                case INANIMADO:
+                    area = new Area(y, x, y + Inanimado.size, x + Inanimado.size);
+                    if (isAreaFree(area)) {
+                        elemento = new Inanimado(y, x);
+                        addElemento(elemento);
+                        added = true;
+                    }
+                    break;
+                case FAUNA:
+                    area = new Area(y, x, y + 32, x + 32); // Supondo tamanho de fauna como 32x32
+                    if (isAreaFree(area)) {
+                        elemento = new Fauna(y, x, this);
+                        addElemento(elemento);
+                        added = true;
+                    }
+                    break;
+                case FLORA:
+                    area = new Area(y, x, y + 13, x + 13); // Supondo tamanho de flora como 13x13
+                    if (isAreaFree(area)) {
+                        elemento = new Flora(y, x);
+                        addElemento(elemento);
+                        added = true;
+                    }
+                    break;
+            }
+        }
     }
 }

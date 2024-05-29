@@ -24,7 +24,7 @@ public class AddElementoCmd implements ICommand {
 
     @Override
     public void undo() {
-        manager.removeElemento(elemento.getId());
+        manager.removerElemento(elemento.getId());
     }
 
 }

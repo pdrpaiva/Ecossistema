@@ -4,9 +4,10 @@ import pt.isec.pa.javalife.model.command.CommandManager;
 import pt.isec.pa.javalife.model.data.area.Area;
 import pt.isec.pa.javalife.model.data.elements.*;
 import pt.isec.pa.javalife.model.gameengine.GameEngine;
-import java.util.Random;
+
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.Set;
 
 public class EcossistemaManager {
 
@@ -23,23 +24,86 @@ public class EcossistemaManager {
         gameEngine.registerClient(ecossistema);
     }
 
+    public int getLargura() {
+        return ecossistema.getLargura();
+    }
+
+    public int getAltura() {
+        return ecossistema.getAltura();
+    }
+
+
+    public void definirUnidadesX(int unidadesX) {
+        ecossistema.definirUnidadesX(unidadesX);
+    }
+
+    public void definirUnidadesY(int unidadesY) {
+        ecossistema.definirUnidadesY(unidadesY);
+    }
+
+    public IElemento encontrarElementoMaisProximo(Area origem, Elemento tipo) {
+        return ecossistema.encontrarElementoMaisProximo(origem, tipo);
+    }
+
+    public boolean isAreaFree(Area area) {
+        return ecossistema.isAreaFree(area);
+    }
+
+    public int getUnidadesX() {
+        return ecossistema.getUnidadesX();
+    }
+
+    public int getUnidadesY() {
+        return ecossistema.getUnidadesY();
+    }
+
+    public Set<IElemento> getElementos() {
+        return ecossistema.getElementos();
+    }
+
+    public Set<IElemento> obterElementos() {
+        return ecossistema.obterElementos();
+    }
+
+    public int obterPassos() {
+        return ecossistema.obterPassos();
+    }
+
+    public void resetarContadorDePassos() {
+        ecossistema.resetarContadorDePassos();
+    }
+
+    public Fauna encontrarFaunaMaisFraca(int ignorarID) {
+        return ecossistema.encontrarFaunaMaisFraca(ignorarID);
+    }
+
+    public void limparElementos() {
+        ecossistema.limparElementos();
+    }
+
+    public Fauna encontrarFaunaMaisForte(int ignorarID) {
+        return ecossistema.encontrarFaunaMaisForte(ignorarID);
+    }
+
+    public IElemento buscarElemento(int id) {
+        return ecossistema.buscarElemento(id);
+    }
+
+    public void removerElemento(int id) {
+        ecossistema.removerElemento(id);
+    }
+
     public void addElemento(IElemento elemento) {
         ecossistema.addElemento(elemento);
         support.firePropertyChange("elemento_adicionado", null, elemento);
     }
 
-    public void removeElemento(int id) {
-        IElemento elemento = ecossistema.buscarElemento(id);
-        ecossistema.removerElemento(id);
-        support.firePropertyChange("elemento_removido", elemento, null);
+    public boolean verificarAreaLivre(Area area) {
+        return ecossistema.verificarAreaLivre(area);
     }
 
-
-    public Ecossistema getEcossistema(){
-        return ecossistema;
-    }
-    public void cerca(){
-        ecossistema.cerca();
+    public boolean verificarLimites(Area area) {
+        return ecossistema.verificarLimites(area);
     }
 
     public void evolve(long currentTime) {
@@ -47,52 +111,52 @@ public class EcossistemaManager {
         support.firePropertyChange("evolucao", null, null);
     }
 
-    public void addElementToRandomFreePosition(Elemento elementType) {
-        int height = ecossistema.getUnidadesY();
-        int width = ecossistema.getUnidadesX();
-        Random random = new Random();
-
-        boolean added = false;
-        while (!added) {
-            double x = random.nextInt(width);
-            double y = random.nextInt(height);
-
-            Area area = null;
-            IElemento elemento = null;
-
-            switch (elementType) {
-                case INANIMADO:
-                    area = new Area(y, x, y + Inanimado.size, x + Inanimado.size);
-                    if (ecossistema.isAreaFree(area)) {
-                        elemento = new Inanimado(y, x);
-                        addElemento(elemento);
-                        added = true;
-                    }
-                    break;
-                case FAUNA:
-                    area = new Area(y, x, y + 32, x + 32); // Supondo tamanho de fauna como 32x32
-                    if (ecossistema.isAreaFree(area)) {
-                        elemento = new Fauna(y, x, ecossistema);
-                        addElemento(elemento);
-                        added = true;
-                    }
-                    break;
-                case FLORA:
-                    area = new Area(y, x, y + 13, x + 13); // Supondo tamanho de flora como 13x13
-                    if (ecossistema.isAreaFree(area)) {
-                        elemento = new Flora(y, x);
-                        addElemento(elemento);
-                        added = true;
-                    }
-                    break;
-            }
-        }
+    public void cerca() {
+        ecossistema.cerca();
     }
 
-    public void setEcossistema(Ecossistema ecossistema) {
-        this.ecossistema.limparElementos();
-        this.ecossistema.obterElementos().addAll(ecossistema.obterElementos());
+    public void adicionarElemento(IElemento elemento) {
+        ecossistema.adicionarElemento(elemento);
+    }
+
+    public Area encontrarAreaAdjacenteLivre(Area area) {
+        return ecossistema.encontrarAreaAdjacenteLivre(area);
+    }
+
+    public int gerarProximoIdFauna() {
+        return ecossistema.gerarProximoIdFauna();
+    }
+
+    public int gerarProximoIdFlora() {
+        return ecossistema.gerarProximoIdFlora();
+    }
+
+    public int gerarProximoIdInanimado() {
+        return ecossistema.gerarProximoIdInanimado();
+    }
+
+    public Fauna criarFauna(double cima, double esquerda) {
+        return ecossistema.criarFauna(cima, esquerda);
+    }
+
+    public Flora criarFlora(Area area, double forca, String imagem) {
+        return ecossistema.criarFlora(area, forca, imagem);
+    }
+
+    public Inanimado criarInanimado(Area area) {
+        return ecossistema.criarInanimado(area);
+    }
+
+    public void addElementToRandomFreePosition(Elemento elementType) {
+        ecossistema.addElementToRandomFreePosition(elementType);
+    }
+
+    public void setEcossistema(Ecossistema novoEcossistema) {
+        ecossistema.setEcossistema(novoEcossistema);
         support.firePropertyChange("ecossistema_atualizado", null, ecossistema);
+    }
+    public Ecossistema getEcossistema() {
+        return ecossistema.getEcossistema();
     }
 
     public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {

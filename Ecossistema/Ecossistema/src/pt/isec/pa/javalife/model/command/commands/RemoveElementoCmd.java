@@ -16,7 +16,7 @@ public class RemoveElementoCmd extends CommandAdapter {
 
     @Override
     public void execute() {
-        manager.removeElemento(elemento.getId());
+        manager.removerElemento(elemento.getId());
     }
 
     @Override
