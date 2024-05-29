@@ -13,15 +13,26 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import pt.isec.pa.javalife.model.data.area.Area;
+import pt.isec.pa.javalife.model.data.elements.Elemento;
+import pt.isec.pa.javalife.model.data.elements.Fauna;
+import pt.isec.pa.javalife.model.data.elements.Flora;
+import pt.isec.pa.javalife.model.data.elements.Inanimado;
+import pt.isec.pa.javalife.model.data.ecosystem.EcossistemaManager;
+
+import java.util.Random;
 
 public class CreateEcosystemUI {
     private Scene scene;
     private Stage primaryStage;
-
+    private EcossistemaManager ecossistemaManager;
     private Button createButton;
+    private TextField txtNome, txtAltura, txtComprimento, txtFauna, txtFlora, txtInanimados;
+    private Slider sliderTempo;
 
-    public CreateEcosystemUI(Stage primaryStage) {
+    public CreateEcosystemUI(Stage primaryStage, EcossistemaManager ecossistemaManager) {
         this.primaryStage = primaryStage;
+        this.ecossistemaManager = ecossistemaManager;
         createViews();
         registerHandlers();
     }
@@ -31,36 +42,39 @@ public class CreateEcosystemUI {
         root.setAlignment(Pos.CENTER);
         root.getStyleClass().add("CreateEcosystemUI");
 
-        // Adicionando uma imagem
         ImageView imageView = new ImageView(new Image(getClass().getResource("/pt/isec/pa/javalife/ui/gui/resources/images/teste.png").toExternalForm()));
         imageView.setFitWidth(350);
         imageView.setPreserveRatio(true);
 
-        // Criando uma VBox para os campos de entrada e botões
         VBox formContainer = new VBox(20);
         formContainer.setAlignment(Pos.CENTER);
         formContainer.setPadding(new Insets(20));
         formContainer.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5); -fx-background-radius: 10;");
 
-        // Título
         Label title = new Label("Criação do Ecossistema");
         title.getStyleClass().add("title");
 
-        // Campos de entrada
         VBox fieldsContainer = new VBox(15);
         fieldsContainer.setAlignment(Pos.CENTER_LEFT);
 
+        txtNome = new TextField();
+        txtAltura = new TextField("300");
+        txtComprimento = new TextField("300");
+        txtFauna = new TextField("10");
+        txtFlora = new TextField("10");
+        txtInanimados = new TextField("10");
+        sliderTempo = new Slider(100, 1000, 100);
+
         fieldsContainer.getChildren().addAll(
-                createLabeledField("Nome", ""),
-                createLabeledField("Altura", "300"),
-                createLabeledField("Comprimento", "300"),
-                createLabeledField("Fauna", "10"),
-                createLabeledField("Flora", "10"),
-                createLabeledField("Inanimados", "10"),
+                createLabeledField("Nome", txtNome),
+                createLabeledField("Altura", txtAltura),
+                createLabeledField("Comprimento", txtComprimento),
+                createLabeledField("Fauna", txtFauna),
+                createLabeledField("Flora", txtFlora),
+                createLabeledField("Inanimados", txtInanimados),
                 createTimeUnitField()
         );
 
-        // Botão Criar
         createButton = new Button("Criar");
         createButton.getStyleClass().add("create-button");
 
@@ -69,40 +83,64 @@ public class CreateEcosystemUI {
         root.getChildren().addAll(imageView, formContainer);
 
         scene = new Scene(root, 800, 600);
-        scene.getStylesheets().add(getClass().getResource("/pt/isec/pa/javalife/ui/gui/resources/css/CreateEcosystem.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("/pt/isec/pa/javalife/ui/gui/resources/css/styles2.css").toExternalForm());
     }
 
-    private HBox createLabeledField(String labelText, String textFieldValue) {
+    private HBox createLabeledField(String labelText, TextField textField) {
         HBox box = new HBox(10);
         box.setAlignment(Pos.CENTER_LEFT);
         Label label = new Label(labelText);
         label.getStyleClass().add("label");
-        label.setMinWidth(120); // Define uma largura mínima para os labels
-        TextField textField = new TextField(textFieldValue);
+        label.setMinWidth(120);
         textField.getStyleClass().add("text-field");
-        textField.setPrefWidth(200); // Define a largura das caixas de texto
+        textField.setPrefWidth(200);
         HBox.setHgrow(textField, Priority.ALWAYS);
         box.getChildren().addAll(label, textField);
         return box;
     }
-
     private HBox createTimeUnitField() {
         HBox box = new HBox(10);
         box.setAlignment(Pos.CENTER_LEFT);
         Label label = new Label("Tempo");
         label.getStyleClass().add("label");
         label.setMinWidth(120); // Define uma largura mínima para os labels
-        Slider slider = new Slider(100, 1000, 100);
-        slider.getStyleClass().add("slider");
-        slider.setPrefWidth(200); // Define a largura do slider
-        HBox.setHgrow(slider, Priority.ALWAYS);
-        box.getChildren().addAll(label, slider);
+        sliderTempo.getStyleClass().add("slider");
+        sliderTempo.setPrefWidth(200); // Define a largura do slider
+        HBox.setHgrow(sliderTempo, Priority.ALWAYS);
+        box.getChildren().addAll(label, sliderTempo);
         return box;
     }
 
     private void registerHandlers() {
         createButton.setOnAction(event -> {
-            EcosystemUI ecosystemUI = new EcosystemUI(primaryStage);
+            int altura = Integer.parseInt(txtAltura.getText());
+            int comprimento = Integer.parseInt(txtComprimento.getText());
+            int faunaCount = Integer.parseInt(txtFauna.getText());
+            int floraCount = Integer.parseInt(txtFlora.getText());
+            int inanimadosCount = Integer.parseInt(txtInanimados.getText());
+
+
+            // Definir tamanho do ecossistema
+            ecossistemaManager.getEcossistema().definirUnidadesY(altura);
+            ecossistemaManager.getEcossistema().definirUnidadesX(comprimento);
+            ecossistemaManager.cerca();
+            // Adicionar fauna
+            for (int i = 0; i < Integer.parseInt(txtInanimados.getText()); i++) {
+                ecossistemaManager.addElementToRandomFreePosition(Elemento.INANIMADO);
+            }
+
+            // Adicionar fauna
+            for (int i = 0; i < Integer.parseInt(txtFauna.getText()); i++) {
+                ecossistemaManager.addElementToRandomFreePosition(Elemento.FAUNA);
+            }
+
+            // Adicionar flora
+            for (int i = 0; i < Integer.parseInt(txtFlora.getText()); i++) {
+                ecossistemaManager.addElementToRandomFreePosition(Elemento.FLORA);
+            }
+
+            // Navegar para a próxima tela
+            EcosystemUI ecosystemUI = new EcosystemUI(primaryStage, ecossistemaManager);
             primaryStage.setScene(ecosystemUI.getScene());
         });
     }

@@ -3,22 +3,28 @@ package pt.isec.pa.javalife.ui.gui.scenes;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
-import javafx.scene.image.Image;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.stage.Stage;
+import pt.isec.pa.javalife.model.data.ecosystem.EcossistemaManager;
+import pt.isec.pa.javalife.model.data.elements.*;
 
 public class EcosystemUI {
     private Scene scene;
     private Stage primaryStage;
+    private EcossistemaManager ecossistemaManager;
+    private Pane ecosystemPane;
 
-    public EcosystemUI(Stage primaryStage) {
+    public EcosystemUI(Stage primaryStage, EcossistemaManager ecossistemaManager) {
         this.primaryStage = primaryStage;
+        this.ecossistemaManager = ecossistemaManager;
         createViews();
         registerHandlers();
+        updateEcosystemDisplay();
     }
 
     private void createViews() {
@@ -31,26 +37,18 @@ public class EcosystemUI {
         toolbar.setAlignment(Pos.CENTER_LEFT);
         toolbar.setStyle("-fx-background-color: #00593c;");
 
-        Button btnPause = new Button("",new ImageView(new Image("file:gui/resources/wolf.png")));
-
-        Button btnRestart = new Button("",new ImageView(new Image("file:gui/resources/wolf.png")));
-        Button btnSettings = new Button("",new ImageView(new Image("file:resources/wolf.png")));
+        Button btnPause = new Button("Pause");
+        Button btnRestart = new Button("Restart");
+        Button btnSettings = new Button("Settings");
 
         toolbar.getChildren().addAll(btnPause, btnRestart, btnSettings);
         root.setTop(toolbar);
 
         // Área central do ecossistema
-        VBox ecosystemDisplay = new VBox();
-        ecosystemDisplay.setPadding(new Insets(20));
-        ecosystemDisplay.setAlignment(Pos.CENTER);
-        ecosystemDisplay.setStyle("-fx-background-color: #036c4c;");
-
-        //ImageView ecosystemImageView = new ImageView(new Image("../resources/wolf.png"));
-        //ecosystemImageView.setFitWidth(50);
-        //ecosystemImageView.setFitHeight(50);
-        // ecosystemDisplay.getChildren().add(ecosystemImageView);
-
-        root.setCenter(ecosystemDisplay);
+        ecosystemPane = new Pane();
+        ecosystemPane.setPadding(new Insets(20));
+        ecosystemPane.setStyle("-fx-background-color: #036c4c;");
+        root.setCenter(ecosystemPane);
 
         // Right sidebar for controls
         VBox sidebar = new VBox(10);
@@ -75,6 +73,31 @@ public class EcosystemUI {
 
     private void registerHandlers() {
         // Add event handlers if needed
+    }
+
+    private void updateEcosystemDisplay() {
+        ecosystemPane.getChildren().clear();
+
+        for (IElemento elemento : ecossistemaManager.getEcossistema().obterElementos()) {
+            Rectangle rect;
+            if (elemento instanceof Fauna) {
+                rect = new Rectangle(elemento.getArea().direita() - elemento.getArea().esquerda(),
+                        elemento.getArea().baixo() - elemento.getArea().cima(), Color.RED);
+            } else if (elemento instanceof Flora) {
+                rect = new Rectangle(elemento.getArea().direita() - elemento.getArea().esquerda(),
+                        elemento.getArea().baixo() - elemento.getArea().cima(), Color.GREEN);
+            } else if (elemento instanceof Inanimado) {
+                rect = new Rectangle(elemento.getArea().direita() - elemento.getArea().esquerda(),
+                        elemento.getArea().baixo() - elemento.getArea().cima(), Color.GRAY);
+            } else {
+                continue;
+            }
+
+            rect.setX(elemento.getArea().esquerda());
+            rect.setY(elemento.getArea().cima());
+
+            ecosystemPane.getChildren().add(rect);
+        }
     }
 
     public Scene getScene() {

@@ -8,7 +8,7 @@ public sealed interface IElemento
         extends Serializable
         permits ElementoBase {
     int getId(); // retorna o identificador
-    Elemento getType(); // retorna o tipo
+    Elemento getTipo(); // retorna o tipo
     Area getArea(); // retorna a área ocupada
 }
 

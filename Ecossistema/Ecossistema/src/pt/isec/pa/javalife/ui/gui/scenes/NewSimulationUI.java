@@ -9,10 +9,13 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import pt.isec.pa.javalife.model.data.ecosystem.EcossistemaManager;
 
 public class NewSimulationUI {
     private Scene scene;
     private Stage primaryStage;
+
+
 
     public NewSimulationUI(Stage primaryStage) {
         this.primaryStage = primaryStage;
@@ -60,13 +63,13 @@ public class NewSimulationUI {
         root.getChildren().addAll(leftSection, rightSection);
 
         scene = new Scene(root, 800, 600);
-        scene.getStylesheets().add(getClass().getResource("/pt/isec/pa/javalife/ui/gui/resources/css/NewSimulation.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("/pt/isec/pa/javalife/ui/gui/resources/css/styles.css").toExternalForm());
     }
 
     private void registerHandlers() {
         Button createButton = (Button) ((VBox) ((HBox) scene.getRoot()).getChildren().get(0)).getChildren().get(2);
         createButton.setOnAction(event -> {
-            CreateEcosystemUI createEcosystem = new CreateEcosystemUI(primaryStage);
+            CreateEcosystemUI createEcosystem = new CreateEcosystemUI(primaryStage,new EcossistemaManager());
             primaryStage.setScene(createEcosystem.getScene());
         });
 

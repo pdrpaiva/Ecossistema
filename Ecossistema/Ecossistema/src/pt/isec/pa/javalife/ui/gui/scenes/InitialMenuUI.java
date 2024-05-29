@@ -56,7 +56,7 @@ public class InitialMenuUI {
         root.getChildren().add(vbox);
 
         scene = new Scene(root, 800, 600);
-        scene.getStylesheets().add(getClass().getResource("/pt/isec/pa/javalife/ui/gui/resources/css/1.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("/pt/isec/pa/javalife/ui/gui/resources/css/styles.css").toExternalForm());
     }
 
     private void registerHandlers() {

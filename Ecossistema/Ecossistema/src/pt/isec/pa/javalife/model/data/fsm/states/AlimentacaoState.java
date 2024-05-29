@@ -25,7 +25,7 @@ public class AlimentacaoState extends FaunaStateAdapter {
                 floraElement.setForca(floraElement.getForca() - forcaRecuperada);
 
                 if (floraElement.getForca() <= 0) {
-                    context.getEcossistema().removeElemento(floraElement.getId());
+                    context.getEcossistema().removerElemento(floraElement.getId());
                 }
 
                 if (data.getForca() >= 80) {
@@ -41,12 +41,12 @@ public class AlimentacaoState extends FaunaStateAdapter {
                     if (data.getForca() > 0) {
                         faunaElement.setForca(faunaElement.getForca() - data.getForca());
                         if (faunaElement.getForca() <= 0) {
-                            context.getEcossistema().removeElemento(faunaElement.getId());
+                            context.getEcossistema().removerElemento(faunaElement.getId());
                             data.setForca(data.getForca() + faunaElement.getForca());
                         }
                     } else {
                         faunaElement.setForca(faunaElement.getForca() + data.getForca());
-                        context.getEcossistema().removeElemento(data.getId());
+                        context.getEcossistema().removerElemento(data.getId());
                         changeState(FaunaState.MORTO);
                     }
                     return true;
