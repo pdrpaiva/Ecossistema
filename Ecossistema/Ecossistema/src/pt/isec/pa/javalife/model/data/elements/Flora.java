@@ -78,4 +78,13 @@ public final class Flora extends ElementoBase implements IElementoComForca, IEle
     }
 
 
+    @Override
+    public void setPosicaoX(int x) {
+
+    }
+
+    @Override
+    public void setPosicaoY(int y) {
+
+    }
 }

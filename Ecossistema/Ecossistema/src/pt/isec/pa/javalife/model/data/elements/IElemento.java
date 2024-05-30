@@ -10,5 +10,8 @@ public sealed interface IElemento
     int getId(); // retorna o identificador
     Elemento getTipo(); // retorna o tipo
     Area getArea(); // retorna a área ocupada
+    void setPosicaoX(int x);
+    void setPosicaoY(int y);
+
 }
 

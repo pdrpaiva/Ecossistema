@@ -4,6 +4,7 @@ import pt.isec.pa.javalife.model.command.CommandManager;
 import pt.isec.pa.javalife.model.data.area.Area;
 import pt.isec.pa.javalife.model.data.elements.*;
 import pt.isec.pa.javalife.model.gameengine.GameEngine;
+import pt.isec.pa.javalife.model.gameengine.GameEngineState;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -30,6 +31,31 @@ public class EcossistemaManager {
 
     public int getAltura() {
         return ecossistema.getAltura();
+    }
+    public boolean startGame(long interval) {
+        return gameEngine.start(interval);
+    }
+
+
+
+    public void stopGame() {
+        gameEngine.stop();
+    }
+
+    public void pauseGame() {
+        gameEngine.pause();
+    }
+
+    public void resumeGame() {
+        gameEngine.resume();
+    }
+
+    public void setGameInterval(long newInterval) {
+        gameEngine.setInterval(newInterval);
+    }
+
+    public GameEngineState getCurrentState() {
+        return gameEngine.getCurrentState();
     }
 
 
@@ -165,5 +191,14 @@ public class EcossistemaManager {
 
     public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
         support.removePropertyChangeListener(propertyName, listener);
+    }
+
+    public boolean isRunning() {
+        return gameEngine.getCurrentState() == GameEngineState.RUNNING;
+    }
+
+    // Método isPaused para verificar se o jogo está pausado
+    public boolean isPaused() {
+        return gameEngine.getCurrentState() == GameEngineState.PAUSED;
     }
 }

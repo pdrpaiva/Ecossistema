@@ -65,6 +65,7 @@ public class CreateEcosystemUI {
         txtInanimados = new TextField("10");
         sliderTempo = new Slider(100, 1000, 100);
 
+
         fieldsContainer.getChildren().addAll(
                 createLabeledField("Nome", txtNome),
                 createLabeledField("Altura", txtAltura),
@@ -113,12 +114,16 @@ public class CreateEcosystemUI {
 
     private void registerHandlers() {
         createButton.setOnAction(event -> {
+            System.out.println("Botão 'Criar' foi clicado");
             int altura = Integer.parseInt(txtAltura.getText());
             int comprimento = Integer.parseInt(txtComprimento.getText());
             int faunaCount = Integer.parseInt(txtFauna.getText());
             int floraCount = Integer.parseInt(txtFlora.getText());
             int inanimadosCount = Integer.parseInt(txtInanimados.getText());
+            int tempo = (int) sliderTempo.getValue();
 
+
+            ecossistemaManager.setGameInterval(tempo);
 
             // Definir tamanho do ecossistema
             ecossistemaManager.getEcossistema().definirUnidadesY(altura);
@@ -142,6 +147,7 @@ public class CreateEcosystemUI {
             // Navegar para a próxima tela
             EcosystemUI ecosystemUI = new EcosystemUI(primaryStage, ecossistemaManager);
             primaryStage.setScene(ecosystemUI.getScene());
+            ecossistemaManager.resumeGame();
         });
     }
 

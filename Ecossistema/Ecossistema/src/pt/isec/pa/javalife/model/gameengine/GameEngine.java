@@ -104,7 +104,9 @@ public final class GameEngine implements IGameEngine {
             while (true) {
                 if (state == GameEngineState.READY) break;
                 if (state == GameEngineState.RUNNING) {
+                    System.out.println("Entrou");
                     new Thread(() -> {
+
                         long time = System.nanoTime();
                         List.copyOf(clients).forEach(
                                 client -> client.evolve(GameEngine.this, time)

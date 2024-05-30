@@ -4,6 +4,8 @@ import pt.isec.pa.javalife.model.data.fsm.Direction;
 
 public record Area(double cima, double esquerda, double baixo, double direita) {
 
+
+
     public static double distancia(Area a1, Area a2) {
         double deltaX = a1.esquerda() - a2.esquerda();
         double deltaY = a1.cima() - a2.cima();
@@ -24,6 +26,7 @@ public record Area(double cima, double esquerda, double baixo, double direita) {
             case DOWN -> new Area(this.cima + velocidade, this.esquerda, this.baixo + velocidade, this.direita);
         };
     }
+
 
     public Area resolverColisao(Direction direcao, Area outra) {
         if (!intersecta(outra)) {

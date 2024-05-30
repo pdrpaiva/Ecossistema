@@ -157,6 +157,7 @@ public class Ecossistema implements IGameEngineEvolve {
 
     @Override
     public void evolve(IGameEngine gameEngine, long currentTime) {
+        System.out.println("Evoluindo o ecossistema");
         Set<IElemento> elementosParaRemover = new HashSet<>();
 
         for (IElemento elemento : new HashSet<>(elementos)) {
@@ -280,7 +281,7 @@ public class Ecossistema implements IGameEngineEvolve {
                     area = new Area(y, x, y + Inanimado.size, x + Inanimado.size);
                     if (isAreaFree(area)) {
                         elemento = new Inanimado(y, x);
-                        addElemento(elemento);
+                        addElemento(elemento);  // Adiciona o elemento ao ecossistema
                         added = true;
                     }
                     break;
@@ -288,7 +289,7 @@ public class Ecossistema implements IGameEngineEvolve {
                     area = new Area(y, x, y + 32, x + 32); // Supondo tamanho de fauna como 32x32
                     if (isAreaFree(area)) {
                         elemento = new Fauna(y, x, this);
-                        addElemento(elemento);
+                        addElemento(elemento);  // Adiciona o elemento ao ecossistema
                         added = true;
                     }
                     break;
@@ -296,7 +297,7 @@ public class Ecossistema implements IGameEngineEvolve {
                     area = new Area(y, x, y + 13, x + 13); // Supondo tamanho de flora como 13x13
                     if (isAreaFree(area)) {
                         elemento = new Flora(y, x);
-                        addElemento(elemento);
+                        addElemento(elemento);  // Adiciona o elemento ao ecossistema
                         added = true;
                     }
                     break;

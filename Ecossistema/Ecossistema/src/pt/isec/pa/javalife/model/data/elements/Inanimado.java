@@ -12,6 +12,16 @@ public final class Inanimado extends ElementoBase {
         this.area = new Area(cima, esquerda, baixo, direita);
     }
 
+    @Override
+    public void setPosicaoX(int x) {
+
+    }
+
+    @Override
+    public void setPosicaoY(int y) {
+
+    }
+
   /*  @Override
     public int getId() {
         return 0;

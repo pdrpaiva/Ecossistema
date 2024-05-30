@@ -99,6 +99,7 @@ public final class Fauna extends ElementoBase implements IElementoComImagem, IEl
             perderForca(CUSTO_MOVIMENTO);
         } else {
             direcao = direcao.oposta();
+            perderForca(CUSTO_MOVIMENTO);
         }
     }
 
@@ -179,5 +180,16 @@ public final class Fauna extends ElementoBase implements IElementoComImagem, IEl
         }
 
         return false;
+    }
+
+
+    @Override
+    public void setPosicaoX(int x) {
+
+    }
+
+    @Override
+    public void setPosicaoY(int y) {
+
     }
 }
