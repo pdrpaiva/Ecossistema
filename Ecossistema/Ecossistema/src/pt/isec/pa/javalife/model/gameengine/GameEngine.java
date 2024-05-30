@@ -31,15 +31,25 @@ public final class GameEngine implements IGameEngine {
         clients.remove(listener);
     }
 
-    @Override
-    public boolean start(long interval) {
-        if (state != GameEngineState.READY)
-            return false;
-        controlThread = new GameEngineThread(interval);
-        setState(GameEngineState.RUNNING);
-        controlThread.start();
-        return true;
-    }
+//    @Override
+//    public boolean start(long interval) {
+//        if (state != GameEngineState.READY)
+//            return false;
+//        controlThread = new GameEngineThread(interval);
+//        setState(GameEngineState.RUNNING);
+//        controlThread.start();
+//        return true;
+//    }
+@Override
+public boolean start(long interval) {
+    if (state != GameEngineState.READY)
+        return false;
+    controlThread = new GameEngineThread(interval);
+    setState(GameEngineState.RUNNING);
+    System.out.println("Starting GameEngine thread with interval: " + interval); // Adicionar log
+    controlThread.start();
+    return true;
+}
 
     @Override
     public boolean stop() {
@@ -90,6 +100,40 @@ public final class GameEngine implements IGameEngine {
     }
 
     // Inner class GameEngineThread
+//    private class GameEngineThread extends Thread {
+//        long interval;
+//
+//        GameEngineThread(long interval) {
+//            this.interval = interval;
+//            this.setDaemon(true);
+//        }
+//
+//        @Override
+//        public void run() {
+//            int errCounter = 0;
+//            while (true) {
+//                if (state == GameEngineState.READY) break;
+//                if (state == GameEngineState.RUNNING) {
+//
+//                    new Thread(() -> {
+//                        long time = System.nanoTime();
+//                        List.copyOf(clients).forEach(
+//                                client -> client.evolve(GameEngine.this, time)
+//                        );
+//                    }).start();
+//                }
+//                try {
+//                    //noinspection BusyWait
+//                    sleep(interval);
+//                    errCounter = 0;
+//                } catch (InterruptedException e) {
+//                    if (state == GameEngineState.READY || errCounter++ > 10)
+//                        break;
+//                }
+//            }
+//        }
+//    }
+    // Inner class GameEngineThread
     private class GameEngineThread extends Thread {
         long interval;
 
@@ -102,11 +146,12 @@ public final class GameEngine implements IGameEngine {
         public void run() {
             int errCounter = 0;
             while (true) {
+                System.out.println("Thread running. State: " + state); // Adicionar log
                 if (state == GameEngineState.READY) break;
                 if (state == GameEngineState.RUNNING) {
-                    System.out.println("Entrou");
-                    new Thread(() -> {
+                    System.out.println("GameEngine is running."); // Adicionar log
 
+                    new Thread(() -> {
                         long time = System.nanoTime();
                         List.copyOf(clients).forEach(
                                 client -> client.evolve(GameEngine.this, time)

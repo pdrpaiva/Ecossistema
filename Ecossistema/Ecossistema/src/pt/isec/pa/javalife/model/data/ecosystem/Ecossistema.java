@@ -161,6 +161,7 @@ public class Ecossistema implements IGameEngineEvolve {
         Set<IElemento> elementosParaRemover = new HashSet<>();
 
         for (IElemento elemento : new HashSet<>(elementos)) {
+            System.out.println("teste");
             if (elemento.getTipo() == Elemento.FAUNA) {
                 Fauna fauna = (Fauna) elemento;
                 FaunaContext context = fauna.getFaunaContext();

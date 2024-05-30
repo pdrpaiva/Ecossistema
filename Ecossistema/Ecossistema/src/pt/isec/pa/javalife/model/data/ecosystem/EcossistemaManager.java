@@ -32,9 +32,14 @@ public class EcossistemaManager {
     public int getAltura() {
         return ecossistema.getAltura();
     }
-    public boolean startGame(long interval) {
-        return gameEngine.start(interval);
-    }
+//    public boolean startGame(long interval) {
+//        return gameEngine.start(interval);
+//    }
+public boolean startGame(long interval) {
+    boolean result = gameEngine.start(interval);
+    System.out.println("GameEngine start result: " + result); // Adicionar log
+    return result;
+}
 
 
 
