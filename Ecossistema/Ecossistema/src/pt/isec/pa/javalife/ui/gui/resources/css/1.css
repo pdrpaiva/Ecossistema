@@ -1,0 +1,12 @@
+.InitialMenuUI {
+    -fx-background-image: url('/pt/isec/pa/javalife/ui/gui/resources/images/bg.jpeg');
+    -fx-background-size: cover;
+    -fx-background-position: center;
+}
+
+.InitialMenuUI .blink-text {
+    -fx-text-fill: white;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-alignment: center;
+}
