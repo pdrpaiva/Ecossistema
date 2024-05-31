@@ -1,8 +1,11 @@
 package pt.isec.pa.javalife.ui.gui.scenes;
 
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
@@ -10,28 +13,43 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import pt.isec.pa.javalife.model.data.area.Area;
 import pt.isec.pa.javalife.model.data.ecosystem.EcossistemaManager;
 import pt.isec.pa.javalife.model.data.elements.*;
 
 import java.io.File;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class EcosystemUI {
     private Scene scene;
     private Stage primaryStage;
     private EcossistemaManager ecossistemaManager;
-    private Pane ecosystemPane;
+    private Canvas canvas;
+    private GraphicsContext gc;
     private Button btnPlayPause, btnAddElement, btnCreateEcosystem, btnImport, btnExport, btnDelElement;
     private ComboBox<String> comboBox;
-    private TextField txtX, txtY, txtId, txtType, txtEsq, txtDir, txtCima, txtBaixo;
+    private TextField txtX, txtY, txtId, txtType, txtEsq, txtDir, txtCima, txtBaixo, txtEnergia;
     private Slider strenghtSlider;
     private int currentElementIDSelected = -1;
+    private Map<Integer, Area> previousPositions;
 
     public EcosystemUI(Stage primaryStage, EcossistemaManager ecossistemaManager) {
         this.primaryStage = primaryStage;
         this.ecossistemaManager = ecossistemaManager;
+        this.previousPositions = new HashMap<>();
         createViews();
         registerHandlers();
         updateEcosystemDisplay();
+
+        // Adicionar um listener para mudanças no ecossistema
+        ecossistemaManager.getEcossistema().addPropertyChangeListener(evt -> {
+            if ("evolucao".equals(evt.getPropertyName()) || "elemento_adicionado".equals(evt.getPropertyName()) || "elemento_removido".equals(evt.getPropertyName()) || "ecossistema_atualizado".equals(evt.getPropertyName())) {
+                Platform.runLater(this::updateEcosystemDisplay);
+            }
+        });
     }
 
     private void createViews() {
@@ -49,11 +67,11 @@ public class EcosystemUI {
         toolbar.getChildren().addAll(btnPlayPause);
         root.setTop(toolbar);
 
-        // Área central do ecossistema
-        ecosystemPane = new Pane();
-        ecosystemPane.setPadding(new Insets(20));
-        ecosystemPane.setStyle("-fx-background-color: #036c4c;");
-        root.setCenter(ecosystemPane);
+        // Área central do ecossistema com Canvas
+        canvas = new Canvas(ecossistemaManager.getLargura(), ecossistemaManager.getAltura());
+        gc = canvas.getGraphicsContext2D();
+        Pane canvasPane = new Pane(canvas);
+        root.setCenter(canvasPane);
 
         // Right sidebar for controls
         VBox sidebar = new VBox(10);
@@ -79,9 +97,13 @@ public class EcosystemUI {
         txtDir = new TextField();
         txtCima = new TextField();
         txtBaixo = new TextField();
+        txtEnergia = new TextField();
+        txtEnergia.setEditable(false); // Campo de energia só leitura
+
         strenghtSlider = new Slider();
 
         sidebar.getChildren().addAll(comboBox, btnAddElement, btnCreateEcosystem, btnImport, btnExport, btnDelElement);
+        sidebar.getChildren().addAll(new Label("Energia:"), txtEnergia); // Adicionando o campo de energia
         root.setRight(sidebar);
 
         scene = new Scene(root, 800, 600);
@@ -91,10 +113,10 @@ public class EcosystemUI {
         // Handler para Play/Pause
         btnPlayPause.setOnAction(event -> {
             if (ecossistemaManager.isRunning()) {
-                ecossistemaManager.pauseGame();
+                ecossistemaManager.pausarJogo();
                 btnPlayPause.setText("Play");
             } else {
-                ecossistemaManager.resumeGame();
+                ecossistemaManager.retomarJogo();
                 btnPlayPause.setText("Pause");
             }
         });
@@ -105,54 +127,19 @@ public class EcosystemUI {
             if (selectedType != null) {
                 switch (selectedType) {
                     case "Fauna":
-                        ecossistemaManager.addElementToRandomFreePosition(Elemento.FAUNA);
+                        ecossistemaManager.adicionarElementoAleatoriamente(Elemento.FAUNA);
                         break;
                     case "Flora":
-                        ecossistemaManager.addElementToRandomFreePosition(Elemento.FLORA);
+                        ecossistemaManager.adicionarElementoAleatoriamente(Elemento.FLORA);
                         break;
                     case "Inanimado":
-                        ecossistemaManager.addElementToRandomFreePosition(Elemento.INANIMADO);
+                        ecossistemaManager.adicionarElementoAleatoriamente(Elemento.INANIMADO);
                         break;
                 }
-                updateEcosystemDisplay();
+                Platform.runLater(this::updateEcosystemDisplay);
             }
         });
 
-        /*// Handler para importar elementos
-        btnImport.setOnAction(event -> {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
-
-            File selectedFile = fileChooser.showOpenDialog(primaryStage);
-            if (selectedFile != null) {
-                if (ecossistemaManager.carregarDeArquivo(selectedFile.getAbsolutePath())) {
-                    updateEcosystemDisplay();
-                    showAlert(Alert.AlertType.INFORMATION, "Sucesso", "O arquivo foi importado com sucesso.");
-                } else {
-                    showAlert(Alert.AlertType.ERROR, "Erro", "Ocorreu um erro ao importar o arquivo.");
-                }
-            }
-        });
-*/
-        /*// Handler para exportar elementos
-        btnExport.setOnAction(event -> {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Salvar Arquivo");
-            fileChooser.getExtensionFilters().addAll(
-                    new FileChooser.ExtensionFilter("Arquivos de simulação", "*.csv")
-            );
-
-            File file = fileChooser.showSaveDialog(primaryStage);
-            if (file != null) {
-                String filePath = file.getAbsolutePath();
-                if (ecossistemaManager.salvarParaArquivo(filePath)) {
-                    showAlert(Alert.AlertType.INFORMATION, "Sucesso", "O arquivo foi salvo com sucesso.");
-                } else {
-                    showAlert(Alert.AlertType.ERROR, "Erro", "Ocorreu um erro ao salvar o arquivo.");
-                }
-            }
-        });
-*/
         // Handler para criar novo ecossistema
         btnCreateEcosystem.setOnAction(event -> {
             ecossistemaManager.limparElementos();
@@ -161,7 +148,7 @@ public class EcosystemUI {
         });
 
         // Handler para clicar no canvas do ecossistema
-        ecosystemPane.setOnMouseClicked(event -> {
+        canvas.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.SECONDARY) {
                 double mouseX = event.getX();
                 double mouseY = event.getY();
@@ -172,9 +159,7 @@ public class EcosystemUI {
 
                         currentElementIDSelected = elemento.getId();
                         showInspectTab();
-
                         updateSidebar(elemento);
-
                         break;
                     }
                 }
@@ -186,7 +171,7 @@ public class EcosystemUI {
             if (!ecossistemaManager.isPaused()) return;
             IElemento elemento = ecossistemaManager.buscarElemento(currentElementIDSelected);
             if (elemento == null) return;
-            elemento.setPosicaoX(Integer.parseInt(newValue));
+            elemento.setPosicaoX((int) Double.parseDouble(newValue));
         });
 
         // Handler para atualizar posição Y do elemento
@@ -194,7 +179,7 @@ public class EcosystemUI {
             if (!ecossistemaManager.isPaused()) return;
             IElemento elemento = ecossistemaManager.buscarElemento(currentElementIDSelected);
             if (elemento == null) return;
-            elemento.setPosicaoY(Integer.parseInt(newValue));
+            elemento.setPosicaoY((int) Double.parseDouble(newValue));
         });
 
         // Handler para atualizar força do elemento
@@ -213,34 +198,132 @@ public class EcosystemUI {
         btnDelElement.setOnAction(event -> {
             IElemento elemento = ecossistemaManager.buscarElemento(currentElementIDSelected);
             if (elemento == null) return;
+
             ecossistemaManager.removerElemento(elemento.getId());
-            updateEcosystemDisplay();
+            Platform.runLater(this::updateEcosystemDisplay);
         });
     }
 
-    private void updateEcosystemDisplay() {
-        ecosystemPane.getChildren().clear();
+//    private void updateEcosystemDisplay() {
+//        // Limpa o fundo do canvas
+//        gc.setFill(Color.web("#373054"));
+//        gc.fillRect(0, 0, ecossistemaManager.getLargura(), ecossistemaManager.getAltura());
+//
+//        Collection<IElemento> elementos = ecossistemaManager.obterElementos();
+//
+//        // Limpar a posição anterior de todos os elementos de Fauna
+//        for (Map.Entry<Integer, Area> entry : previousPositions.entrySet()) {
+//            Area previousArea = entry.getValue();
+//            gc.clearRect(previousArea.esquerda(), previousArea.cima(), previousArea.direita() - previousArea.esquerda(), previousArea.baixo() - previousArea.cima());
+//        }
+//
+//        // Desenhar todos os elementos
+//        for (IElemento elemento : elementos) {
+//            Area area = elemento.getArea();
+//            double width = area.direita() - area.esquerda();
+//            double height = area.baixo() - area.cima();
+//
+//            if (elemento instanceof Flora) {
+//                Flora fl = (Flora) elemento;
+//                double strength = fl.getForca();
+//                double alpha = 1.0 - (strength / 100.0); // Calcula o nível de transparência
+//                Color floraColor = Color.GREENYELLOW.deriveColor(0, 1, 1, alpha);
+//                gc.setFill(floraColor);
+//                gc.fillRect(area.esquerda(), area.cima(), width, height);
+//            } else if (elemento instanceof Inanimado) {
+//                gc.setFill(Color.GRAY);
+//                gc.fillRect(area.esquerda(), area.cima(), width, height);
+//            } else if (elemento instanceof Fauna) {
+//                gc.setFill(Color.RED);
+//                gc.fillRect(area.esquerda(), area.cima(), width, height);
+//            } else {
+//                System.out.println("Elemento desconhecido: " + elemento.getClass().getName());
+//            }
+//        }
+//
+//        // Desenhar a caixa de seleção ao redor do elemento inspecionado
+//        if (currentElementIDSelected != -1) {
+//            IElemento elemento = ecossistemaManager.buscarElemento(currentElementIDSelected);
+//            if (elemento != null) {
+//                Area area = elemento.getArea();
+//                gc.setStroke(Color.WHITE);
+//                gc.strokeRect(area.esquerda() - 2, area.cima() - 2, area.direita() - area.esquerda() + 4, area.baixo() - area.cima() + 4);
+//            }
+//        }
+//    }
+private void updateEcosystemDisplay() {
+    // Limpa o fundo do canvas
+    gc.setFill(Color.web("#373054"));
+    gc.fillRect(0, 0, ecossistemaManager.getLargura(), ecossistemaManager.getAltura());
 
-        for (IElemento elemento : ecossistemaManager.obterElementos()) {
-            Rectangle rect;
-            if (elemento instanceof Fauna) {
-                rect = new Rectangle(elemento.getArea().direita() - elemento.getArea().esquerda(),
-                        elemento.getArea().baixo() - elemento.getArea().cima(), Color.RED);
-            } else if (elemento instanceof Flora) {
-                rect = new Rectangle(elemento.getArea().direita() - elemento.getArea().esquerda(),
-                        elemento.getArea().baixo() - elemento.getArea().cima(), Color.GREEN);
-            } else if (elemento instanceof Inanimado) {
-                rect = new Rectangle(elemento.getArea().direita() - elemento.getArea().esquerda(),
-                        elemento.getArea().baixo() - elemento.getArea().cima(), Color.GRAY);
-            } else {
-                continue;
-            }
+    Collection<IElemento> elementos = ecossistemaManager.obterElementos();
 
-            rect.setX(elemento.getArea().esquerda());
-            rect.setY(elemento.getArea().cima());
+    // Limpar a posição anterior de todos os elementos de Fauna
+    for (Map.Entry<Integer, Area> entry : previousPositions.entrySet()) {
+        Area previousArea = entry.getValue();
+        gc.clearRect(previousArea.esquerda(), previousArea.cima(), previousArea.direita() - previousArea.esquerda(), previousArea.baixo() - previousArea.cima());
+    }
 
-            ecosystemPane.getChildren().add(rect);
+    // Desenhar todos os elementos
+    for (IElemento elemento : elementos) {
+        Area area = elemento.getArea();
+        double width = area.direita() - area.esquerda();
+        double height = area.baixo() - area.cima();
+
+        if (elemento instanceof Flora) {
+            Flora fl = (Flora) elemento;
+            double strength = fl.getForca();
+            double alpha = 1.0 - (strength / 100.0); // Calcula o nível de transparência
+            Color floraColor = Color.GREENYELLOW.deriveColor(0, 1, 1, alpha);
+            gc.setFill(floraColor);
+            gc.fillRect(area.esquerda(), area.cima(), width, height);
+        } else if (elemento instanceof Inanimado) {
+            gc.setFill(Color.GRAY);
+            gc.fillRect(area.esquerda(), area.cima(), width, height);
+        } else if (elemento instanceof Fauna) {
+            gc.setFill(Color.RED);
+            gc.fillRect(area.esquerda(), area.cima(), width, height);
+        } else {
+            System.out.println("Elemento desconhecido: " + elemento.getClass().getName());
         }
+    }
+
+    // Desenhar a caixa de seleção ao redor do elemento inspecionado
+    if (currentElementIDSelected != -1) {
+        IElemento elemento = ecossistemaManager.buscarElemento(currentElementIDSelected);
+        if (elemento != null) {
+            Area area = elemento.getArea();
+            gc.setStroke(Color.WHITE);
+            gc.strokeRect(area.esquerda() - 2, area.cima() - 2, area.direita() - area.esquerda() + 4, area.baixo() - area.cima() + 4);
+            updateSidebar(elemento); // Atualizar a sidebar com os detalhes do elemento selecionado
+        }
+    }
+}
+
+    private void updateSidebar(IElemento elemento) {
+        txtX.setText(String.valueOf(elemento.getPositionX()));
+        txtY.setText(String.valueOf(elemento.getPositionY()));
+        txtId.setText(String.valueOf(elemento.getId()));
+        txtType.setText(elemento.getClass().getSimpleName());
+
+        txtEsq.setText(String.valueOf(elemento.getArea().esquerda()));
+        txtDir.setText(String.valueOf(elemento.getArea().direita()));
+        txtCima.setText(String.valueOf(elemento.getArea().cima()));
+        txtBaixo.setText(String.valueOf(elemento.getArea().baixo()));
+
+        if (elemento instanceof Fauna) {
+            strenghtSlider.setValue(((Fauna) elemento).getForca());
+            txtEnergia.setText(String.valueOf(((Fauna) elemento).getForca())); // Atualiza a energia da Fauna
+        } else if (elemento instanceof Flora) {
+            strenghtSlider.setValue(((Flora) elemento).getForca());
+            txtEnergia.setText(String.valueOf(((Flora) elemento).getForca())); // Atualiza a energia da Flora
+        } else {
+            txtEnergia.setText("");
+        }
+    }
+
+    private void showInspectTab() {
+        // Implementar a lógica para mostrar a aba de inspeção
     }
 
     private void showAlert(Alert.AlertType alertType, String title, String message) {
@@ -249,28 +332,6 @@ public class EcosystemUI {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
-    }
-
-    private void updateSidebar(IElemento elemento) {
-        // Atualize os campos da sidebar com as informações do elemento
-        txtId.setText(String.valueOf(elemento.getId()));
-        txtType.setText(elemento.getClass().getSimpleName());
-        txtX.setText(String.valueOf(elemento.getArea().esquerda()));
-        txtY.setText(String.valueOf(elemento.getArea().cima()));
-        txtEsq.setText(String.valueOf(elemento.getArea().esquerda()));
-        txtDir.setText(String.valueOf(elemento.getArea().direita()));
-        txtCima.setText(String.valueOf(elemento.getArea().cima()));
-        txtBaixo.setText(String.valueOf(elemento.getArea().baixo()));
-
-        if (elemento instanceof Fauna) {
-            strenghtSlider.setValue(((Fauna) elemento).getForca());
-        } else if (elemento instanceof Flora) {
-            strenghtSlider.setValue(((Flora) elemento).getForca());
-        }
-    }
-
-    private void showInspectTab() {
-        // Lógica para exibir a aba de inspeção
     }
 
     public Scene getScene() {

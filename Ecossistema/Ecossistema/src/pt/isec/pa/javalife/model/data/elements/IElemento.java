@@ -13,5 +13,7 @@ public sealed interface IElemento
     void setPosicaoX(int x);
     void setPosicaoY(int y);
 
+    double getPositionX();
+    public double getPositionY();
 }
 

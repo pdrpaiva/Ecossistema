@@ -32,5 +32,11 @@ public class FaunaContext {
         return ecossistema;
     }
 
+    public Fauna getData() {
+        return data;
+    }
 
+    public IFaunaState getCurrentState() {
+        return currentState;
+    }
 }

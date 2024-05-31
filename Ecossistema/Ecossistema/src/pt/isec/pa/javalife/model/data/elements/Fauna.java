@@ -28,7 +28,7 @@ public final class Fauna extends ElementoBase implements IElementoComImagem, IEl
     public Fauna(double cima, double esquerda, Ecossistema ecossistema) {
         super(Elemento.FAUNA, cima, esquerda, TAMANHO, TAMANHO);
         this.forca = FORCA_INICIAL;
-        this.imagem = "default.png";  // Placeholder para a imagem, pode ser alterada conforme necessário
+        this.imagem = "default.png"; // Placeholder para a imagem, pode ser alterada conforme necessário
         this.vivo = true;
         this.faunaContext = new FaunaContext(this, ecossistema);
         this.direcao = Direction.RIGHT;
@@ -92,10 +92,22 @@ public final class Fauna extends ElementoBase implements IElementoComImagem, IEl
         this.tempoProximidadeOutroFauna = 0;
     }
 
+//    public void mover() {
+//        Area novaArea = getArea().mover(direcao, velocidade);
+//        if (!faunaContext.getEcossistema().verificarLimites(novaArea)) {
+//            setArea(novaArea.cima(), novaArea.esquerda(), novaArea.baixo(), novaArea.direita());
+//            perderForca(CUSTO_MOVIMENTO);
+//        } else {
+//            direcao = direcao.oposta();
+//            perderForca(CUSTO_MOVIMENTO);
+//        }
+//    }
+
     public void mover() {
         Area novaArea = getArea().mover(direcao, velocidade);
         if (!faunaContext.getEcossistema().verificarLimites(novaArea)) {
-            setArea(novaArea.cima(), novaArea.esquerda(), novaArea.baixo(), novaArea.direita());
+            // Apenas atualize as posições cima e esquerda
+            setArea(novaArea.cima(), novaArea.esquerda(), TAMANHO, TAMANHO);
             perderForca(CUSTO_MOVIMENTO);
         } else {
             direcao = direcao.oposta();
@@ -182,14 +194,13 @@ public final class Fauna extends ElementoBase implements IElementoComImagem, IEl
         return false;
     }
 
-
     @Override
     public void setPosicaoX(int x) {
-
+        // Implementação para atualizar a posição X
     }
 
     @Override
     public void setPosicaoY(int y) {
-
+        // Implementação para atualizar a posição Y
     }
 }

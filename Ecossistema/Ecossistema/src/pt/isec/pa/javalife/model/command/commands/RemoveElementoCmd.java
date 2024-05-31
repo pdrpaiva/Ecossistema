@@ -21,7 +21,7 @@ public class RemoveElementoCmd extends CommandAdapter {
 
     @Override
     public void undo() {
-        manager.addElemento(elemento);
+        manager.adicionarElemento(elemento);
     }
 
 

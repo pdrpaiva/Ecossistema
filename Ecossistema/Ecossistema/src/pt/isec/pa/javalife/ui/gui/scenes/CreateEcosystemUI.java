@@ -65,7 +65,6 @@ public class CreateEcosystemUI {
         txtInanimados = new TextField("10");
         sliderTempo = new Slider(100, 1000, 100);
 
-
         fieldsContainer.getChildren().addAll(
                 createLabeledField("Nome", txtNome),
                 createLabeledField("Altura", txtAltura),
@@ -99,14 +98,15 @@ public class CreateEcosystemUI {
         box.getChildren().addAll(label, textField);
         return box;
     }
+
     private HBox createTimeUnitField() {
         HBox box = new HBox(10);
         box.setAlignment(Pos.CENTER_LEFT);
         Label label = new Label("Tempo");
         label.getStyleClass().add("label");
-        label.setMinWidth(120); // Define uma largura mínima para os labels
+        label.setMinWidth(120);
         sliderTempo.getStyleClass().add("slider");
-        sliderTempo.setPrefWidth(200); // Define a largura do slider
+        sliderTempo.setPrefWidth(200);
         HBox.setHgrow(sliderTempo, Priority.ALWAYS);
         box.getChildren().addAll(label, sliderTempo);
         return box;
@@ -122,33 +122,29 @@ public class CreateEcosystemUI {
             int inanimadosCount = Integer.parseInt(txtInanimados.getText());
             int tempo = (int) sliderTempo.getValue();
 
-
-            ecossistemaManager.setGameInterval(tempo);
+            ecossistemaManager.definirIntervaloJogo(tempo);
 
             // Definir tamanho do ecossistema
             ecossistemaManager.getEcossistema().definirUnidadesY(altura);
             ecossistemaManager.getEcossistema().definirUnidadesX(comprimento);
-            ecossistemaManager.cerca();
-            // Adicionar fauna
-            for (int i = 0; i < Integer.parseInt(txtInanimados.getText()); i++) {
-                ecossistemaManager.addElementToRandomFreePosition(Elemento.INANIMADO);
-            }
+            ecossistemaManager.criarCerca();
 
-            // Adicionar fauna
-            for (int i = 0; i < Integer.parseInt(txtFauna.getText()); i++) {
-                ecossistemaManager.addElementToRandomFreePosition(Elemento.FAUNA);
-            }
-
-            // Adicionar flora
-            for (int i = 0; i < Integer.parseInt(txtFlora.getText()); i++) {
-                ecossistemaManager.addElementToRandomFreePosition(Elemento.FLORA);
-            }
+            // Adicionar elementos ao ecossistema
+            adicionarElementos(ecossistemaManager, Elemento.INANIMADO, inanimadosCount);
+            adicionarElementos(ecossistemaManager, Elemento.FAUNA, faunaCount);
+            adicionarElementos(ecossistemaManager, Elemento.FLORA, floraCount);
 
             // Navegar para a próxima tela
             EcosystemUI ecosystemUI = new EcosystemUI(primaryStage, ecossistemaManager);
             primaryStage.setScene(ecosystemUI.getScene());
-            ecossistemaManager.resumeGame();
+            ecossistemaManager.retomarJogo();
         });
+    }
+
+    private void adicionarElementos(EcossistemaManager manager, Elemento tipo, int quantidade) {
+        for (int i = 0; i < quantidade; i++) {
+            manager.adicionarElementoAleatoriamente(tipo);
+        }
     }
 
     public Scene getScene() {

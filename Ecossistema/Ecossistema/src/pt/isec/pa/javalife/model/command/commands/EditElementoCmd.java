@@ -19,13 +19,13 @@ public class EditElementoCmd implements ICommand {
     @Override
     public void execute() {
         manager.removerElemento(original.getId());
-        manager.addElemento(updated);
+        manager.adicionarElemento(updated);
     }
 
     @Override
     public void undo() {
         manager.removerElemento(updated.getId());
-        manager.addElemento(original);
+        manager.adicionarElemento(original);
     }
 
 

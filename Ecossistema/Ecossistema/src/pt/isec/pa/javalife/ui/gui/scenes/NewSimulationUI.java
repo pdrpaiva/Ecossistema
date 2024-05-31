@@ -157,7 +157,7 @@ public class NewSimulationUI {
             System.out.println("Inicializando EcossistemaManager...");
 
             // Adicionar log ao iniciar o game engine
-            boolean started = manager.startGame(1000); // Inicia com intervalo de 1 segundo
+            boolean started = manager.iniciarJogo(1000); // Inicia com intervalo de 1 segundo
             if (started) {
                 System.out.println("GameEngine iniciado com sucesso.");
             } else {

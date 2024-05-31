@@ -8,10 +8,10 @@ import pt.isec.pa.javalife.model.gameengine.GameEngineState;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.Collection;
 import java.util.Set;
 
 public class EcossistemaManager {
-
     private final Ecossistema ecossistema;
     private final CommandManager commandManager;
     private final PropertyChangeSupport support;
@@ -32,37 +32,32 @@ public class EcossistemaManager {
     public int getAltura() {
         return ecossistema.getAltura();
     }
-//    public boolean startGame(long interval) {
-//        return gameEngine.start(interval);
-//    }
-public boolean startGame(long interval) {
-    boolean result = gameEngine.start(interval);
-    System.out.println("GameEngine start result: " + result); // Adicionar log
-    return result;
-}
 
+    public boolean iniciarJogo(long intervalo) {
+        boolean resultado = gameEngine.start(intervalo);
+        System.out.println("Resultado da inicialização do GameEngine: " + resultado);
+        return resultado;
+    }
 
-
-    public void stopGame() {
+    public void pararJogo() {
         gameEngine.stop();
     }
 
-    public void pauseGame() {
+    public void pausarJogo() {
         gameEngine.pause();
     }
 
-    public void resumeGame() {
+    public void retomarJogo() {
         gameEngine.resume();
     }
 
-    public void setGameInterval(long newInterval) {
-        gameEngine.setInterval(newInterval);
+    public void definirIntervaloJogo(long novoIntervalo) {
+        gameEngine.setInterval(novoIntervalo);
     }
 
-    public GameEngineState getCurrentState() {
+    public GameEngineState getEstadoAtual() {
         return gameEngine.getCurrentState();
     }
-
 
     public void definirUnidadesX(int unidadesX) {
         ecossistema.definirUnidadesX(unidadesX);
@@ -76,7 +71,7 @@ public boolean startGame(long interval) {
         return ecossistema.encontrarElementoMaisProximo(origem, tipo);
     }
 
-    public boolean isAreaFree(Area area) {
+    public boolean isAreaLivre(Area area) {
         return ecossistema.isAreaFree(area);
     }
 
@@ -90,10 +85,6 @@ public boolean startGame(long interval) {
 
     public Set<IElemento> getElementos() {
         return ecossistema.getElementos();
-    }
-
-    public Set<IElemento> obterElementos() {
-        return ecossistema.obterElementos();
     }
 
     public int obterPassos() {
@@ -124,8 +115,8 @@ public boolean startGame(long interval) {
         ecossistema.removerElemento(id);
     }
 
-    public void addElemento(IElemento elemento) {
-        ecossistema.addElemento(elemento);
+    public void adicionarElemento(IElemento elemento) {
+        ecossistema.adicionarElemento(elemento);
         support.firePropertyChange("elemento_adicionado", null, elemento);
     }
 
@@ -137,17 +128,13 @@ public boolean startGame(long interval) {
         return ecossistema.verificarLimites(area);
     }
 
-    public void evolve(long currentTime) {
-        ecossistema.evolve(gameEngine, currentTime);
+    public void evoluir(long tempoAtual) {
+        ecossistema.evolve(gameEngine, tempoAtual);
         support.firePropertyChange("evolucao", null, null);
     }
 
-    public void cerca() {
+    public void criarCerca() {
         ecossistema.cerca();
-    }
-
-    public void adicionarElemento(IElemento elemento) {
-        ecossistema.adicionarElemento(elemento);
     }
 
     public Area encontrarAreaAdjacenteLivre(Area area) {
@@ -178,32 +165,36 @@ public boolean startGame(long interval) {
         return ecossistema.criarInanimado(area);
     }
 
-    public void addElementToRandomFreePosition(Elemento elementType) {
-        ecossistema.addElementToRandomFreePosition(elementType);
+    public void adicionarElementoAleatoriamente(Elemento tipoElemento) {
+        ecossistema.adicionarElementoAleatoriamente(tipoElemento);
     }
 
     public void setEcossistema(Ecossistema novoEcossistema) {
         ecossistema.setEcossistema(novoEcossistema);
         support.firePropertyChange("ecossistema_atualizado", null, ecossistema);
     }
+
     public Ecossistema getEcossistema() {
-        return ecossistema.getEcossistema();
+        return ecossistema;
     }
 
-    public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        support.addPropertyChangeListener(propertyName, listener);
+    public void adicionarPropertyChangeListener(String nomePropriedade, PropertyChangeListener listener) {
+        support.addPropertyChangeListener(nomePropriedade, listener);
     }
 
-    public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        support.removePropertyChangeListener(propertyName, listener);
+    public void removerPropertyChangeListener(String nomePropriedade, PropertyChangeListener listener) {
+        support.removePropertyChangeListener(nomePropriedade, listener);
     }
 
     public boolean isRunning() {
         return gameEngine.getCurrentState() == GameEngineState.RUNNING;
     }
 
-    // Método isPaused para verificar se o jogo está pausado
     public boolean isPaused() {
         return gameEngine.getCurrentState() == GameEngineState.PAUSED;
+    }
+
+    public Collection<IElemento> obterElementos() {
+        return ecossistema.getElementos();
     }
 }

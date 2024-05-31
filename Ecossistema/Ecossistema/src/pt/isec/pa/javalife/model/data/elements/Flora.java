@@ -12,27 +12,27 @@ public final class Flora extends ElementoBase implements IElementoComForca, IEle
     private int numeroReproducoes;
 
     public Flora(double cima, double esquerda) {
-        super(Elemento.FLORA,cima,esquerda,TAMANHO,TAMANHO);
+        super(Elemento.FLORA, cima, esquerda, TAMANHO, TAMANHO);
         this.forca = FORCA_INICIAL;
         this.numeroReproducoes = 0;
     }
 
-
-    public void evolve(Ecossistema ecossistema,long tempoAtual){
-
-        if(forca == 0)
+    public void evolve(Ecossistema ecossistema, long tempoAtual) {
+        if (forca == 0) {
             return;
+        }
 
-        //forca += ecossistema.isEventoSolAtivo() ? INCREMENTO_FORCA * 2 : INCREMENTO_FORCA; Comentado pois não temos eventos ainda...
+        // Comentar esta linha pois não temos eventos ainda.
+        // forca += ecossistema.isEventoSolAtivo() ? INCREMENTO_FORCA * 2 : INCREMENTO_FORCA;
+        forca += INCREMENTO_FORCA;
 
-        if(forca >= 90 && numeroReproducoes < 2){
-            if(tentarReproduzir(ecossistema)){
+        if (forca >= 90 && numeroReproducoes < 2) {
+            if (tentarReproduzir(ecossistema)) {
                 forca = 60;
                 numeroReproducoes++;
             }
         }
     }
-
 
     private boolean tentarReproduzir(Ecossistema ecossistema) {
         Area areaAtual = this.getArea();
@@ -43,13 +43,13 @@ public final class Flora extends ElementoBase implements IElementoComForca, IEle
                 {areaAtual.esquerda(), areaAtual.cima() - TAMANHO}
         };
 
-        // for (double[] pos : posicoesAdjacentes) {
-        // Area novaArea = new Area(pos[1], pos[0], pos[1] + TAMANHO, pos[0] + TAMANHO);
-        // if (!ecossistema.isForaLimites(novaArea) && ecossistema.isAreaLivre(novaArea)) {
-        // ecossistema.addElemento(Elemento.FLORA, pos[0], pos[1]);
-        // return true;
-        // }
-        // }
+        for (double[] pos : posicoesAdjacentes) {
+            Area novaArea = new Area(pos[1], pos[0], pos[1] + TAMANHO, pos[0] + TAMANHO);
+            if (!ecossistema.verificarLimites(novaArea) && ecossistema.verificarAreaLivre(novaArea)) {
+                ecossistema.criarFlora(novaArea, FORCA_INICIAL, this.imagem);
+                return true;
+            }
+        }
         return false;
     }
 
@@ -59,6 +59,12 @@ public final class Flora extends ElementoBase implements IElementoComForca, IEle
 
     public void setForca(double forca) {
         this.forca = forca;
+        if (this.forca > 100) {
+            this.forca = 100;
+        }
+        if (this.forca < 0) {
+            this.forca = 0;
+        }
     }
 
     public String getImagem() {
@@ -73,18 +79,17 @@ public final class Flora extends ElementoBase implements IElementoComForca, IEle
         return numeroReproducoes;
     }
 
-    public void incrementaNumeroReproducoes(){
-       numeroReproducoes += numeroReproducoes + 1;
+    public void incrementaNumeroReproducoes() {
+        numeroReproducoes += numeroReproducoes + 1;
     }
-
 
     @Override
     public void setPosicaoX(int x) {
-
+        // Implementação para atualizar a posição X
     }
 
     @Override
     public void setPosicaoY(int y) {
-
+        // Implementação para atualizar a posição Y
     }
 }

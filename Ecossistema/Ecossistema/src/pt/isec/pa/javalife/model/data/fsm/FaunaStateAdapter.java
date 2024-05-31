@@ -3,7 +3,7 @@ package pt.isec.pa.javalife.model.data.fsm;
 import pt.isec.pa.javalife.model.data.elements.Fauna;
 import pt.isec.pa.javalife.model.data.fsm.states.IFaunaState;
 
-public abstract class   FaunaStateAdapter implements IFaunaState {
+public abstract class FaunaStateAdapter implements IFaunaState {
     protected FaunaContext context;
     protected Fauna data;
 
@@ -12,14 +12,9 @@ public abstract class   FaunaStateAdapter implements IFaunaState {
         this.data = data;
     }
 
-    protected void changeState(FaunaState newState){
-        context.changeState(  //tem várias opções de uso
-                //CofreStateFactory.getInstance(newState,context,data)
-                //CofreState.getInstance(newState, context, data)
-                newState.getInstance(context,data)
-        );
+    protected void changeState(FaunaState newState) {
+        context.changeState(newState.getInstance(context, data));
     }
-
 
     @Override
     public boolean executar() {
@@ -28,7 +23,6 @@ public abstract class   FaunaStateAdapter implements IFaunaState {
 
     @Override
     public FaunaState getState() {
-        return null;
+        return null; // padrão
     }
-
 }

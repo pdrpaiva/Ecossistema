@@ -51,8 +51,20 @@ public class MovimentoState extends FaunaStateAdapter {
             }
         }
 
+        // Mudança aleatória de direção
+        Random random = new Random();
+        if (random.nextInt(100) < 10) {
+            Direction currentDirection = data.getDirecao();
+            if (currentDirection == Direction.LEFT || currentDirection == Direction.RIGHT) {
+                data.setDirecao(random.nextBoolean() ? Direction.UP : Direction.DOWN);
+            } else if (currentDirection == Direction.UP || currentDirection == Direction.DOWN) {
+                data.setDirecao(random.nextBoolean() ? Direction.LEFT : Direction.RIGHT);
+            }
+        }
+
         return false;
     }
+
     private void moverPara(Area areaAlvo) {
         Direction direcaoParaNovaArea = calcularDirecaoPara(areaAlvo);
 
@@ -82,6 +94,7 @@ public class MovimentoState extends FaunaStateAdapter {
             return (deltaY > 0) ? Direction.DOWN : Direction.UP;
         }
     }
+
     private Fauna findStrongerFauna() {
         Fauna strongerFauna = null;
         double highestForca = -1;

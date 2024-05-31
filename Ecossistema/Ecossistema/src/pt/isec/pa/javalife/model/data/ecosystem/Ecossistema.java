@@ -6,6 +6,8 @@ import pt.isec.pa.javalife.model.data.fsm.FaunaContext;
 import pt.isec.pa.javalife.model.gameengine.IGameEngine;
 import pt.isec.pa.javalife.model.gameengine.IGameEngineEvolve;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Random;
@@ -20,9 +22,11 @@ public class Ecossistema implements IGameEngineEvolve {
     private static int nextFaunaId = 1;
     private static int nextFloraId = 1;
     private static int nextInanimadoId = 1;
+    private final PropertyChangeSupport support;
 
     public Ecossistema() {
         this.elementos = new HashSet<>();
+        this.support = new PropertyChangeSupport(this);
     }
 
     public int getLargura() {
@@ -64,10 +68,6 @@ public class Ecossistema implements IGameEngineEvolve {
         }
         return true;
     }
-    public Ecossistema getEcossistema() {
-        return this;
-    }
-
 
     public int getUnidadesX() {
         return unidadesX;
@@ -110,6 +110,7 @@ public class Ecossistema implements IGameEngineEvolve {
 
     public void limparElementos() {
         elementos.clear();
+        support.firePropertyChange("elementos", null, null); // Notifica a mudança
     }
 
     public Fauna encontrarFaunaMaisForte(int ignorarID) {
@@ -135,11 +136,13 @@ public class Ecossistema implements IGameEngineEvolve {
         IElemento elemento = buscarElemento(id);
         if (elemento != null) {
             elementos.remove(elemento);
+            support.firePropertyChange("elemento_removido", null, elemento); // Notifica a mudança
         }
     }
 
-    public void addElemento(IElemento elemento) {
+    public void adicionarElemento(IElemento elemento) {
         elementos.add(elemento);
+        support.firePropertyChange("elemento_adicionado", null, elemento); // Notifica a mudança
     }
 
     public boolean verificarAreaLivre(Area area) {
@@ -157,11 +160,9 @@ public class Ecossistema implements IGameEngineEvolve {
 
     @Override
     public void evolve(IGameEngine gameEngine, long currentTime) {
-        System.out.println("Evoluindo o ecossistema");
         Set<IElemento> elementosParaRemover = new HashSet<>();
 
         for (IElemento elemento : new HashSet<>(elementos)) {
-            System.out.println("teste");
             if (elemento.getTipo() == Elemento.FAUNA) {
                 Fauna fauna = (Fauna) elemento;
                 FaunaContext context = fauna.getFaunaContext();
@@ -178,7 +179,7 @@ public class Ecossistema implements IGameEngineEvolve {
                     Area areaLivre = encontrarAreaAdjacenteLivre(flora.getArea());
                     if (areaLivre != null) {
                         Flora novaFlora = criarFlora(areaLivre, 50, flora.getImagem());
-                        addElemento(novaFlora);
+                        adicionarElemento(novaFlora);
                         flora.setForca(50);
                         flora.incrementaNumeroReproducoes();
                     }
@@ -188,44 +189,53 @@ public class Ecossistema implements IGameEngineEvolve {
 
         elementos.removeAll(elementosParaRemover);
         totalPassos++;
+        support.firePropertyChange("evolucao", null, null); // Notifica a mudança
     }
 
     public void cerca() {
-        int wallThickness = 4;
+        int espessuraParede = 4;
 
         // Parede Superior
-        Inanimado top = new Inanimado(0, 0);
-        top.setArea(0, 0, wallThickness, this.getLargura());
+        Inanimado topo = new Inanimado(0, 0);
+        topo.setArea(0, 0, espessuraParede, this.getLargura());
 
         // Parede Inferior
-        Inanimado bottom = new Inanimado(0, 0);
-        bottom.setArea(this.getAltura() - wallThickness, 0, this.getAltura(), this.getLargura());
+        Inanimado fundo = new Inanimado(0, 0);
+        fundo.setArea(this.getAltura() - espessuraParede, 0, this.getAltura(), this.getLargura());
 
         // Parede Esquerda
-        Inanimado left = new Inanimado(0, 0);
-        left.setArea(0, 0, this.getAltura(), wallThickness);
+        Inanimado esquerda = new Inanimado(0, 0);
+        esquerda.setArea(0, 0, this.getAltura(), espessuraParede);
 
         // Parede Direita
-        Inanimado right = new Inanimado(0, 0);
-        right.setArea(0, this.getLargura() - wallThickness, this.getAltura(), this.getLargura());
+        Inanimado direita = new Inanimado(0, this.getLargura() - espessuraParede);
+        direita.setArea(0, this.getLargura() - espessuraParede, this.getAltura(), this.getLargura());
 
         // Adiciona as paredes ao ecossistema
-        adicionarElemento(top);
-        adicionarElemento(bottom);
-        adicionarElemento(left);
-        adicionarElemento(right);
-    }
-
-    public void adicionarElemento(IElemento elemento) {
-        elementos.add(elemento);
+        adicionarElemento(topo);
+        adicionarElemento(fundo);
+        adicionarElemento(esquerda);
+        adicionarElemento(direita);
     }
 
     public Area encontrarAreaAdjacenteLivre(Area area) {
-        // Implementar a lógica para encontrar uma área adjacente livre
+        double[][] posicoesAdjacentes = {
+                {area.esquerda() - area.direita(), area.cima()},
+                {area.esquerda() + area.direita(), area.cima()},
+                {area.esquerda(), area.cima() - area.baixo()},
+                {area.esquerda(), area.cima() + area.baixo()}
+        };
+
+        for (double[] posicao : posicoesAdjacentes) {
+            Area novaArea = new Area(posicao[1], posicao[0], posicao[1] + area.baixo() - area.cima(), posicao[0] + area.direita() - area.esquerda());
+            if (verificarAreaLivre(novaArea) && !verificarLimites(novaArea)) {
+                return novaArea;
+            }
+        }
+
         return null;
     }
 
-    // Métodos para geração de IDs únicos para cada tipo de elemento
     public int gerarProximoIdFauna() {
         return nextFaunaId++;
     }
@@ -238,10 +248,9 @@ public class Ecossistema implements IGameEngineEvolve {
         return nextInanimadoId++;
     }
 
-    // Métodos para criação de elementos específicos
     public Fauna criarFauna(double cima, double esquerda) {
         Fauna fauna = new Fauna(cima, esquerda, this);
-        addElemento(fauna);
+        adicionarElemento(fauna);
         return fauna;
     }
 
@@ -249,60 +258,70 @@ public class Ecossistema implements IGameEngineEvolve {
         Flora flora = new Flora(area.cima(), area.esquerda());
         flora.setForca(forca);
         flora.setImagem(imagem);
-        addElemento(flora);
+        adicionarElemento(flora);
         return flora;
     }
 
     public Inanimado criarInanimado(Area area) {
         Inanimado inanimado = new Inanimado(area.cima(), area.esquerda());
-        addElemento(inanimado);
+        adicionarElemento(inanimado);
         return inanimado;
     }
 
     public void setEcossistema(Ecossistema novoEcossistema) {
         limparElementos();
         elementos.addAll(novoEcossistema.obterElementos());
+        support.firePropertyChange("ecossistema_atualizado", null, this); // Notifica a mudança
     }
 
-    public void addElementToRandomFreePosition(Elemento elementType) {
-        int height = getUnidadesY();
-        int width = getUnidadesX();
+    public void adicionarElementoAleatoriamente(Elemento tipoElemento) {
+        int altura = getUnidadesY();
+        int largura = getUnidadesX();
         Random random = new Random();
 
-        boolean added = false;
-        while (!added) {
-            double x = random.nextInt(width);
-            double y = random.nextInt(height);
+        boolean adicionado = false;
+        while (!adicionado) {
+            double x = random.nextInt(largura);
+            double y = random.nextInt(altura);
 
             Area area = null;
             IElemento elemento = null;
 
-            switch (elementType) {
+            switch (tipoElemento) {
                 case INANIMADO:
                     area = new Area(y, x, y + Inanimado.size, x + Inanimado.size);
                     if (isAreaFree(area)) {
                         elemento = new Inanimado(y, x);
-                        addElemento(elemento);  // Adiciona o elemento ao ecossistema
-                        added = true;
+                        adicionarElemento(elemento);
+                        adicionado = true;
                     }
                     break;
                 case FAUNA:
                     area = new Area(y, x, y + 32, x + 32); // Supondo tamanho de fauna como 32x32
                     if (isAreaFree(area)) {
                         elemento = new Fauna(y, x, this);
-                        addElemento(elemento);  // Adiciona o elemento ao ecossistema
-                        added = true;
+                        adicionarElemento(elemento);
+                        adicionado = true;
                     }
                     break;
                 case FLORA:
                     area = new Area(y, x, y + 13, x + 13); // Supondo tamanho de flora como 13x13
                     if (isAreaFree(area)) {
                         elemento = new Flora(y, x);
-                        addElemento(elemento);  // Adiciona o elemento ao ecossistema
-                        added = true;
+                        adicionarElemento(elemento);
+                        adicionado = true;
                     }
                     break;
             }
         }
+    }
+
+    // Métodos para gerenciar os listeners
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        support.addPropertyChangeListener(listener);
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        support.removePropertyChangeListener(listener);
     }
 }

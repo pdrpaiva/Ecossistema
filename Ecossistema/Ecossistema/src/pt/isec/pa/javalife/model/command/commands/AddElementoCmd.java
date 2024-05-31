@@ -19,7 +19,7 @@ public class AddElementoCmd implements ICommand {
 
     @Override
     public void execute() {
-        manager.addElemento(elemento);
+        manager.adicionarElemento(elemento);
     }
 
     @Override
