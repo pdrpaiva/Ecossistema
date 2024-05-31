@@ -14,24 +14,22 @@ public class ProcuraComidaState extends FaunaStateAdapter {
 
     @Override
     public boolean executar() {
-        if (data.getForca() >= 80) {
-            changeState(FaunaState.MOVIMENTO);
-            return true;
-        }
-
         IElemento closestFlora = context.getEcossistema().encontrarElementoMaisProximo(data.getArea(), Elemento.FLORA);
-        if (closestFlora != null && moveTo(closestFlora)) {
-            changeState(FaunaState.ALIMENTACAO);
-            return true;
-        }
+        Fauna weakestFauna = null;
 
-        Fauna weakestFauna = context.getEcossistema().encontrarFaunaMaisFraca(data.getId());
-        if (weakestFauna != null && moveTo(weakestFauna)) {
-            changeState(FaunaState.ATAQUE);
-            return true;
+        if (closestFlora != null) {
+            if (moveTo(closestFlora)) {
+                System.out.println("ALIMENTCAO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                changeState(FaunaState.ALIMENTACAO);
+            }
+        } else {
+            weakestFauna = context.getEcossistema().encontrarFaunaMaisFraca(data.getId());
+            if (weakestFauna != null && moveTo(weakestFauna)) {
+                changeState(FaunaState.ATAQUE);
+            } else {
+                changeState(FaunaState.MOVIMENTO);
+            }
         }
-
-        changeState(FaunaState.MOVIMENTO);
         return true;
     }
 

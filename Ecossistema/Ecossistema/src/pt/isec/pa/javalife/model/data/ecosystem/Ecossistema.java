@@ -202,28 +202,31 @@ public void evolve(IGameEngine gameEngine, long currentTime) {
             context.setData(fauna);
             boolean mudou = context.executar();
 
-            // Verificar se a fauna está sobre uma flora
+
             for (IElemento outroElemento : elementos) {
                 if (outroElemento instanceof Flora) {
                     Flora flora = (Flora) outroElemento;
-                    if (fauna.getArea().intersecta(flora.getArea())) {
-                        double forcaRecuperada = 1;
-                        fauna.setForca(fauna.getForca() + forcaRecuperada);
-                        flora.setForca(flora.getForca() - forcaRecuperada);
-
                         if (flora.getForca() <= 0) {
                             elementosParaRemover.add(flora);
                         }
-                    }
                 }
             }
-
             if (!fauna.isVivo()) {
                 elementosParaRemover.add(fauna);
             }
         } else if (elemento.getTipo() == Elemento.FLORA) {
             Flora flora = (Flora) elemento;
-            flora.evolve(this, currentTime);
+            flora.setForca(flora.getForca() + 0.5);
+//            if (flora.getForca() >= 90 && flora.getNumeroReproducoes() < 2) {
+//
+//                Area areaLivre = encontrarAreaAdjacenteLivre(flora.getArea());
+//                if (areaLivre != null) {
+//                    Flora novaFlora = criarFlora(areaLivre, 50, flora.getImagem());
+//                    adicionarElemento(novaFlora);
+//                    flora.setForca(50);
+//                    flora.incrementaNumeroReproducoes();
+//                }
+//            }
         }
     }
 
@@ -231,6 +234,9 @@ public void evolve(IGameEngine gameEngine, long currentTime) {
     totalPassos++;
     support.firePropertyChange("evolucao", null, null); // Notifica a mudança
 }
+
+
+
 
 
     public void cerca() {

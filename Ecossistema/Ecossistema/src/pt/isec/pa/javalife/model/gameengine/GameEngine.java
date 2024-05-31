@@ -146,10 +146,10 @@ public boolean start(long interval) {
         public void run() {
             int errCounter = 0;
             while (true) {
-                System.out.println("Thread running. State: " + state); // Adicionar log
+                //System.out.println("Thread running. State: " + state); // Adicionar log
                 if (state == GameEngineState.READY) break;
                 if (state == GameEngineState.RUNNING) {
-                    System.out.println("GameEngine is running."); // Adicionar log
+                    //System.out.println("GameEngine is running."); // Adicionar log
 
                     new Thread(() -> {
                         long time = System.nanoTime();

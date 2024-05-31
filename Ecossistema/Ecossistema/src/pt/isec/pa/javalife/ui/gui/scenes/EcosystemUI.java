@@ -273,8 +273,8 @@ private void updateEcosystemDisplay() {
         if (elemento instanceof Flora) {
             Flora fl = (Flora) elemento;
             double strength = fl.getForca();
-            double alpha = 1.0 - (strength / 100.0); // Calcula o nível de transparência
-            Color floraColor = Color.GREENYELLOW.deriveColor(0, 1, 1, alpha);
+            //double alpha = 1.0 - (strength / 100.0); // Calcula o nível de transparência
+            Color floraColor = Color.GREENYELLOW;
             gc.setFill(floraColor);
             gc.fillRect(area.esquerda(), area.cima(), width, height);
         } else if (elemento instanceof Inanimado) {

@@ -15,7 +15,7 @@ public final class Fauna extends ElementoBase implements IElementoComImagem, IEl
     private static final double CUSTO_MOVIMENTO = 0.5;
     private static final int TEMPO_REPRODUCAO = 10;
     private static final double DISTANCIA_REPRODUCAO = 5;
-    private static final int TAMANHO = 32;
+    private static final int TAMANHO = 13;
     private static final double CUSTO_ATAQUE = 10;
     private double forca;
     private String imagem;

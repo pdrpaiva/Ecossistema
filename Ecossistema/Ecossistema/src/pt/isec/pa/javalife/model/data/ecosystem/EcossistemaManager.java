@@ -35,7 +35,7 @@ public class EcossistemaManager {
 
     public boolean iniciarJogo(long intervalo) {
         boolean resultado = gameEngine.start(intervalo);
-        System.out.println("Resultado da inicialização do GameEngine: " + resultado);
+       // System.out.println("Resultado da inicialização do GameEngine: " + resultado);
         return resultado;
     }
 

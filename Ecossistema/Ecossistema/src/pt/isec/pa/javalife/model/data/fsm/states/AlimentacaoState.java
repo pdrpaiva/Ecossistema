@@ -1,6 +1,7 @@
 package pt.isec.pa.javalife.model.data.fsm.states;
 
 import pt.isec.pa.javalife.model.data.area.Area;
+import pt.isec.pa.javalife.model.data.elements.Elemento;
 import pt.isec.pa.javalife.model.data.elements.Fauna;
 import pt.isec.pa.javalife.model.data.elements.Flora;
 import pt.isec.pa.javalife.model.data.elements.IElemento;
@@ -42,35 +43,63 @@ public class AlimentacaoState extends FaunaStateAdapter {
 //            return true;
 //        }
 //    }
-@Override
-public boolean executar() {
-    if (data.getForca() < 80) {
-        if (floraAtual == null) {
-            IElemento flora = findNearestFlora();
-            if (flora != null && flora instanceof Flora) {
-                floraAtual = (Flora) flora;
-            } else {
-                changeState(FaunaState.PROCURA_COMIDA);
-                return true;
-            }
+//@Override
+//public boolean executar() {
+//    if (data.getForca() < 80) {
+//        if (floraAtual == null) {
+//            IElemento flora = findNearestFlora();
+//            if (flora != null && flora instanceof Flora) {
+//                floraAtual = (Flora) flora;
+//            } else {
+//                changeState(FaunaState.PROCURA_COMIDA);
+//                return true;
+//            }
+//        }
+//
+//        if (floraAtual != null) {
+//            if (data.getArea().intersecta(floraAtual.getArea())) {
+//                // Se intersecta, então continua alimentando.
+//                return true;
+//            } else {
+//                // Se não intersecta mais, procura outra flora
+//                floraAtual = null;
+//                changeState(FaunaState.PROCURA_COMIDA);
+//                return true;
+//            }
+//        }
+//    } else {
+//        changeState(FaunaState.MOVIMENTO);
+//    }
+//    return true;
+//}
+
+    @Override
+    public boolean executar() {
+        IElemento closestFlora = findNearestFlora();
+        if(closestFlora == null)
+        {
+            if(data.getForca() < 80){changeState(FaunaState.PROCURA_COMIDA);}
+            else{ changeState(FaunaState.MOVIMENTO);}
+
+            return false;
         }
 
-        if (floraAtual != null) {
-            if (data.getArea().intersecta(floraAtual.getArea())) {
-                // Se intersecta, então continua alimentando.
-                return true;
-            } else {
-                // Se não intersecta mais, procura outra flora
-                floraAtual = null;
-                changeState(FaunaState.PROCURA_COMIDA);
-                return true;
-            }
-        }
-    } else {
-        changeState(FaunaState.MOVIMENTO);
+        double distance = Area.distancia(closestFlora.getArea(), data.getArea());
+        if(distance > (data.getArea().direita() -  data.getArea().esquerda())){changeState(FaunaState.PROCURA_COMIDA);}
+
+
+        Flora flora = (Flora)closestFlora;
+
+        double str = 1;
+
+        flora.setForca(flora.getForca() - str);
+        data.setForca(data.getForca() + str);
+
+        if(data.getForca() == 100){changeState(FaunaState.MOVIMENTO);}
+        return false;
     }
-    return true;
-}
+
+
 
     private IElemento findNearestFlora() {
         IElemento nearestFlora = null;

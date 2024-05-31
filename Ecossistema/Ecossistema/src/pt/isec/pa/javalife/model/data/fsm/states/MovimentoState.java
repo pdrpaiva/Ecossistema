@@ -20,7 +20,7 @@ public class MovimentoState extends FaunaStateAdapter {
 
     @Override
     public boolean executar() {
-        System.out.println("Executando estado Movimento");
+       // System.out.println("Executando estado Movimento");
 
         // Verifica se a força está abaixo do limiar para procurar comida
         if (data.getForca() < 35) {
@@ -30,7 +30,7 @@ public class MovimentoState extends FaunaStateAdapter {
         }
 
         // Movimento da fauna e perda de força associada
-        System.out.println("Movendo fauna");
+       // System.out.println("Movendo fauna");
         data.mover();
 
         // Verifica se a força caiu abaixo de 35 após o movimento
@@ -45,7 +45,7 @@ public class MovimentoState extends FaunaStateAdapter {
         if (data.getForca() >= 50) {
             Fauna strongerFauna = findStrongerFauna();
             if (strongerFauna != null) {
-                System.out.println("Encontrou fauna mais forte, movendo-se para a área dessa fauna");
+              //  System.out.println("Encontrou fauna mais forte, movendo-se para a área dessa fauna");
                 moverPara(strongerFauna.getArea());
                 return true;
             }
