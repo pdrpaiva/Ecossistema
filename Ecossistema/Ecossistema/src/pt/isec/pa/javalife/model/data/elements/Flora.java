@@ -10,6 +10,7 @@ public final class Flora extends ElementoBase implements IElementoComForca, IEle
     private double forca;
     private String imagem;
     private int numeroReproducoes;
+    private boolean tentativaDeReproduzir = false;
 
     public Flora(double cima, double esquerda) {
         super(Elemento.FLORA, cima, esquerda, TAMANHO, TAMANHO);
@@ -17,22 +18,38 @@ public final class Flora extends ElementoBase implements IElementoComForca, IEle
         this.numeroReproducoes = 0;
     }
 
-    public void evolve(Ecossistema ecossistema, long tempoAtual) {
-        if (forca == 0) {
-            return;
-        }
+//    public void evolve(Ecossistema ecossistema, long tempoAtual) {
+//        if (forca == 0) {
+//            return;
+//        }
+//
+//        // Comentar esta linha pois não temos eventos ainda.
+//        // forca += ecossistema.isEventoSolAtivo() ? INCREMENTO_FORCA * 2 : INCREMENTO_FORCA;
+//        forca += INCREMENTO_FORCA;
+//
+//        if (forca >= 90 && numeroReproducoes < 2) {
+//            if (tentarReproduzir(ecossistema)) {
+//                forca = 60;
+//                numeroReproducoes++;
+//            }
+//        }
+//    }
+public void evolve(Ecossistema ecossistema, long tempoAtual) {
+    if (forca == 0) {
+        return;
+    }
 
-        // Comentar esta linha pois não temos eventos ainda.
-        // forca += ecossistema.isEventoSolAtivo() ? INCREMENTO_FORCA * 2 : INCREMENTO_FORCA;
-        forca += INCREMENTO_FORCA;
+    // Incrementa a força
+    forca += INCREMENTO_FORCA;
 
-        if (forca >= 90 && numeroReproducoes < 2) {
-            if (tentarReproduzir(ecossistema)) {
-                forca = 60;
-                numeroReproducoes++;
-            }
+    // Tenta reproduzir se a força for >= 90 e o número de reproduções for < 2
+    if (forca >= 90 && numeroReproducoes < 2) {
+        if (tentarReproduzir(ecossistema)) {
+            forca = 60;
+            numeroReproducoes++;
         }
     }
+}
 
     private boolean tentarReproduzir(Ecossistema ecossistema) {
         Area areaAtual = this.getArea();

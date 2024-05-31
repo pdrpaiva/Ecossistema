@@ -30,11 +30,11 @@ public class Ecossistema implements IGameEngineEvolve {
     }
 
     public int getLargura() {
-        return escalaUnidade * unidadesX;
+        return unidadesX;
     }
 
     public int getAltura() {
-        return escalaUnidade * unidadesY;
+        return unidadesY;
     }
 
     public void definirUnidadesX(int unidadesX) {
@@ -223,16 +223,7 @@ public void evolve(IGameEngine gameEngine, long currentTime) {
             }
         } else if (elemento.getTipo() == Elemento.FLORA) {
             Flora flora = (Flora) elemento;
-            flora.setForca(flora.getForca() + 0.5);
-            if (flora.getForca() >= 90 && flora.getNumeroReproducoes() < 2) {
-                Area areaLivre = encontrarAreaAdjacenteLivre(flora.getArea());
-                if (areaLivre != null) {
-                    Flora novaFlora = criarFlora(areaLivre, 50, flora.getImagem());
-                    adicionarElemento(novaFlora);
-                    flora.setForca(50);
-                    flora.incrementaNumeroReproducoes();
-                }
-            }
+            flora.evolve(this, currentTime);
         }
     }
 

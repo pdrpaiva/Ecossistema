@@ -104,9 +104,23 @@ public final class Fauna extends ElementoBase implements IElementoComImagem, IEl
 //    }
 
     public void mover() {
-        Area novaArea = getArea().mover(direcao, velocidade);
-        if (!faunaContext.getEcossistema().verificarLimites(novaArea)) {
-            // Apenas atualize as posições cima e esquerda
+        Area areaAntiga = getArea();
+        Area novaArea = areaAntiga.mover(direcao, velocidade);
+
+        boolean dentroDosLimites = !faunaContext.getEcossistema().verificarLimites(novaArea);
+
+        boolean colide = false;
+        for (IElemento elemento : faunaContext.getEcossistema().getElementos()) {
+            // Verifica se o elemento é do tipo fauna ou inanimado
+            if (elemento.getTipo()==Elemento.INANIMADO || elemento.getTipo()==Elemento.FAUNA) {
+                Area areaElemento = elemento.getArea();
+                if (!areaElemento.equals(areaAntiga) && novaArea.intersecta(areaElemento)) {
+                    colide = true;
+                    break;
+                }
+            }
+        }
+        if (dentroDosLimites && !colide) {
             setArea(novaArea.cima(), novaArea.esquerda(), TAMANHO, TAMANHO);
             perderForca(CUSTO_MOVIMENTO);
         } else {
