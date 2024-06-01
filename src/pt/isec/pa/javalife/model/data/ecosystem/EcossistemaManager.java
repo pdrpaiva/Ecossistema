@@ -11,6 +11,7 @@ import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 public class EcossistemaManager {
@@ -85,9 +86,13 @@ public class EcossistemaManager {
         return ecossistema.getUnidadesY();
     }
 
+//    public Set<IElemento> getElementos() {
+//        return ecossistema.getElementos();
+//    }
+
     public Set<IElemento> getElementos() {
-        return ecossistema.getElementos();
-    }
+      return ecossistema.getElementos();
+   }
 
     public int obterPassos() {
         return ecossistema.obterPassos();

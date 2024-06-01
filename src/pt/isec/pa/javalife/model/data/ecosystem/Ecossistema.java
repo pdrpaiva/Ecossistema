@@ -86,7 +86,7 @@ public class Ecossistema implements IGameEngineEvolve {
     }
 
     public Set<IElemento> obterElementos() {
-        return new HashSet<>(elementos);
+        return elementos;
     }
 
     public int obterPassos() {
@@ -274,7 +274,7 @@ public void evolve(IGameEngine gameEngine, long currentTime) {
             } else {
                 flora.setForca(flora.getForca() + 0.5);
             }
-
+            flora.evolve(this, currentTime);
 
 //            if (flora.getForca() >= 90 && flora.getNumeroReproducoes() < 2) {
 //

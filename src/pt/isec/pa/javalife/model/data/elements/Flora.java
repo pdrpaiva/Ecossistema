@@ -40,7 +40,7 @@ public void evolve(Ecossistema ecossistema, long tempoAtual) {
     }
 
     // Incrementa a força
-    forca += INCREMENTO_FORCA;
+   // forca += INCREMENTO_FORCA;
 
     // Tenta reproduzir se a força for >= 90 e o número de reproduções for < 2
     if (forca >= 90 && numeroReproducoes < 2) {
