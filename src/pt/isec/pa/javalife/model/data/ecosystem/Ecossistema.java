@@ -8,10 +8,9 @@ import pt.isec.pa.javalife.model.gameengine.IGameEngineEvolve;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Serializable;
+import java.io.*;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.*;
 
 public class Ecossistema implements IGameEngineEvolve {
@@ -470,18 +469,68 @@ public void aplicarSol() {
 
     public void exportarElementosParaCSV(File file) throws IOException {
         try (FileWriter writer = new FileWriter(file)) {
-            writer.append("Tipo,Forca,PosX,PosY\n");
+            writer.append("Tipo;Forca;PosX;PosY\n");
             for (IElemento elemento : elementos) {
                 String tipo = elemento.getClass().getSimpleName();
                 double forca = (elemento instanceof IElementoComForca) ? ((IElementoComForca) elemento).getForca() : 0;
                 double posX = elemento.getArea().esquerda();
                 double posY = elemento.getArea().cima();
-                writer.append(String.format("%s,%.2f,%.2f,%.2f\n", tipo, forca, posX, posY));
+                writer.append(String.format("%s;%.2f;%.2f;%.2f\n", tipo, forca, posX, posY));
             }
         }
     }
 
     public void importarElementosDeCSV(File file) throws IOException {
+        NumberFormat numberFormat = NumberFormat.getInstance(Locale.FRANCE); // Utiliza Locale.FRANCE para tratar vírgulas como separadores decimais
 
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line = reader.readLine(); // Ignora a linha do cabeçalho
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(";");
+                if (parts.length < 4) continue; // Verifica se a linha tem ao menos 4 colunas
+
+                String tipo = parts[0];
+                double forca = parseDouble(parts[1], numberFormat);
+                double posX = parseDouble(parts[2], numberFormat);
+                double posY = parseDouble(parts[3], numberFormat);
+
+                double largura = 13; // Tamanho padrão, ajuste conforme necessário
+                double altura = 13;  // Tamanho padrão, ajuste conforme necessário
+                if (tipo.equals("Inanimado")) {
+                    largura = altura = 13; // Supondo tamanho fixo para Inanimado, ajuste conforme necessário
+                } else if (tipo.equals("Flora")) {
+                    largura = altura = 13; // Supondo tamanho fixo para Flora, ajuste conforme necessário
+                }
+
+                Area area = new Area(posY, posX, posY + altura, posX + largura);
+                if (verificarAreaLivre(area) && !verificarLimites(area)) {
+                    switch (tipo) {
+                        case "Fauna":
+                            Fauna fauna = new Fauna(posY, posX, this);
+                            fauna.setForca(forca);
+                            adicionarElemento(fauna);
+                            break;
+                        case "Flora":
+                            Flora flora = new Flora(posY, posX);
+                            flora.setForca(forca);
+                            adicionarElemento(flora);
+                            break;
+                        case "Inanimado":
+                            Inanimado inanimado = new Inanimado(posY, posX);
+                            adicionarElemento(inanimado);
+                            break;
+                    }
+                }
+            }
+        }
+        support.firePropertyChange("elementos_importados", null, null); // Notifica a mudança
+    }
+
+    private double parseDouble(String value, NumberFormat numberFormat) {
+        try {
+            return numberFormat.parse(value).doubleValue();
+        } catch (ParseException e) {
+            throw new IllegalArgumentException("Formato de número inválido: " + value, e);
+        }
     }
 }
