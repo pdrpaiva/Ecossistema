@@ -113,24 +113,32 @@ public class CreateEcosystemUI {
 //    }
 private VBox createTimeUnitField() {
     VBox box = new VBox(5);
-    box.setAlignment(Pos.CENTER_LEFT);
+    box.setAlignment(Pos.CENTER);
 
     Label label = new Label("");
     label.getStyleClass().add("label");
     label.setMinWidth(120);
 
-    sliderTempo = new Slider(100, 1000, 100);
+    sliderTempo = new Slider(1, 1000, 100);
     sliderTempo.getStyleClass().add("slider");
     sliderTempo.setPrefWidth(200);
 
+    // Configurar os Tick Marks
+    sliderTempo.setShowTickMarks(true);
+    sliderTempo.setShowTickLabels(true);
+    sliderTempo.setMajorTickUnit(100);
+    sliderTempo.setMinorTickCount(4);
+    sliderTempo.setBlockIncrement(5);
+
     Label lblSliderValue = new Label(String.format("%.0f Unidades de Tempo", sliderTempo.getValue()));
     lblSliderValue.getStyleClass().add("slider-value");
+    lblSliderValue.setAlignment(Pos.CENTER); // Centraliza o texto dentro da Label
 
     sliderTempo.valueProperty().addListener((obs, oldval, newVal) ->
             lblSliderValue.setText(String.format("%.0f Unidades de Tempo", newVal.doubleValue()))
     );
 
-    box.getChildren().addAll(label, sliderTempo, lblSliderValue);
+    box.getChildren().addAll(sliderTempo, lblSliderValue);
     return box;
 }
 

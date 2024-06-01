@@ -339,7 +339,7 @@ public class EcosystemUI {
 
     private void updateEcosystemDisplay() {
         // Limpa o fundo do canvas
-        gc.setFill(Color.web("#373054"));
+        gc.setFill(Color.web("#49361F"));
         gc.fillRect(0, 0, ecossistemaManager.getLargura(), ecossistemaManager.getAltura());
 
         Collection<IElemento> elementos = ecossistemaManager.obterElementos();

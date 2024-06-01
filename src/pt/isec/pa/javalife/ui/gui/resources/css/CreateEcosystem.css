@@ -70,9 +70,20 @@
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 10, 0.5, 0.0, 0.0);
 }
 
+.CreateEcosystemUI .slider .tick-mark {
+    -fx-stroke: white; /* Cor dos tick marks */
+}
+
+.CreateEcosystemUI .slider .label {
+    -fx-text-fill: white; /* Cor dos tick labels */
+    -fx-font-size: 12px; /* Tamanho dos tick labels */
+}
+
 .CreateEcosystemUI .slider-value {
     -fx-text-fill: white;
     -fx-font-size: 16px;
     -fx-padding-top: 5px;
     -fx-alignment: center; /* Centraliza o texto */
+    -fx-pref-width: 200px; /* Adiciona uma largura preferencial para ajudar na centralização */
+    -fx-text-alignment: center; /* Garante que o texto dentro da Label seja centralizado */
 }
