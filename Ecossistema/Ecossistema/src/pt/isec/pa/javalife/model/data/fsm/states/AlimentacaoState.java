@@ -90,10 +90,9 @@ public class AlimentacaoState extends FaunaStateAdapter {
 
         Flora flora = (Flora)closestFlora;
 
-        double str = 1;
 
-        flora.setForca(flora.getForca() - str);
-        data.setForca(data.getForca() + str);
+        flora.setForca(flora.getForca() - 1);
+        data.setForca(data.getForca() + 1);
 
         if(data.getForca() == 100){changeState(FaunaState.MOVIMENTO);}
         return false;

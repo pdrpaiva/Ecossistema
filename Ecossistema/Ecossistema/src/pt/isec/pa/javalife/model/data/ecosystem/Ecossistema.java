@@ -9,9 +9,7 @@ import pt.isec.pa.javalife.model.gameengine.IGameEngineEvolve;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 public class Ecossistema implements IGameEngineEvolve {
     private final Set<IElemento> elementos;
@@ -23,6 +21,10 @@ public class Ecossistema implements IGameEngineEvolve {
     private static int nextFloraId = 1;
     private static int nextInanimadoId = 1;
     private final PropertyChangeSupport support;
+    private boolean solAtivo = false;
+    private long tempoSolRestante = 0;
+    private final Map<Fauna, Double> velocidadesOriginais = new HashMap<>();
+
 
     public Ecossistema() {
         this.elementos = new HashSet<>();
@@ -132,6 +134,44 @@ public class Ecossistema implements IGameEngineEvolve {
         return elementos.stream().filter(elemento -> elemento.getId() == id).findFirst().orElse(null);
     }
 
+    // Método para aplicar herbicida em um elemento do tipo Flora
+    public void aplicarHerbicida(Flora flora) {
+        if (flora != null) {
+            removerElemento(flora.getId());
+            support.firePropertyChange("elemento_removido", null, flora);
+        }
+    }
+
+    // Método para injetar força em um elemento do tipo Fauna
+    public void injetarForca(Fauna fauna) {
+        if (fauna != null) {
+            fauna.setForca(fauna.getForca() + 50);
+            support.firePropertyChange("forca_injetada", null, fauna);
+        }
+    }
+
+    // Método para aplicar o efeito do Sol
+//    public void aplicarSol() {
+//        solAtivo = true;
+//        tempoSolRestante = 10; // 10 unidades de tempo
+//        support.firePropertyChange("sol_aplicado", null, null);
+//    }
+
+
+    // Método para aplicar o efeito do Sol
+//    public void aplicarSol() {
+//        solAtivo = true;
+//        tempoSolRestante = 10; // 10 unidades de tempo
+//        for (IElemento elemento : elementos) {
+//            if (elemento instanceof Fauna) {
+//                Fauna fauna = (Fauna) elemento;
+//                velocidadesOriginais.put(fauna, fauna.getVelocidade());
+//                fauna.setVelocidade(fauna.getVelocidade() / 2); // Reduz a velocidade à metade
+//            }
+//        }
+//        support.firePropertyChange("sol_aplicado", null, null);
+//    }
+
     public void removerElemento(int id) {
         IElemento elemento = buscarElemento(id);
         if (elemento != null) {
@@ -211,12 +251,28 @@ public void evolve(IGameEngine gameEngine, long currentTime) {
                         }
                 }
             }
+
+//            // Se o sol estiver ativo, a fauna se move à metade da velocidade
+//            if (solAtivo) {
+//                fauna.setVelocidade(fauna.getVelocidade() / 2);
+//            }
+
             if (!fauna.isVivo()) {
                 elementosParaRemover.add(fauna);
             }
         } else if (elemento.getTipo() == Elemento.FLORA) {
+           // Flora flora = (Flora) elemento;
+             //   flora.setForca(flora.getForca() + 0.5);
+
+
             Flora flora = (Flora) elemento;
-            flora.setForca(flora.getForca() + 0.5);
+            if (solAtivo) {
+                flora.setForca(flora.getForca() + 1.0); // Flora ganha força ao dobro da velocidade
+            } else {
+                flora.setForca(flora.getForca() + 0.5);
+            }
+
+
 //            if (flora.getForca() >= 90 && flora.getNumeroReproducoes() < 2) {
 //
 //                Area areaLivre = encontrarAreaAdjacenteLivre(flora.getArea());
@@ -230,13 +286,49 @@ public void evolve(IGameEngine gameEngine, long currentTime) {
         }
     }
 
+//    // Atualiza o tempo restante do efeito do sol
+//    if (solAtivo) {
+//        tempoSolRestante--;
+//        // System.out.println(tempoSolRestante);
+//        if (tempoSolRestante <= 0) {
+//            solAtivo = false;
+//            support.firePropertyChange("sol_expirado", null, null);
+//        }
+//    }
+
+    if (solAtivo) {
+        tempoSolRestante--;
+        if (tempoSolRestante <= 0) {
+            solAtivo = false;
+            for (Fauna fauna : velocidadesOriginais.keySet()) {
+                fauna.setVelocidade(velocidadesOriginais.get(fauna));
+            }
+            velocidadesOriginais.clear();
+            support.firePropertyChange("sol_expirado", null, null);
+        }
+    }
+
     elementos.removeAll(elementosParaRemover);
     totalPassos++;
     support.firePropertyChange("evolucao", null, null); // Notifica a mudança
+
+
+
 }
 
 
-
+public void aplicarSol() {
+        solAtivo = true;
+        tempoSolRestante = 10; // 10 unidades de tempo
+        for (IElemento elemento : elementos) {
+            if (elemento instanceof Fauna) {
+                Fauna fauna = (Fauna) elemento;
+                velocidadesOriginais.put(fauna, fauna.getVelocidade());
+                fauna.setVelocidade(fauna.getVelocidade() / 2); // Reduz a velocidade à metade
+            }
+        }
+        support.firePropertyChange("sol_aplicado", null, null);
+    }
 
 
     public void cerca() {

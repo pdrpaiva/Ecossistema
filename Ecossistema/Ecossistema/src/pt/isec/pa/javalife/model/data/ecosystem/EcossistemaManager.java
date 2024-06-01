@@ -197,4 +197,16 @@ public class EcossistemaManager {
     public Collection<IElemento> obterElementos() {
         return ecossistema.getElementos();
     }
+
+    public void aplicarHerbicida(Flora flora) {
+        ecossistema.aplicarHerbicida(flora);
+    }
+
+    public void injetarForca(Fauna fauna) {
+        ecossistema.injetarForca(fauna);
+    }
+
+    public void aplicarSol() {
+        ecossistema.aplicarSol();
+    }
 }

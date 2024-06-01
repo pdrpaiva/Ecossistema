@@ -10,7 +10,6 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import pt.isec.pa.javalife.model.data.area.Area;
@@ -18,6 +17,8 @@ import pt.isec.pa.javalife.model.data.ecosystem.EcossistemaManager;
 import pt.isec.pa.javalife.model.data.elements.*;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,12 +30,13 @@ public class EcosystemUI {
     private EcossistemaManager ecossistemaManager;
     private Canvas canvas;
     private GraphicsContext gc;
-    private Button btnPlayPause, btnAddElement, btnCreateEcosystem, btnImport, btnExport, btnDelElement;
+    private Button btnPlayPause, btnAddElement, btnCreateEcosystem, btnImport, btnExport, btnDelElement, btnAplicarSol;
     private ComboBox<String> comboBox;
     private TextField txtX, txtY, txtId, txtType, txtEsq, txtDir, txtCima, txtBaixo, txtEnergia;
     private Slider strenghtSlider;
     private int currentElementIDSelected = -1;
     private Map<Integer, Area> previousPositions;
+    MenuItem exportMenuItem;
 
     public EcosystemUI(Stage primaryStage, EcossistemaManager ecossistemaManager) {
         this.primaryStage = primaryStage;
@@ -55,6 +57,14 @@ public class EcosystemUI {
     private void createViews() {
         BorderPane root = new BorderPane();
         root.setStyle("-fx-background-color: #00593c;");
+
+        // Top menu bar
+        MenuBar menuBar = new MenuBar();
+        Menu fileMenu = new Menu("File");
+        exportMenuItem = new MenuItem("Export");
+        fileMenu.getItems().add(exportMenuItem);
+        menuBar.getMenus().add(fileMenu);
+        root.setTop(menuBar);
 
         // Top toolbar
         HBox toolbar = new HBox(10);
@@ -88,6 +98,7 @@ public class EcosystemUI {
         btnImport = new Button("Importar");
         btnExport = new Button("Exportar");
         btnDelElement = new Button("Deletar Elemento");
+        btnAplicarSol = new Button("Aplicar Sol"); // Botão para aplicar o Sol
 
         txtX = new TextField();
         txtY = new TextField();
@@ -102,11 +113,14 @@ public class EcosystemUI {
 
         strenghtSlider = new Slider();
 
-        sidebar.getChildren().addAll(comboBox, btnAddElement, btnCreateEcosystem, btnImport, btnExport, btnDelElement);
+        sidebar.getChildren().addAll(comboBox, btnAddElement, btnCreateEcosystem, btnImport, btnExport, btnDelElement, btnAplicarSol);
         sidebar.getChildren().addAll(new Label("Energia:"), txtEnergia); // Adicionando o campo de energia
         root.setRight(sidebar);
 
         scene = new Scene(root, 800, 600);
+
+        // Set the menu bar at the top
+        root.setTop(new VBox(menuBar, toolbar));
     }
 
     private void registerHandlers() {
@@ -166,6 +180,27 @@ public class EcosystemUI {
             }
         });
 
+        // Handler para aplicar Sol
+        btnAplicarSol.setOnAction(event -> {
+            ecossistemaManager.aplicarSol();
+            Platform.runLater(this::updateEcosystemDisplay);
+        });
+
+        // Handler para exportar elementos para CSV
+        exportMenuItem.setOnAction(event -> {
+            if (!ecossistemaManager.isPaused()) {
+                showAlert(Alert.AlertType.WARNING, "Aviso", "Pause a simulação antes de exportar.");
+                return;
+            }
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Salvar Arquivo");
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+            File file = fileChooser.showSaveDialog(primaryStage);
+            if (file != null) {
+                exportarElementosParaCSV(file);
+            }
+        });
+
         // Handler para atualizar posição X do elemento
         txtX.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!ecossistemaManager.isPaused()) return;
@@ -204,101 +239,69 @@ public class EcosystemUI {
         });
     }
 
-//    private void updateEcosystemDisplay() {
-//        // Limpa o fundo do canvas
-//        gc.setFill(Color.web("#373054"));
-//        gc.fillRect(0, 0, ecossistemaManager.getLargura(), ecossistemaManager.getAltura());
-//
-//        Collection<IElemento> elementos = ecossistemaManager.obterElementos();
-//
-//        // Limpar a posição anterior de todos os elementos de Fauna
-//        for (Map.Entry<Integer, Area> entry : previousPositions.entrySet()) {
-//            Area previousArea = entry.getValue();
-//            gc.clearRect(previousArea.esquerda(), previousArea.cima(), previousArea.direita() - previousArea.esquerda(), previousArea.baixo() - previousArea.cima());
-//        }
-//
-//        // Desenhar todos os elementos
-//        for (IElemento elemento : elementos) {
-//            Area area = elemento.getArea();
-//            double width = area.direita() - area.esquerda();
-//            double height = area.baixo() - area.cima();
-//
-//            if (elemento instanceof Flora) {
-//                Flora fl = (Flora) elemento;
-//                double strength = fl.getForca();
-//                double alpha = 1.0 - (strength / 100.0); // Calcula o nível de transparência
-//                Color floraColor = Color.GREENYELLOW.deriveColor(0, 1, 1, alpha);
-//                gc.setFill(floraColor);
-//                gc.fillRect(area.esquerda(), area.cima(), width, height);
-//            } else if (elemento instanceof Inanimado) {
-//                gc.setFill(Color.GRAY);
-//                gc.fillRect(area.esquerda(), area.cima(), width, height);
-//            } else if (elemento instanceof Fauna) {
-//                gc.setFill(Color.RED);
-//                gc.fillRect(area.esquerda(), area.cima(), width, height);
-//            } else {
-//                System.out.println("Elemento desconhecido: " + elemento.getClass().getName());
-//            }
-//        }
-//
-//        // Desenhar a caixa de seleção ao redor do elemento inspecionado
-//        if (currentElementIDSelected != -1) {
-//            IElemento elemento = ecossistemaManager.buscarElemento(currentElementIDSelected);
-//            if (elemento != null) {
-//                Area area = elemento.getArea();
-//                gc.setStroke(Color.WHITE);
-//                gc.strokeRect(area.esquerda() - 2, area.cima() - 2, area.direita() - area.esquerda() + 4, area.baixo() - area.cima() + 4);
-//            }
-//        }
-//    }
-private void updateEcosystemDisplay() {
-    // Limpa o fundo do canvas
-    gc.setFill(Color.web("#373054"));
-    gc.fillRect(0, 0, ecossistemaManager.getLargura(), ecossistemaManager.getAltura());
-
-    Collection<IElemento> elementos = ecossistemaManager.obterElementos();
-
-    // Limpar a posição anterior de todos os elementos de Fauna
-    for (Map.Entry<Integer, Area> entry : previousPositions.entrySet()) {
-        Area previousArea = entry.getValue();
-        gc.clearRect(previousArea.esquerda(), previousArea.cima(), previousArea.direita() - previousArea.esquerda(), previousArea.baixo() - previousArea.cima());
-    }
-
-    // Desenhar todos os elementos
-    for (IElemento elemento : elementos) {
-        Area area = elemento.getArea();
-        double width = area.direita() - area.esquerda();
-        double height = area.baixo() - area.cima();
-
-        if (elemento instanceof Flora) {
-            Flora fl = (Flora) elemento;
-            double strength = fl.getForca();
-            //double alpha = 1.0 - (strength / 100.0); // Calcula o nível de transparência
-            Color floraColor = Color.GREENYELLOW;
-            gc.setFill(floraColor);
-            gc.fillRect(area.esquerda(), area.cima(), width, height);
-        } else if (elemento instanceof Inanimado) {
-            gc.setFill(Color.GRAY);
-            gc.fillRect(area.esquerda(), area.cima(), width, height);
-        } else if (elemento instanceof Fauna) {
-            gc.setFill(Color.RED);
-            gc.fillRect(area.esquerda(), area.cima(), width, height);
-        } else {
-            System.out.println("Elemento desconhecido: " + elemento.getClass().getName());
+    private void exportarElementosParaCSV(File file) {
+        try (FileWriter writer = new FileWriter(file)) {
+            writer.append("Tipo,Forca,PosX,PosY\n");
+            for (IElemento elemento : ecossistemaManager.obterElementos()) {
+                String tipo = elemento.getClass().getSimpleName();
+                double forca = (elemento instanceof IElementoComForca) ? ((IElementoComForca) elemento).getForca() : 0;
+                double posX = elemento.getArea().esquerda();
+                double posY = elemento.getArea().cima();
+                writer.append(String.format("%s,%.2f,%.2f,%.2f\n", tipo, forca, posX, posY));
+            }
+            showAlert(Alert.AlertType.INFORMATION, "Sucesso", "Elementos exportados com sucesso.");
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Erro", "Erro ao exportar elementos: " + e.getMessage());
         }
     }
 
-    // Desenhar a caixa de seleção ao redor do elemento inspecionado
-    if (currentElementIDSelected != -1) {
-        IElemento elemento = ecossistemaManager.buscarElemento(currentElementIDSelected);
-        if (elemento != null) {
+    private void updateEcosystemDisplay() {
+        // Limpa o fundo do canvas
+        gc.setFill(Color.web("#373054"));
+        gc.fillRect(0, 0, ecossistemaManager.getLargura(), ecossistemaManager.getAltura());
+
+        Collection<IElemento> elementos = ecossistemaManager.obterElementos();
+
+        // Limpar a posição anterior de todos os elementos de Fauna
+        for (Map.Entry<Integer, Area> entry : previousPositions.entrySet()) {
+            Area previousArea = entry.getValue();
+            gc.clearRect(previousArea.esquerda(), previousArea.cima(), previousArea.direita() - previousArea.esquerda(), previousArea.baixo() - previousArea.cima());
+        }
+
+        // Desenhar todos os elementos
+        for (IElemento elemento : elementos) {
             Area area = elemento.getArea();
-            gc.setStroke(Color.WHITE);
-            gc.strokeRect(area.esquerda() - 2, area.cima() - 2, area.direita() - area.esquerda() + 4, area.baixo() - area.cima() + 4);
-            updateSidebar(elemento); // Atualizar a sidebar com os detalhes do elemento selecionado
+            double width = area.direita() - area.esquerda();
+            double height = area.baixo() - area.cima();
+
+            if (elemento instanceof Flora) {
+                Flora fl = (Flora) elemento;
+                double strength = fl.getForca();
+                double alpha = 1.0 - (strength / 100.0); // Calcula o nível de transparência
+                Color floraColor = Color.GREENYELLOW.deriveColor(0, 1, 1, alpha);
+                gc.setFill(floraColor);
+                gc.fillRect(area.esquerda(), area.cima(), width, height);
+            } else if (elemento instanceof Inanimado) {
+                gc.setFill(Color.GRAY);
+                gc.fillRect(area.esquerda(), area.cima(), width, height);
+            } else if (elemento instanceof Fauna) {
+                gc.setFill(Color.RED);
+                gc.fillRect(area.esquerda(), area.cima(), width, height);
+            } else {
+                System.out.println("Elemento desconhecido: " + elemento.getClass().getName());
+            }
+        }
+
+        // Desenhar a caixa de seleção ao redor do elemento inspecionado
+        if (currentElementIDSelected != -1) {
+            IElemento elemento = ecossistemaManager.buscarElemento(currentElementIDSelected);
+            if (elemento != null) {
+                Area area = elemento.getArea();
+                gc.setStroke(Color.WHITE);
+                gc.strokeRect(area.esquerda() - 2, area.cima() - 2, area.direita() - area.esquerda() + 4, area.baixo() - area.cima() + 4);
+            }
         }
     }
-}
 
     private void updateSidebar(IElemento elemento) {
         txtX.setText(String.valueOf(elemento.getPositionX()));
