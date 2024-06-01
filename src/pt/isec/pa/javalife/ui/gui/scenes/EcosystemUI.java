@@ -36,7 +36,7 @@ public class EcosystemUI {
     private Slider strenghtSlider;
     private int currentElementIDSelected = -1;
     private Map<Integer, Area> previousPositions;
-    private MenuItem exportMenuItem;
+    private MenuItem exportMenuItem,importMenuItem;
 
     private Button btnAplicarSol, btnAplicarHerbicida, btnInjetarForca;
 
@@ -64,7 +64,8 @@ public class EcosystemUI {
         MenuBar menuBar = new MenuBar();
         Menu fileMenu = new Menu("File");
         exportMenuItem = new MenuItem("Export");
-        fileMenu.getItems().add(exportMenuItem);
+        importMenuItem = new MenuItem("Import");
+        fileMenu.getItems().addAll(exportMenuItem,importMenuItem);
         menuBar.getMenus().add(fileMenu);
         root.setTop(menuBar);
 
@@ -233,6 +234,27 @@ public class EcosystemUI {
                     ecossistemaManager.exportarElementosParaCSV(file);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
+                }
+            }
+        });
+
+
+
+        importMenuItem.setOnAction(event -> {
+            if (!ecossistemaManager.isPaused()) {
+                showAlert(Alert.AlertType.WARNING, "Aviso", "Pause a simulação antes de importar.");
+                return;
+            }
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Abrir Arquivo");
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+            File file = fileChooser.showOpenDialog(primaryStage);
+            if (file != null) {
+                try {
+                    ecossistemaManager.importarElementosDeCSV(file);
+                    showAlert(Alert.AlertType.INFORMATION, "Sucesso", "Elementos importados com sucesso.");
+                } catch (IOException e) {
+                    showAlert(Alert.AlertType.ERROR, "Erro", "Erro ao importar elementos: " + e.getMessage());
                 }
             }
         });

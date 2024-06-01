@@ -480,4 +480,7 @@ public void aplicarSol() {
         }
     }
 
+    public void importarElementosDeCSV(File file) throws IOException {
+
+    }
 }

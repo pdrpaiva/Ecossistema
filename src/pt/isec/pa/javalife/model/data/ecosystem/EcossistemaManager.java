@@ -215,4 +215,8 @@ public class EcossistemaManager {
     public void exportarElementosParaCSV(File file) throws IOException {
         ecossistema.exportarElementosParaCSV(file);
     }
+
+    public void importarElementosDeCSV(File file) throws IOException {
+        ecossistema.importarElementosDeCSV(file);
+    }
 }
