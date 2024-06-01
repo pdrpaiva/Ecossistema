@@ -72,7 +72,7 @@ public class CreateEcosystemUI {
                 createLabeledField("Fauna", txtFauna),
                 createLabeledField("Flora", txtFlora),
                 createLabeledField("Inanimados", txtInanimados),
-                createTimeUnitField()
+                createTimeUnitField() // Agora o rótulo com as unidades está abaixo do slider
         );
 
         createButton = new Button("Criar");
@@ -99,18 +99,40 @@ public class CreateEcosystemUI {
         return box;
     }
 
-    private HBox createTimeUnitField() {
-        HBox box = new HBox(10);
-        box.setAlignment(Pos.CENTER_LEFT);
-        Label label = new Label("Tempo");
-        label.getStyleClass().add("label");
-        label.setMinWidth(120);
-        sliderTempo.getStyleClass().add("slider");
-        sliderTempo.setPrefWidth(200);
-        HBox.setHgrow(sliderTempo, Priority.ALWAYS);
-        box.getChildren().addAll(label, sliderTempo);
-        return box;
-    }
+//    private HBox createTimeUnitField() {
+//        HBox box = new HBox(10);
+//        box.setAlignment(Pos.CENTER_LEFT);
+//        Label label = new Label("Tempo");
+//        label.getStyleClass().add("label");
+//        label.setMinWidth(120);
+//        sliderTempo.getStyleClass().add("slider");
+//        sliderTempo.setPrefWidth(200);
+//        HBox.setHgrow(sliderTempo, Priority.ALWAYS);
+//        box.getChildren().addAll(label, sliderTempo);
+//        return box;
+//    }
+private VBox createTimeUnitField() {
+    VBox box = new VBox(5);
+    box.setAlignment(Pos.CENTER_LEFT);
+
+    Label label = new Label("");
+    label.getStyleClass().add("label");
+    label.setMinWidth(120);
+
+    sliderTempo = new Slider(100, 1000, 100);
+    sliderTempo.getStyleClass().add("slider");
+    sliderTempo.setPrefWidth(200);
+
+    Label lblSliderValue = new Label(String.format("%.0f Unidades de Tempo", sliderTempo.getValue()));
+    lblSliderValue.getStyleClass().add("slider-value");
+
+    sliderTempo.valueProperty().addListener((obs, oldval, newVal) ->
+            lblSliderValue.setText(String.format("%.0f Unidades de Tempo", newVal.doubleValue()))
+    );
+
+    box.getChildren().addAll(label, sliderTempo, lblSliderValue);
+    return box;
+}
 
     private void registerHandlers() {
         createButton.setOnAction(event -> {
