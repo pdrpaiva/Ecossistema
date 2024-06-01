@@ -101,10 +101,11 @@ public class Ecossistema implements IGameEngineEvolve {
     public Fauna encontrarFaunaMaisFraca(int ignorarID) {
         double menorForca = Double.MAX_VALUE;
         Fauna maisFraca = null;
+
         for (IElemento elemento : elementos) {
             if (elemento.getTipo() == Elemento.FAUNA && elemento.getId() != ignorarID) {
                 Fauna fauna = (Fauna) elemento;
-                if (fauna.getForca() < menorForca) {
+                if (fauna.getForca() < menorForca && maisFraca == null) {
                     menorForca = fauna.getForca();
                     maisFraca = fauna;
                 }

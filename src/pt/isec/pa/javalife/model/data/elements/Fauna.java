@@ -96,17 +96,6 @@ public final class Fauna extends ElementoBase implements IElementoComImagem, IEl
         this.tempoProximidadeOutroFauna = 0;
     }
 
-//    public void mover() {
-//        Area novaArea = getArea().mover(direcao, velocidade);
-//        if (!faunaContext.getEcossistema().verificarLimites(novaArea)) {
-//            setArea(novaArea.cima(), novaArea.esquerda(), novaArea.baixo(), novaArea.direita());
-//            perderForca(CUSTO_MOVIMENTO);
-//        } else {
-//            direcao = direcao.oposta();
-//            perderForca(CUSTO_MOVIMENTO);
-//        }
-//    }
-
     public void mover() {
         Area areaAntiga = getArea();
         Area novaArea = areaAntiga.mover(direcaoAtual, velocidade);
@@ -244,7 +233,7 @@ public final class Fauna extends ElementoBase implements IElementoComImagem, IEl
         Area areaFutura = getArea().mover(dir, velocidade);
 
         for (IElemento elemento : faunaContext.getEcossistema().getElementos()) {
-            if (elemento.getTipo() == Elemento.INANIMADO && areaFutura.intersecta(elemento.getArea())) {
+            if (elemento.getTipo() == Elemento.INANIMADO &&elemento.getTipo() == Elemento.FAUNA && areaFutura.intersecta(elemento.getArea())) {
                 return true;
             }
         }

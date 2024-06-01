@@ -67,6 +67,17 @@ public record Area(double cima, double esquerda, double baixo, double direita) i
         return !(this.direita <= outra.esquerda || this.esquerda >= outra.direita ||
                 this.baixo <= outra.cima || this.cima >= outra.baixo);
     }
+    public boolean isAdjacent(Area outra) {
+        boolean adjacenteHorizontalmente = (this.direita == outra.esquerda || this.esquerda == outra.direita) &&
+                (this.cima < outra.baixo && this.baixo > outra.cima);
+
+        boolean adjacenteVerticalmente = (this.baixo == outra.cima || this.cima == outra.baixo) &&
+                (this.esquerda < outra.direita && this.direita > outra.esquerda);
+
+        return adjacenteHorizontalmente || adjacenteVerticalmente;
+    }
+
+
 
     public Area mover(Direction direcao, double velocidade) {
         double largura = this.direita - this.esquerda;

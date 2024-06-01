@@ -18,28 +18,45 @@ public class ProcuraComidaState extends FaunaStateAdapter {
         Fauna weakestFauna = null;
 
         if (closestFlora != null) {
+            System.out.println("Flora mais próxima encontrada: " + closestFlora);
             if (moveTo(closestFlora)) {
                 System.out.println("ALIMENTCAO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                 changeState(FaunaState.ALIMENTACAO);
+            } else {
+
             }
         } else {
             weakestFauna = context.getEcossistema().encontrarFaunaMaisFraca(data.getId());
-            if (weakestFauna != null && moveTo(weakestFauna)) {
-                changeState(FaunaState.ATAQUE);
+            System.out.println("Fauna mais fraca encontrada: " + data.getId());
+
+            if (weakestFauna != null) {
+                if (moveToFauna(weakestFauna)) {
+                    System.out.println("ATAQUE");
+                    changeState(FaunaState.ATAQUE);
+                } else {
+                    changeState(FaunaState.MOVIMENTO);
+                }
             } else {
+
                 changeState(FaunaState.MOVIMENTO);
             }
         }
         return true;
     }
-
    private boolean moveTo(IElemento target) {
        data.moveParaAlvo(target);
        return isOverlapping(data.getArea(), target.getArea());
    }
+    private boolean moveToFauna(IElemento target) {
+        data.moveParaAlvo(target);
+        return adjacente(data.getArea(),target.getArea());
+    }
 
     private boolean isOverlapping(Area area1, Area area2) {
         return area1.intersecta(area2);
+    }
+    private boolean adjacente(Area area1, Area area2){
+        return area1.isAdjacent(area2);
     }
 
     @Override

@@ -39,13 +39,13 @@ public class AtaqueState extends FaunaStateAdapter {
                 faunaAlvo.setForca(0);
             }
         }
-
         if (data.getForca() > 0) {
             data.setForca(data.getForca() + faunaAlvo.getForca());
             faunaAlvo.setForca(0);
         } else {
             faunaAlvo.setForca(faunaAlvo.getForca() + data.getForca() + 10);
             data.setForca(0);
+            System.out.println("esfaleceu");
         }
 
         context.getEcossistema().removerElemento(faunaAlvo.getId());
