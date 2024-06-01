@@ -33,24 +33,10 @@ public class ProcuraComidaState extends FaunaStateAdapter {
         return true;
     }
 
-//    private boolean moveTo(IElemento target) {
-//        data.moveParaAlvo(target);
-//        return isOverlapping(data.getArea(), target.getArea());
-//    }
-
-    private boolean moveTo(IElemento target) {
-        data.moveParaAlvo(target);
-        if (isOverlapping(data.getArea(), target.getArea())) {
-            return true;
-        } else {
-            // Se encontra um obstáculo no caminho, mudar para direção aleatória e tentar novamente.
-            if (data.temObstaculoAFrente(context.getEcossistema().getElementos())) {
-                data.mudarParaDirecaoAleatoria();
-                data.mover();
-            }
-            return false;
-        }
-    }
+   private boolean moveTo(IElemento target) {
+       data.moveParaAlvo(target);
+       return isOverlapping(data.getArea(), target.getArea());
+   }
 
     private boolean isOverlapping(Area area1, Area area2) {
         return area1.intersecta(area2);

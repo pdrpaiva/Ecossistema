@@ -21,7 +21,10 @@ public final class Fauna extends ElementoBase implements IElementoComImagem, IEl
     private String imagem;
     private boolean vivo;
     private final FaunaContext faunaContext;
-    private Direction direcao;
+    private Direction direcaoAtual;
+    private Direction direcaoAlternativa;
+    private int contadorIteracoes = 0;
+    private final int MAX_ITERACOES = 4;
     private double velocidade;
     private int tempoProximidadeOutroFauna;
 
@@ -31,7 +34,8 @@ public final class Fauna extends ElementoBase implements IElementoComImagem, IEl
         this.imagem = "default.png"; // Placeholder para a imagem, pode ser alterada conforme necessário
         this.vivo = true;
         this.faunaContext = new FaunaContext(this, ecossistema);
-        this.direcao = Direction.RIGHT;
+        this.direcaoAtual = Direction.RIGHT;
+        direcaoAlternativa = null;
         this.velocidade = 1.0;
         this.tempoProximidadeOutroFauna = 0;
     }
@@ -65,11 +69,11 @@ public final class Fauna extends ElementoBase implements IElementoComImagem, IEl
     }
 
     public Direction getDirecao() {
-        return direcao;
+        return direcaoAtual;
     }
 
     public void setDirecao(Direction direcao) {
-        this.direcao = direcao;
+        this.direcaoAtual = direcao;
     }
 
     public double getVelocidade() {
@@ -105,14 +109,14 @@ public final class Fauna extends ElementoBase implements IElementoComImagem, IEl
 
     public void mover() {
         Area areaAntiga = getArea();
-        Area novaArea = areaAntiga.mover(direcao, velocidade);
+        Area novaArea = areaAntiga.mover(direcaoAtual, velocidade);
 
         boolean dentroDosLimites = !faunaContext.getEcossistema().verificarLimites(novaArea);
 
         boolean colide = false;
         for (IElemento elemento : faunaContext.getEcossistema().getElementos()) {
             // Verifica se o elemento é do tipo fauna ou inanimado
-            if (elemento.getTipo()==Elemento.INANIMADO || elemento.getTipo()==Elemento.FAUNA) {
+            if (elemento.getTipo() == Elemento.INANIMADO || elemento.getTipo() == Elemento.FAUNA) {
                 Area areaElemento = elemento.getArea();
                 if (!areaElemento.equals(areaAntiga) && novaArea.intersecta(areaElemento)) {
                     colide = true;
@@ -124,8 +128,65 @@ public final class Fauna extends ElementoBase implements IElementoComImagem, IEl
             setArea(novaArea.cima(), novaArea.esquerda(), TAMANHO, TAMANHO);
             perderForca(CUSTO_MOVIMENTO);
         } else {
-            direcao = direcao.oposta();
+            // Evitar a inversão de direção imediata
+            if (direcaoAlternativa == null) {
+                direcaoAlternativa = (direcaoAtual == Direction.LEFT || direcaoAtual == Direction.RIGHT) ? Direction.UP : Direction.LEFT;
+                contadorIteracoes = 0;
+            } else {
+                direcaoAtual = direcaoAlternativa;
+            }
             perderForca(CUSTO_MOVIMENTO);
+        }
+    }
+    public void moveParaAlvo(IElemento alvo) {
+        double deltaX = alvo.getArea().esquerda() - this.getArea().esquerda();
+        double deltaY = alvo.getArea().cima() - this.getArea().cima();
+
+        Direction dirX = (deltaX > 0) ? Direction.RIGHT : Direction.LEFT;
+        Direction dirY = (deltaY > 0) ? Direction.DOWN : Direction.UP;
+
+        boolean obstaculoDirX = temObstaculoNaDirecao(dirX);
+        boolean obstaculoDirY = temObstaculoNaDirecao(dirY);
+
+        // Se a direção alternativa ainda não expirou, continue usando-a
+        if (direcaoAlternativa != null && contadorIteracoes < MAX_ITERACOES) {
+            contadorIteracoes++;
+            direcaoAtual = direcaoAlternativa;
+        } else {
+            // Resetar a direção alternativa e o contador
+            direcaoAlternativa = null;
+            contadorIteracoes = 0;
+
+            // Decidir a nova direção com base nos obstáculos
+            if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                if (!obstaculoDirX) {
+                    direcaoAtual = dirX;
+                } else if (!obstaculoDirY) {
+                    direcaoAtual = dirY;
+                    direcaoAlternativa = dirY; // Definir a direção alternativa
+                } else {
+                    // Se ambas as direções principais estão bloqueadas, escolher a melhor alternativa
+                    direcaoAtual = (dirY == Direction.DOWN) ? Direction.UP : Direction.DOWN;
+                    direcaoAlternativa = direcaoAtual; // Definir a direção alternativa
+                }
+            } else {
+                if (!obstaculoDirY) {
+                    direcaoAtual = dirY;
+                } else if (!obstaculoDirX) {
+                    direcaoAtual = dirX;
+                    direcaoAlternativa = dirX; // Definir a direção alternativa
+                } else {
+                    // Se ambas as direções principais estão bloqueadas, escolher a melhor alternativa
+                    direcaoAtual = (dirX == Direction.RIGHT) ? Direction.LEFT : Direction.RIGHT;
+                    direcaoAlternativa = direcaoAtual; // Definir a direção alternativa
+                }
+            }
+        }
+
+        setDirecao(direcaoAtual);
+
+        if (!getArea().intersecta(alvo.getArea())) {
+            mover();
         }
     }
 
@@ -174,32 +235,15 @@ public final class Fauna extends ElementoBase implements IElementoComImagem, IEl
         }
     }
 
-    public void moveParaAlvo(IElemento alvo) {
-        double deltaX = alvo.getArea().esquerda() - this.getArea().esquerda();
-        double deltaY = alvo.getArea().cima() - this.getArea().cima();
-
-        Direction dirX = (deltaX > 0) ? Direction.RIGHT : Direction.LEFT;
-        Direction dirY = (deltaY > 0) ? Direction.DOWN : Direction.UP;
-
-        if (Math.abs(deltaX) > Math.abs(deltaY)) {
-            setDirecao(dirX);
-        } else {
-            setDirecao(dirY);
-        }
-
-        if (!getArea().intersecta(alvo.getArea())) {
-            mover();
-        }
-    }
-
     public void mudarParaDirecaoAleatoria() {
         setDirecao(Direction.direcaoAleatoria());
     }
 
-    public boolean temObstaculoAFrente(Set<IElemento> elementos) {
-        Area areaFutura = getArea().mover(direcao, velocidade);
+    public boolean temObstaculoNaDirecao(Direction dir) {
+        // Calcular a área futura com base na direção fornecida
+        Area areaFutura = getArea().mover(dir, velocidade);
 
-        for (IElemento elemento : elementos) {
+        for (IElemento elemento : faunaContext.getEcossistema().getElementos()) {
             if (elemento.getTipo() == Elemento.INANIMADO && areaFutura.intersecta(elemento.getArea())) {
                 return true;
             }
