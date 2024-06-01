@@ -335,6 +335,7 @@ public class EcosystemUI {
                 Area area = elemento.getArea();
                 gc.setStroke(Color.WHITE);
                 gc.strokeRect(area.esquerda() - 2, area.cima() - 2, area.direita() - area.esquerda() + 4, area.baixo() - area.cima() + 4);
+                updateSidebar(elemento);
             }
         }
     }
