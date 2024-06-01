@@ -7,6 +7,8 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -17,12 +19,8 @@ import pt.isec.pa.javalife.model.data.ecosystem.EcossistemaManager;
 import pt.isec.pa.javalife.model.data.elements.*;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class EcosystemUI {
     private Scene scene;
@@ -30,15 +28,14 @@ public class EcosystemUI {
     private EcossistemaManager ecossistemaManager;
     private Canvas canvas;
     private GraphicsContext gc;
-    private Button btnPlayPause, btnAddElement, btnCreateEcosystem, btnImport, btnExport, btnDelElement;
-    private ComboBox<String> comboBox;
-    private TextField txtX, txtY, txtId, txtType, txtEsq, txtDir, txtCima, txtBaixo, txtEnergia;
+    private Button btnPlayPause, btnFauna, btnFlora, btnInanimado, btnVoltar;
+    private TextField txtX, txtY, txtId, txtType, txtEsq, txtDir, txtCima, txtBaixo, txtEnergia, txtEstado;
     private Slider strenghtSlider;
     private int currentElementIDSelected = -1;
     private Map<Integer, Area> previousPositions;
-    private MenuItem exportMenuItem,importMenuItem;
+    private MenuItem exportMenuItem, importMenuItem;
 
-    private Button btnAplicarSol, btnAplicarHerbicida, btnInjetarForca;
+    private Button btnAplicarSol, btnAplicarHerbicida, btnInjetarForca, btnApagar;
 
     public EcosystemUI(Stage primaryStage, EcossistemaManager ecossistemaManager) {
         this.primaryStage = primaryStage;
@@ -58,59 +55,86 @@ public class EcosystemUI {
 
     private void createViews() {
         BorderPane root = new BorderPane();
-        root.setStyle("-fx-background-color: #00593c;");
+        root.getStyleClass().add("root");
 
         // Top menu bar
         MenuBar menuBar = new MenuBar();
         Menu fileMenu = new Menu("File");
         exportMenuItem = new MenuItem("Export");
         importMenuItem = new MenuItem("Import");
-        fileMenu.getItems().addAll(exportMenuItem,importMenuItem);
+        fileMenu.getItems().addAll(exportMenuItem, importMenuItem);
         menuBar.getMenus().add(fileMenu);
         root.setTop(menuBar);
-
-        // Top toolbar
-        HBox toolbar = new HBox(10);
-        toolbar.setPadding(new Insets(10));
-        toolbar.setAlignment(Pos.CENTER_LEFT);
-        toolbar.setStyle("-fx-background-color: #00593c;");
-
-        // Botão Play/Pause
-        btnPlayPause = new Button("Pause");
-        toolbar.getChildren().addAll(btnPlayPause);
-        root.setTop(toolbar);
-
-
-        // Botões de eventos
-        btnAplicarSol = new Button("Aplicar Sol");
-        btnAplicarHerbicida = new Button("Aplicar Herbicida");
-        btnInjetarForca = new Button("Injetar Força");
-        toolbar.getChildren().addAll(btnAplicarSol, btnAplicarHerbicida, btnInjetarForca);
-        root.setTop(toolbar);
 
         // Área central do ecossistema com Canvas
         canvas = new Canvas(ecossistemaManager.getLargura(), ecossistemaManager.getAltura());
         gc = canvas.getGraphicsContext2D();
         Pane canvasPane = new Pane(canvas);
+        canvasPane.setStyle("-fx-background-color: #0D0D0D;"); // Ajuste para um fundo mais escuro
         root.setCenter(canvasPane);
 
         // Right sidebar for controls
-        VBox sidebar = new VBox(10);
+        VBox sidebar = new VBox(20);
         sidebar.setPadding(new Insets(10));
-        sidebar.setStyle("-fx-background-color: #00593c;");
+        sidebar.getStyleClass().add("sidebar");
         sidebar.setAlignment(Pos.TOP_CENTER);
+        sidebar.setStyle("-fx-background-image: url('pt/isec/pa/javalife/ui/gui/resources/images/bg.jpeg'); -fx-background-size: cover; -fx-background-radius: 10;");
 
-        comboBox = new ComboBox<>();
-        comboBox.getItems().addAll("Fauna", "Flora", "Inanimado");
-        comboBox.setValue("Fauna");
+        // HBox para Play/Pause e Voltar lado a lado
+        HBox hboxPlayPauseVoltar = new HBox(10);
+        hboxPlayPauseVoltar.setAlignment(Pos.CENTER);
+        btnPlayPause = new Button();
+        btnPlayPause.getStyleClass().addAll("play-pause", "transparent-button");
+        setButtonImage(btnPlayPause, "pause.png"); // Define a imagem inicial como "play"
 
-        btnAddElement = new Button("Adicionar Elemento");
-        btnCreateEcosystem = new Button("Criar Ecossistema");
-        btnImport = new Button("Importar");
-        btnExport = new Button("Exportar");
-        btnDelElement = new Button("Deletar Elemento");
-        btnAplicarSol = new Button("Aplicar Sol"); // Botão para aplicar o Sol
+        btnVoltar = new Button();
+        btnVoltar.getStyleClass().add("transparent-button");
+        setButtonImage(btnVoltar, "back.png");
 
+        hboxPlayPauseVoltar.getChildren().addAll(btnPlayPause, btnVoltar);
+        sidebar.getChildren().add(hboxPlayPauseVoltar);
+
+        // Separador
+        Separator separator = new Separator();
+        sidebar.getChildren().add(separator);
+
+        // Botões de adicionar elementos
+        Label addLabel = new Label("ADICIONAR");
+        addLabel.getStyleClass().add("sidebar-title");
+        sidebar.getChildren().add(addLabel);
+
+        btnFauna = new Button("Fauna");
+        btnFlora = new Button("Flora");
+        btnInanimado = new Button("Inanimado");
+
+        btnFauna.getStyleClass().add("sidebar-button");
+        btnFlora.getStyleClass().add("sidebar-button");
+        btnInanimado.getStyleClass().add("sidebar-button");
+
+        sidebar.getChildren().addAll(btnFauna, btnFlora, btnInanimado);
+
+        // Separador
+        Separator separator2 = new Separator();
+        sidebar.getChildren().add(separator2);
+
+        // Botões de interação
+        Label interactionLabel = new Label("INTERAÇÃO");
+        interactionLabel.getStyleClass().add("sidebar-title");
+        sidebar.getChildren().add(interactionLabel);
+
+        btnAplicarSol = new Button("Sol");
+        btnAplicarHerbicida = new Button("Herbicida");
+        btnInjetarForca = new Button("Injetar Força");
+        btnApagar = new Button("Apagar");
+
+        btnAplicarSol.getStyleClass().add("sidebar-button");
+        btnAplicarHerbicida.getStyleClass().add("sidebar-button");
+        btnInjetarForca.getStyleClass().add("sidebar-button");
+        btnApagar.getStyleClass().add("sidebar-button");
+
+        sidebar.getChildren().addAll(btnAplicarSol, btnAplicarHerbicida, btnInjetarForca, btnApagar);
+
+        // TextFields para informação do elemento
         txtX = new TextField();
         txtY = new TextField();
         txtId = new TextField();
@@ -120,54 +144,84 @@ public class EcosystemUI {
         txtCima = new TextField();
         txtBaixo = new TextField();
         txtEnergia = new TextField();
-        txtEnergia.setEditable(false); // Campo de energia só leitura
+        txtEstado = new TextField();
+        txtEnergia.setEditable(false);
+        txtEnergia.getStyleClass().add("text-field");
+        txtEstado.setEditable(false);
+        txtEstado.getStyleClass().add("text-field");
 
-        strenghtSlider = new Slider();
+        // Separador
+        Separator separator3 = new Separator();
+        sidebar.getChildren().add(separator3);
 
-        sidebar.getChildren().addAll(comboBox, btnAddElement, btnCreateEcosystem, btnImport, btnExport, btnDelElement, btnAplicarSol);
-        sidebar.getChildren().addAll(new Label("Energia:"), txtEnergia); // Adicionando o campo de energia
+        // Botões de interação
+        Label informacaoLabel = new Label("INFORMAÇÃO");
+        informacaoLabel.getStyleClass().add("sidebar-title");
+        sidebar.getChildren().add(informacaoLabel);
+
+        GridPane infoGrid = new GridPane();
+        infoGrid.setHgap(10);
+        infoGrid.setVgap(10);
+
+        infoGrid.add(new Label("ID:"), 0, 0);
+        infoGrid.add(txtId, 1, 0);
+        infoGrid.add(new Label("Energia:"), 0, 1);
+        infoGrid.add(txtEnergia, 1, 1);
+        infoGrid.add(new Label("Estado:"), 0, 2);
+        infoGrid.add(txtEstado, 1, 2);
+
+        sidebar.getChildren().add(infoGrid);
+
         root.setRight(sidebar);
 
-        scene = new Scene(root, 800, 600);
+        scene = new Scene(root, 800, 600); // Valor inicial, pode ser ajustado depois
+        String css = getClass().getResource("/pt/isec/pa/javalife/ui/gui/resources/css/Ecossystem.css").toExternalForm();
+        if (css == null) {
+            System.out.println("CSS file not found. Please check the path.");
+        } else {
+            scene.getStylesheets().add(css);
+        }
 
-        // Set the menu bar at the top
-        root.setTop(new VBox(menuBar, toolbar));
+        // Ajustar o tamanho da janela conforme o ecossistema
+        ajustarTamanhoJanela(ecossistemaManager.getLargura(), ecossistemaManager.getAltura());
     }
-
     private void registerHandlers() {
         // Handler para Play/Pause
         btnPlayPause.setOnAction(event -> {
             if (ecossistemaManager.isRunning()) {
                 ecossistemaManager.pausarJogo();
-                btnPlayPause.setText("Play");
+                setButtonImage(btnPlayPause, "play.png"); // Caminho da imagem de play
             } else {
                 ecossistemaManager.retomarJogo();
-                btnPlayPause.setText("Pause");
+                setButtonImage(btnPlayPause, "pause.png"); // Caminho da imagem de pause
             }
         });
 
         // Handler para adicionar elementos
-        btnAddElement.setOnAction(event -> {
-            String selectedType = comboBox.getSelectionModel().getSelectedItem();
-            if (selectedType != null) {
-                switch (selectedType) {
-                    case "Fauna":
-                        ecossistemaManager.adicionarElementoAleatoriamente(Elemento.FAUNA);
-                        break;
-                    case "Flora":
-                        ecossistemaManager.adicionarElementoAleatoriamente(Elemento.FLORA);
-                        break;
-                    case "Inanimado":
-                        ecossistemaManager.adicionarElementoAleatoriamente(Elemento.INANIMADO);
-                        break;
-                }
-                Platform.runLater(this::updateEcosystemDisplay);
-            }
+        btnFauna.setOnAction(event -> {
+            ecossistemaManager.adicionarElementoAleatoriamente(Elemento.FAUNA);
+            Platform.runLater(this::updateEcosystemDisplay);
         });
 
-        // Handler para criar novo ecossistema
-        btnCreateEcosystem.setOnAction(event -> {
+        btnFlora.setOnAction(event -> {
+            ecossistemaManager.adicionarElementoAleatoriamente(Elemento.FLORA);
+            Platform.runLater(this::updateEcosystemDisplay);
+        });
+
+        btnInanimado.setOnAction(event -> {
+            ecossistemaManager.adicionarElementoAleatoriamente(Elemento.INANIMADO);
+            Platform.runLater(this::updateEcosystemDisplay);
+        });
+
+        btnVoltar.setOnAction(event -> {
             ecossistemaManager.limparElementos();
+            // Assumindo que você tem uma forma de obter a nova largura e altura desejadas
+            int novaLargura = 600; // Substitua com o valor correto
+            int novaAltura = 580; // Substitua com o valor correto
+            ecossistemaManager.setLargura(novaLargura);
+            ecossistemaManager.setAltura(novaAltura);
+            ajustarTamanhoJanela(novaLargura, novaAltura);
+
             CreateEcosystemUI createEcosystemUI = new CreateEcosystemUI(primaryStage, ecossistemaManager);
             primaryStage.setScene(createEcosystemUI.getScene());
         });
@@ -238,8 +292,6 @@ public class EcosystemUI {
             }
         });
 
-
-
         importMenuItem.setOnAction(event -> {
             if (!ecossistemaManager.isPaused()) {
                 showAlert(Alert.AlertType.WARNING, "Aviso", "Pause a simulação antes de importar.");
@@ -275,20 +327,8 @@ public class EcosystemUI {
             elemento.setPosicaoY((int) Double.parseDouble(newValue));
         });
 
-        // Handler para atualizar força do elemento
-        strenghtSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (!ecossistemaManager.isPaused()) return;
-            IElemento elemento = ecossistemaManager.buscarElemento(currentElementIDSelected);
-            if (elemento == null) return;
-            if (elemento instanceof Fauna) {
-                ((Fauna) elemento).setForca(newValue.doubleValue());
-            } else if (elemento instanceof Flora) {
-                ((Flora) elemento).setForca(newValue.doubleValue());
-            }
-        });
-
-        // Handler para deletar elemento
-        btnDelElement.setOnAction(event -> {
+        // Handler para apagar elementos
+        btnApagar.setOnAction(event -> {
             IElemento elemento = ecossistemaManager.buscarElemento(currentElementIDSelected);
             if (elemento == null) return;
 
@@ -297,32 +337,22 @@ public class EcosystemUI {
         });
     }
 
-//    private void exportarElementosParaCSV(File file) {
-//        try (FileWriter writer = new FileWriter(file)) {
-//            writer.append("Tipo,Forca,PosX,PosY\n");
-////            for (IElemento elemento : ecossistemaManager.obterElementos()) {
-////                String tipo = elemento.getClass().getSimpleName();
-////                double forca = (elemento instanceof IElementoComForca) ? ((IElementoComForca) elemento).getForca() : 0;
-////                double posX = elemento.getArea().esquerda();
-////                double posY = elemento.getArea().cima();
-////                writer.append(String.format("%s,%.2f,%.2f,%.2f\n", tipo, forca, posX, posY));
-////            }
-//            ecossistemaManager.exportarElementosParaCSV(file);
-//            showAlert(Alert.AlertType.INFORMATION, "Sucesso", "Elementos exportados com sucesso.");
-//        } catch (IOException e) {
-//            showAlert(Alert.AlertType.ERROR, "Erro", "Erro ao exportar elementos: " + e.getMessage());
-//        }
-//    }
-
     private void updateEcosystemDisplay() {
         // Limpa o fundo do canvas
         gc.setFill(Color.web("#373054"));
         gc.fillRect(0, 0, ecossistemaManager.getLargura(), ecossistemaManager.getAltura());
 
         Collection<IElemento> elementos = ecossistemaManager.obterElementos();
+        //E Se eu Criar uma lista separada para as entradas a serem limpas
+        List<Map.Entry<Integer, Area>> entriesToClear = new ArrayList<>(previousPositions.entrySet());
 
+//        // Limpar a posição anterior de todos os elementos de Fauna
+//        for (Map.Entry<Integer, Area> entry : previousPositions.entrySet()) {
+//            Area previousArea = entry.getValue();
+//            gc.clearRect(previousArea.esquerda(), previousArea.cima(), previousArea.direita() - previousArea.esquerda(), previousArea.baixo() - previousArea.cima());
+//        }
         // Limpar a posição anterior de todos os elementos de Fauna
-        for (Map.Entry<Integer, Area> entry : previousPositions.entrySet()) {
+        for (Map.Entry<Integer, Area> entry : entriesToClear) {
             Area previousArea = entry.getValue();
             gc.clearRect(previousArea.esquerda(), previousArea.cima(), previousArea.direita() - previousArea.esquerda(), previousArea.baixo() - previousArea.cima());
         }
@@ -374,13 +404,12 @@ public class EcosystemUI {
         txtBaixo.setText(String.valueOf(elemento.getArea().baixo()));
 
         if (elemento instanceof Fauna) {
-            strenghtSlider.setValue(((Fauna) elemento).getForca());
             txtEnergia.setText(String.valueOf(((Fauna) elemento).getForca())); // Atualiza a energia da Fauna
         } else if (elemento instanceof Flora) {
-            strenghtSlider.setValue(((Flora) elemento).getForca());
             txtEnergia.setText(String.valueOf(((Flora) elemento).getForca())); // Atualiza a energia da Flora
         } else {
             txtEnergia.setText("");
+            txtEstado.setText("");
         }
     }
 
@@ -394,6 +423,22 @@ public class EcosystemUI {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    private void ajustarTamanhoJanela(int largura, int altura) {
+        primaryStage.setWidth(largura + 240); // Ajuste o valor adicional conforme necessário
+        primaryStage.setHeight(altura + 65); // Ajuste o valor adicional conforme necessário
+        canvas.setWidth(largura);
+        canvas.setHeight(altura);
+        updateEcosystemDisplay(); // Atualiza a exibição do ecossistema após o ajuste
+    }
+
+    private void setButtonImage(Button button, String imagePath) {
+        Image image = new Image(getClass().getResourceAsStream("/pt/isec/pa/javalife/ui/gui/resources/images/" + imagePath));
+        ImageView imageView = new ImageView(image);
+        imageView.setFitHeight(20); // Ajuste o tamanho conforme necessário
+        imageView.setFitWidth(20);
+        button.setGraphic(imageView);
     }
 
     public Scene getScene() {

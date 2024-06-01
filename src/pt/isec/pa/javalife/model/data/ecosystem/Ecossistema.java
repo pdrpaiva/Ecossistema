@@ -185,7 +185,6 @@ public class Ecossistema implements IGameEngineEvolve {
 
     public void adicionarElemento(IElemento elemento) {
         elementos.add(elemento);
-        support.firePropertyChange("elemento_adicionado", null, elemento); // Notifica a mudança
     }
 
     public boolean verificarAreaLivre(Area area) {
@@ -243,7 +242,7 @@ public void evolve(IGameEngine gameEngine, long currentTime) {
             Fauna fauna = (Fauna) elemento;
             FaunaContext context = fauna.getFaunaContext();
             context.setData(fauna);
-            boolean mudou = context.executar();
+            context.executar();
 
 
             for (IElemento outroElemento : elementos) {
@@ -532,5 +531,13 @@ public void aplicarSol() {
         } catch (ParseException e) {
             throw new IllegalArgumentException("Formato de número inválido: " + value, e);
         }
+    }
+
+    public void setLargura(int largura) {
+        this.unidadesX = largura;
+    }
+
+    public void setAltura(int altura) {
+        this.unidadesY = altura;
     }
 }

@@ -224,4 +224,15 @@ public class EcossistemaManager {
     public void importarElementosDeCSV(File file) throws IOException {
         ecossistema.importarElementosDeCSV(file);
     }
+
+    public void setLargura(int largura) {
+        ecossistema.setLargura(largura);
+        support.firePropertyChange("ecossistema_atualizado", null, ecossistema);
+    }
+
+    public void setAltura(int altura) {
+        ecossistema.setAltura(altura);
+        support.firePropertyChange("ecossistema_atualizado", null, ecossistema);
+    }
+
 }

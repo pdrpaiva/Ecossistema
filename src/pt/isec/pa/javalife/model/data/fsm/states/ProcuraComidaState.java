@@ -18,9 +18,7 @@ public class ProcuraComidaState extends FaunaStateAdapter {
         Fauna weakestFauna = null;
 
         if (closestFlora != null) {
-            System.out.println("Flora mais próxima encontrada: " + closestFlora);
             if (moveTo(closestFlora)) {
-                System.out.println("ALIMENTCAO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                 changeState(FaunaState.ALIMENTACAO);
             } else {
 

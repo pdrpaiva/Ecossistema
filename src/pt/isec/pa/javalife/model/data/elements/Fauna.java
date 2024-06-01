@@ -12,9 +12,9 @@ public final class Fauna extends ElementoBase implements IElementoComImagem, IEl
 
     private static final double FORCA_INICIAL = 50;
     private static final double FORCA_MAXIMA = 100;
-    private static final double CUSTO_MOVIMENTO = 0.5;
+    private static final double CUSTO_MOVIMENTO = 0.1;
     private static final int TEMPO_REPRODUCAO = 10;
-    private static final double DISTANCIA_REPRODUCAO = 5;
+    private static final double DISTANCIA_REPRODUCAO = 50;
     private static final int TAMANHO = 13;
     private static final double CUSTO_ATAQUE = 10;
     private double forca;
@@ -127,6 +127,36 @@ public final class Fauna extends ElementoBase implements IElementoComImagem, IEl
             perderForca(CUSTO_MOVIMENTO);
         }
     }
+
+    public Fauna findStrongerFauna() {
+        Ecossistema ecossistema = faunaContext.getEcossistema();
+        Fauna strongerFauna = null;
+
+        for (IElemento elemento : ecossistema.getElementos()) {
+            if (elemento instanceof Fauna) {
+                Fauna fauna = (Fauna) elemento;
+                if (fauna.getForca() > this.getForca()) {
+                    if (strongerFauna == null || fauna.getForca() > strongerFauna.getForca()) {
+                        strongerFauna = fauna;
+                    }
+                }
+            }
+        }
+
+        return strongerFauna;
+    }
+    public Fauna findNearbyFauna() {
+        Ecossistema ecossistema = faunaContext.getEcossistema();
+        for (IElemento elemento : ecossistema.getElementos()) {
+            if (elemento instanceof Fauna) {
+                Fauna fauna = (Fauna) elemento;
+                if (fauna != this && Area.distancia(this.getArea(), fauna.getArea()) < Fauna.DISTANCIA_REPRODUCAO) {
+                    return fauna;
+                }
+            }
+        }
+        return null;
+    }
     public void moveParaAlvo(IElemento alvo) {
         double deltaX = alvo.getArea().esquerda() - this.getArea().esquerda();
         double deltaY = alvo.getArea().cima() - this.getArea().cima();
@@ -204,14 +234,21 @@ public final class Fauna extends ElementoBase implements IElementoComImagem, IEl
     }
 
     public void verificarReproducao(Fauna outraFauna) {
-        if (Area.distancia(this.getArea(), outraFauna.getArea()) < TAMANHO) {
+        if (Area.distancia(this.getArea(), outraFauna.getArea()) < DISTANCIA_REPRODUCAO) {
+            System.out.println("GOIABA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             incrementarTempoProximidadeOutroFauna();
             outraFauna.incrementarTempoProximidadeOutroFauna();
 
             if (getTempoProximidadeOutroFauna() >= TEMPO_REPRODUCAO && outraFauna.getTempoProximidadeOutroFauna() >= TEMPO_REPRODUCAO) {
                 Area areaReproducao = faunaContext.getEcossistema().encontrarAreaAdjacenteLivre(this.getArea());
+                System.out.println("AREA_REPRODUCAO!!!!!!!!!!!!!!!!!!!!!!!");
                 if (areaReproducao != null) {
-                    faunaContext.getEcossistema().criarFauna(areaReproducao.cima(), areaReproducao.esquerda());
+                    System.out.println("AREA REPRODUCAO NÃO É NULL!!!!!!!!!!!!!");
+                    if(faunaContext.getEcossistema().criarFauna(areaReproducao.cima(), areaReproducao.esquerda()) == null){
+                        System.out.println("NÃO REPRODUZIU????????????????????????????????");
+                    }else {
+                        System.out.println("REPRODUZIU????????????????????????????????");
+                    }
                     perderForca(25);
                     outraFauna.perderForca(25);
                     resetarTempoProximidadeOutroFauna();
@@ -224,9 +261,6 @@ public final class Fauna extends ElementoBase implements IElementoComImagem, IEl
         }
     }
 
-    public void mudarParaDirecaoAleatoria() {
-        setDirecao(Direction.direcaoAleatoria());
-    }
 
     public boolean temObstaculoNaDirecao(Direction dir) {
         // Calcular a área futura com base na direção fornecida

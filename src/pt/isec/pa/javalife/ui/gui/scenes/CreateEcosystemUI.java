@@ -58,8 +58,8 @@ public class CreateEcosystemUI {
         fieldsContainer.setAlignment(Pos.CENTER_LEFT);
 
         txtNome = new TextField();
-        txtAltura = new TextField("300");
-        txtComprimento = new TextField("300");
+        txtAltura = new TextField("800");
+        txtComprimento = new TextField("800");
         txtFauna = new TextField("10");
         txtFlora = new TextField("10");
         txtInanimados = new TextField("10");
