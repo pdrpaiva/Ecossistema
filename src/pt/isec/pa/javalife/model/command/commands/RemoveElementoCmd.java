@@ -1,10 +1,10 @@
 package pt.isec.pa.javalife.model.command.commands;
 
-import pt.isec.pa.javalife.model.command.CommandAdapter;
+import pt.isec.pa.javalife.model.command.ICommand;
 import pt.isec.pa.javalife.model.data.ecosystem.EcossistemaManager;
 import pt.isec.pa.javalife.model.data.elements.IElemento;
 
-public class RemoveElementoCmd extends CommandAdapter {
+public class RemoveElementoCmd implements ICommand {
 
     private final EcossistemaManager manager;
     private final IElemento elemento;
@@ -16,13 +16,11 @@ public class RemoveElementoCmd extends CommandAdapter {
 
     @Override
     public void execute() {
-        manager.removerElemento(elemento.getId());
+        manager.getEcossistema().removerElemento(elemento.getId());
     }
 
     @Override
     public void undo() {
-        manager.adicionarElemento(elemento);
+        manager.getEcossistema().adicionarElemento(elemento);
     }
-
-
 }

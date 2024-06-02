@@ -6,4 +6,6 @@ public interface IFaunaState {
 
     boolean executar();
     FaunaState getState();
+    @Override
+    String toString();
 }

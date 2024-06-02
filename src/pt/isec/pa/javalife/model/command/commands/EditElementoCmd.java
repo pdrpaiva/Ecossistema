@@ -1,6 +1,5 @@
 package pt.isec.pa.javalife.model.command.commands;
 
-import pt.isec.pa.javalife.model.command.CommandAdapter;
 import pt.isec.pa.javalife.model.command.ICommand;
 import pt.isec.pa.javalife.model.data.ecosystem.EcossistemaManager;
 import pt.isec.pa.javalife.model.data.elements.IElemento;
@@ -18,15 +17,13 @@ public class EditElementoCmd implements ICommand {
 
     @Override
     public void execute() {
-        manager.removerElemento(original.getId());
-        manager.adicionarElemento(updated);
+        manager.getEcossistema().removerElemento(original.getId());
+        manager.getEcossistema().adicionarElemento(updated);
     }
 
     @Override
     public void undo() {
-        manager.removerElemento(updated.getId());
-        manager.adicionarElemento(original);
+        manager.getEcossistema().removerElemento(updated.getId());
+        manager.getEcossistema().adicionarElemento(original);
     }
-
-
 }

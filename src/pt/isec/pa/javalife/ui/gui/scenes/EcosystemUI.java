@@ -28,7 +28,7 @@ public class EcosystemUI {
     private EcossistemaManager ecossistemaManager;
     private Canvas canvas;
     private GraphicsContext gc;
-    private Button btnPlayPause, btnFauna, btnFlora, btnInanimado, btnVoltar;
+    private Button btnPlayPause, btnFauna, btnFlora, btnInanimado, btnVoltar, btnUndo, btnRedo, btnSalvarSnapshot, btnRestaurarSnapshot;
     private TextField txtX, txtY, txtId, txtType, txtEsq, txtDir, txtCima, txtBaixo, txtEnergia, txtEstado;
     private Slider strenghtSlider;
     private int currentElementIDSelected = -1;
@@ -63,14 +63,24 @@ public class EcosystemUI {
         exportMenuItem = new MenuItem("Export");
         importMenuItem = new MenuItem("Import");
         fileMenu.getItems().addAll(exportMenuItem, importMenuItem);
+
         menuBar.getMenus().add(fileMenu);
-        root.setTop(menuBar);
+
+        // Adicionar botões de Undo e Redo
+        ToolBar toolBar = new ToolBar();
+        btnUndo = new Button("Undo");
+        btnRedo = new Button("Redo");
+        toolBar.getItems().addAll(btnUndo, btnRedo);
+
+        VBox topContainer = new VBox();
+        topContainer.getChildren().addAll(menuBar, toolBar);
+        root.setTop(topContainer);
 
         // Área central do ecossistema com Canvas
         canvas = new Canvas(ecossistemaManager.getLargura(), ecossistemaManager.getAltura());
         gc = canvas.getGraphicsContext2D();
         Pane canvasPane = new Pane(canvas);
-        canvasPane.setStyle("-fx-background-color: #0D0D0D;"); // Ajuste para um fundo mais escuro
+        canvasPane.getStyleClass().add("canvas-pane");
         root.setCenter(canvasPane);
 
         // Right sidebar for controls
@@ -78,11 +88,10 @@ public class EcosystemUI {
         sidebar.setPadding(new Insets(10));
         sidebar.getStyleClass().add("sidebar");
         sidebar.setAlignment(Pos.TOP_CENTER);
-        sidebar.setStyle("-fx-background-image: url('pt/isec/pa/javalife/ui/gui/resources/images/bg.jpeg'); -fx-background-size: cover; -fx-background-radius: 10;");
 
         // HBox para Play/Pause e Voltar lado a lado
         HBox hboxPlayPauseVoltar = new HBox(10);
-        hboxPlayPauseVoltar.setAlignment(Pos.CENTER);
+        hboxPlayPauseVoltar.setAlignment(Pos.TOP_RIGHT);
         btnPlayPause = new Button();
         btnPlayPause.getStyleClass().addAll("play-pause", "transparent-button");
         setButtonImage(btnPlayPause, "pause.png"); // Define a imagem inicial como "play"
@@ -134,6 +143,21 @@ public class EcosystemUI {
 
         sidebar.getChildren().addAll(btnAplicarSol, btnAplicarHerbicida, btnInjetarForca, btnApagar);
 
+        // Botões de snapshot
+        Label snapshotLabel = new Label("SNAPSHOT");
+        snapshotLabel.getStyleClass().add("sidebar-title");
+        sidebar.getChildren().add(snapshotLabel);
+
+        btnSalvarSnapshot = new Button("Salvar Snapshot");
+        btnRestaurarSnapshot = new Button("Restaurar Snapshot");
+        // btnReplaySnapshot = new Button("Replay Snapshot");
+
+        btnSalvarSnapshot.getStyleClass().add("sidebar-button");
+        btnRestaurarSnapshot.getStyleClass().add("sidebar-button");
+        //btnReplaySnapshot.getStyleClass().add("sidebar-button");
+
+        sidebar.getChildren().addAll(btnSalvarSnapshot, btnRestaurarSnapshot);
+
         // TextFields para informação do elemento
         txtX = new TextField();
         txtY = new TextField();
@@ -154,23 +178,21 @@ public class EcosystemUI {
         Separator separator3 = new Separator();
         sidebar.getChildren().add(separator3);
 
-        // Botões de interação
-        Label informacaoLabel = new Label("INFORMAÇÃO");
-        informacaoLabel.getStyleClass().add("sidebar-title");
-        sidebar.getChildren().add(informacaoLabel);
+        // Single label for all information
+        Label infoLabel = new Label();
+        infoLabel.getStyleClass().add("info-label");
+        sidebar.getChildren().add(infoLabel);
 
-        GridPane infoGrid = new GridPane();
-        infoGrid.setHgap(10);
-        infoGrid.setVgap(10);
-
-        infoGrid.add(new Label("ID:"), 0, 0);
-        infoGrid.add(txtId, 1, 0);
-        infoGrid.add(new Label("Energia:"), 0, 1);
-        infoGrid.add(txtEnergia, 1, 1);
-        infoGrid.add(new Label("Estado:"), 0, 2);
-        infoGrid.add(txtEstado, 1, 2);
-
-        sidebar.getChildren().add(infoGrid);
+        // Update the infoLabel whenever necessary
+        txtId.textProperty().addListener((observable, oldValue, newValue) -> {
+            updateInfoLabel(infoLabel);
+        });
+        txtEnergia.textProperty().addListener((observable, oldValue, newValue) -> {
+            updateInfoLabel(infoLabel);
+        });
+        txtEstado.textProperty().addListener((observable, oldValue, newValue) -> {
+            updateInfoLabel(infoLabel);
+        });
 
         root.setRight(sidebar);
 
@@ -185,6 +207,7 @@ public class EcosystemUI {
         // Ajustar o tamanho da janela conforme o ecossistema
         ajustarTamanhoJanela(ecossistemaManager.getLargura(), ecossistemaManager.getAltura());
     }
+
     private void registerHandlers() {
         // Handler para Play/Pause
         btnPlayPause.setOnAction(event -> {
@@ -212,6 +235,7 @@ public class EcosystemUI {
             ecossistemaManager.adicionarElementoAleatoriamente(Elemento.INANIMADO);
             Platform.runLater(this::updateEcosystemDisplay);
         });
+
 
         btnVoltar.setOnAction(event -> {
             ecossistemaManager.limparElementos();
@@ -243,6 +267,17 @@ public class EcosystemUI {
                     }
                 }
             }
+        });
+
+        // Handlers para Undo e Redo
+        btnUndo.setOnAction(event -> {
+            ecossistemaManager.undo();
+            Platform.runLater(this::updateEcosystemDisplay);
+        });
+
+        btnRedo.setOnAction(event -> {
+            ecossistemaManager.redo();
+            Platform.runLater(this::updateEcosystemDisplay);
         });
 
         // Handler para aplicar Sol
@@ -328,6 +363,22 @@ public class EcosystemUI {
         });
 
         // Handler para apagar elementos
+//        btnApagar.setOnAction(event -> {
+//            IElemento elemento = ecossistemaManager.buscarElemento(currentElementIDSelected);
+//            if (elemento == null) return;
+//
+//            ecossistemaManager.removerElemento(elemento);
+//            Platform.runLater(this::updateEcosystemDisplay);
+//
+//            // Limpar os campos de texto
+//            txtId.setText("");
+//            txtEnergia.setText("");
+//            txtEstado.setText("");
+//
+//            // Resetar a seleção de ID do elemento atual
+//            currentElementIDSelected = -1;
+//        });
+
         btnApagar.setOnAction(event -> {
             IElemento elemento = ecossistemaManager.buscarElemento(currentElementIDSelected);
             if (elemento == null) return;
@@ -335,7 +386,29 @@ public class EcosystemUI {
             ecossistemaManager.removerElemento(elemento.getId());
             Platform.runLater(this::updateEcosystemDisplay);
         });
+
+        // Handler para salvar snapshot
+        btnSalvarSnapshot.setOnAction(event -> {
+            try {
+                ecossistemaManager.salvarSnapshot();
+                showAlert(Alert.AlertType.INFORMATION, "Sucesso", "Snapshot salvo com sucesso.");
+            } catch (Exception e) {
+                showAlert(Alert.AlertType.ERROR, "Erro", "Erro ao salvar snapshot: " + e.getMessage());
+            }
+        });
+
+        // Handler para restaurar snapshot
+        btnRestaurarSnapshot.setOnAction(event -> {
+            try {
+                ecossistemaManager.restaurarSnapshot();
+                showAlert(Alert.AlertType.INFORMATION, "Sucesso", "Snapshot restaurado com sucesso.");
+                Platform.runLater(this::updateEcosystemDisplay);
+            } catch (Exception e) {
+                showAlert(Alert.AlertType.ERROR, "Erro", "Erro ao restaurar snapshot: " + e.getMessage());
+            }
+        });
     }
+
 
     private void updateEcosystemDisplay() {
         // Limpa o fundo do canvas
@@ -405,13 +478,16 @@ public class EcosystemUI {
 
         if (elemento instanceof Fauna) {
             txtEnergia.setText(String.valueOf(((Fauna) elemento).getForca())); // Atualiza a energia da Fauna
+            txtEstado.setText(((Fauna) elemento).getFaunaContext().getCurrentStateAsString());
         } else if (elemento instanceof Flora) {
             txtEnergia.setText(String.valueOf(((Flora) elemento).getForca())); // Atualiza a energia da Flora
+            txtEstado.setText("");
         } else {
             txtEnergia.setText("");
             txtEstado.setText("");
         }
     }
+
 
     private void showInspectTab() {
         // Implementar a lógica para mostrar a aba de inspeção
@@ -439,6 +515,20 @@ public class EcosystemUI {
         imageView.setFitHeight(20); // Ajuste o tamanho conforme necessário
         imageView.setFitWidth(20);
         button.setGraphic(imageView);
+    }
+
+    private void updateInfoLabel(Label infoLabel) {
+        String id = txtId.getText();
+        String energia = txtEnergia.getText();
+        String estado = txtEstado.getText();
+        double energiaValue = 0.0;
+        try {
+            energiaValue = Double.parseDouble(energia);
+        } catch (NumberFormatException e) {
+        }
+        String energiaFormatted = String.format("%.2f", energiaValue);
+
+           infoLabel.setText(String.format("Id: %s | Força: %s | %s", id, energiaFormatted, estado));
     }
 
     public Scene getScene() {

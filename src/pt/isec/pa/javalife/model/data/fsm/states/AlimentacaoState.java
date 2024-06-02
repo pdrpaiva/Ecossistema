@@ -73,4 +73,9 @@ public class AlimentacaoState extends FaunaStateAdapter {
     public FaunaState getState() {
         return FaunaState.ALIMENTACAO;
     }
+
+    @Override
+    public String toString() {
+        return "Alimentacao";
+    }
 }

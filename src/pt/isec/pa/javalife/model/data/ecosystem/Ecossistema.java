@@ -5,6 +5,9 @@ import pt.isec.pa.javalife.model.data.elements.*;
 import pt.isec.pa.javalife.model.data.fsm.FaunaContext;
 import pt.isec.pa.javalife.model.gameengine.IGameEngine;
 import pt.isec.pa.javalife.model.gameengine.IGameEngineEvolve;
+import pt.isec.pa.javalife.model.memento.IMemento;
+import pt.isec.pa.javalife.model.memento.IOriginator;
+import pt.isec.pa.javalife.model.memento.Memento;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -13,7 +16,7 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.*;
 
-public class Ecossistema implements IGameEngineEvolve {
+public class Ecossistema implements IGameEngineEvolve, IOriginator,Serializable {
     private final Set<IElemento> elementos;
     private int totalPassos = 0;
     private int escalaUnidade = 2;
@@ -427,10 +430,12 @@ public void aplicarSol() {
 
             Area area = null;
             IElemento elemento = null;
+            Random rand = new Random();
+            int valorRandom = 10 + rand.nextInt(50 - 10 + 1);
 
             switch (tipoElemento) {
                 case INANIMADO:
-                    area = new Area(y, x, y + Inanimado.size, x + Inanimado.size);
+                    area = new Area(y, x, y + valorRandom, x + valorRandom);
                     if (isAreaFree(area)) {
                         elemento = new Inanimado(y, x);
                         adicionarElemento(elemento);
@@ -438,7 +443,7 @@ public void aplicarSol() {
                     }
                     break;
                 case FAUNA:
-                    area = new Area(y, x, y + 32, x + 32); // Supondo tamanho de fauna como 32x32
+                    area = new Area(y, x, y + valorRandom, x + valorRandom); // Supondo tamanho de fauna como 32x32
                     if (isAreaFree(area)) {
                         elemento = new Fauna(y, x, this);
                         adicionarElemento(elemento);
@@ -446,7 +451,7 @@ public void aplicarSol() {
                     }
                     break;
                 case FLORA:
-                    area = new Area(y, x, y + 13, x + 13); // Supondo tamanho de flora como 13x13
+                    area = new Area(y, x, y + valorRandom, x + valorRandom); // Supondo tamanho de flora como 13x13
                     if (isAreaFree(area)) {
                         elemento = new Flora(y, x);
                         adicionarElemento(elemento);
@@ -539,5 +544,27 @@ public void aplicarSol() {
 
     public void setAltura(int altura) {
         this.unidadesY = altura;
+    }
+
+    public Flora criarFloraComTamanho(Area area, double forca, String imagem, int largura, int altura) {
+        Flora flora = new Flora(area.cima(), area.esquerda(), largura, altura);
+        flora.setForca(forca);
+        flora.setImagem(imagem);
+        adicionarElemento(flora);
+        System.out.println("Nova flora criada: " + flora);
+        return flora;
+    }
+    @Override
+    public IMemento save() {
+        return new Memento(this);
+    }
+    @Override
+    public void restore(IMemento memento) {
+        Ecossistema estado = (Ecossistema) memento.getSnapshot();
+        this.elementos.clear();
+        this.elementos.addAll(estado.obterElementos());
+        this.totalPassos = estado.obterPassos();
+        this.unidadesX = estado.getUnidadesX();
+        this.unidadesY = estado.getUnidadesY();
     }
 }

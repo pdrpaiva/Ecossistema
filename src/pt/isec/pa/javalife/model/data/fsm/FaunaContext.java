@@ -5,7 +5,9 @@ import pt.isec.pa.javalife.model.data.ecosystem.Ecossistema;
 import pt.isec.pa.javalife.model.data.fsm.states.IFaunaState;
 import pt.isec.pa.javalife.model.data.fsm.states.MovimentoState;
 
-public class FaunaContext {
+import java.io.Serializable;
+
+public class FaunaContext implements Serializable {
     private IFaunaState currentState;
     private Fauna data;
     private final Ecossistema ecossistema;
@@ -38,5 +40,9 @@ public class FaunaContext {
 
     public IFaunaState getCurrentState() {
         return currentState;
+    }
+
+    public String getCurrentStateAsString() {
+        return currentState.toString();
     }
 }

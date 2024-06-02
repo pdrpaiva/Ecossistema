@@ -6,6 +6,7 @@ import pt.isec.pa.javalife.model.data.fsm.Direction;
 import pt.isec.pa.javalife.model.data.fsm.FaunaContext;
 import pt.isec.pa.javalife.model.data.fsm.FaunaState;
 
+import java.util.Random;
 import java.util.Set;
 
 public final class Fauna extends ElementoBase implements IElementoComImagem, IElementoComForca {
@@ -27,17 +28,31 @@ public final class Fauna extends ElementoBase implements IElementoComImagem, IEl
     private final int MAX_ITERACOES = 4;
     private double velocidade;
     private int tempoProximidadeOutroFauna;
+    private int tamanho1;
+    private int tamanho2;
+
 
     public Fauna(double cima, double esquerda, Ecossistema ecossistema) {
-        super(Elemento.FAUNA, cima, esquerda, TAMANHO, TAMANHO);
+        this(cima, esquerda, gerarTamanhoAleatorio(), gerarTamanhoAleatorio(), ecossistema);
+    }
+
+    public Fauna(double cima, double esquerda, int largura, int altura, Ecossistema ecossistema) {
+        super(Elemento.FAUNA, cima, esquerda, largura, altura);
         this.forca = FORCA_INICIAL;
         this.imagem = "default.png"; // Placeholder para a imagem, pode ser alterada conforme necessário
         this.vivo = true;
         this.faunaContext = new FaunaContext(this, ecossistema);
         this.direcaoAtual = Direction.RIGHT;
-        direcaoAlternativa = null;
+        this.direcaoAlternativa = null;
         this.velocidade = 1.0;
         this.tempoProximidadeOutroFauna = 0;
+        this.tamanho1 = largura ;
+        this.tamanho2 = altura ;// Definindo tamanho como a área
+    }
+
+    private static int gerarTamanhoAleatorio() {
+        Random rand = new Random();
+        return 10 + rand.nextInt(50 - 10 + 1);
     }
 
     public double getForca() {
@@ -114,7 +129,7 @@ public final class Fauna extends ElementoBase implements IElementoComImagem, IEl
             }
         }
         if (dentroDosLimites && !colide) {
-            setArea(novaArea.cima(), novaArea.esquerda(), TAMANHO, TAMANHO);
+            setArea(novaArea.cima(), novaArea.esquerda(), this.tamanho1, this.tamanho2);
             perderForca(CUSTO_MOVIMENTO);
         } else {
             // Evitar a inversão de direção imediata

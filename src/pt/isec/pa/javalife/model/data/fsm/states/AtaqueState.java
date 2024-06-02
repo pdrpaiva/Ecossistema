@@ -68,4 +68,9 @@ public class AtaqueState extends FaunaStateAdapter {
         }
         return maisFraca;
     }
+
+    @Override
+    public String toString() {
+        return "Ataque";
+    }
 }

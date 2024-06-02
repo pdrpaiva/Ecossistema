@@ -58,4 +58,9 @@ public class MovimentoState extends FaunaStateAdapter {
     public FaunaState getState() {
         return FaunaState.MOVIMENTO;
     }
+
+    @Override
+    public String toString() {
+        return "Movimento";
+    }
 }

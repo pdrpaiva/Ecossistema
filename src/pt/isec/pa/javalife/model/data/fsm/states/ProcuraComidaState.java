@@ -61,4 +61,9 @@ public class ProcuraComidaState extends FaunaStateAdapter {
     public FaunaState getState() {
         return FaunaState.PROCURA_COMIDA;
     }
+
+    @Override
+    public String toString() {
+        return "ProcuraComida";
+    }
 }

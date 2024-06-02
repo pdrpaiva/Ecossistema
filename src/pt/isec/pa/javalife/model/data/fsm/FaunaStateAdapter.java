@@ -3,7 +3,9 @@ package pt.isec.pa.javalife.model.data.fsm;
 import pt.isec.pa.javalife.model.data.elements.Fauna;
 import pt.isec.pa.javalife.model.data.fsm.states.IFaunaState;
 
-public abstract class FaunaStateAdapter implements IFaunaState {
+import java.io.Serializable;
+
+public abstract class FaunaStateAdapter implements IFaunaState, Serializable {
     protected FaunaContext context;
     protected Fauna data;
 

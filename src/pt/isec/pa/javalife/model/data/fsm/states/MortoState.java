@@ -56,4 +56,9 @@ public class MortoState extends FaunaStateAdapter {
     public FaunaState getState() {
         return FaunaState.MORTO;
     }
+
+    @Override
+    public String toString() {
+        return "Morto";
+    }
 }
