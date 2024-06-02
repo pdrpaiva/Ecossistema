@@ -199,6 +199,8 @@ public class Ecossistema implements IGameEngineEvolve, IOriginator,Serializable 
         return true;
     }
 
+
+
     public boolean verificarLimites(Area area) {
         return area.esquerda() < 0 || area.direita() > getLargura() || area.cima() < 0 || area.baixo() > getAltura();
     }

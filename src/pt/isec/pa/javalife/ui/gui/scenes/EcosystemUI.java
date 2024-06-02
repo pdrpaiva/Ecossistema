@@ -462,11 +462,6 @@ public class EcosystemUI {
         //E Se eu Criar uma lista separada para as entradas a serem limpas
         List<Map.Entry<Integer, Area>> entriesToClear = new ArrayList<>(previousPositions.entrySet());
 
-//        // Limpar a posição anterior de todos os elementos de Fauna
-//        for (Map.Entry<Integer, Area> entry : previousPositions.entrySet()) {
-//            Area previousArea = entry.getValue();
-//            gc.clearRect(previousArea.esquerda(), previousArea.cima(), previousArea.direita() - previousArea.esquerda(), previousArea.baixo() - previousArea.cima());
-//        }
         // Limpar a posição anterior de todos os elementos de Fauna
         for (Map.Entry<Integer, Area> entry : entriesToClear) {
             Area previousArea = entry.getValue();
@@ -482,7 +477,9 @@ public class EcosystemUI {
             if (elemento instanceof Flora) {
                 Flora fl = (Flora) elemento;
                 double strength = fl.getForca();
-                Color floraColor = Color.GREENYELLOW;
+                double maxStrength = 100.0; // Defina a força máxima esperada
+                double opacity = Math.max(0, Math.min(1, strength / maxStrength)); // Calcula a opacidade baseada na força
+                Color floraColor = Color.GREENYELLOW.deriveColor(0, 1, 1, opacity);
                 gc.setFill(floraColor);
                 gc.fillRect(area.esquerda(), area.cima(), width, height);
             } else if (elemento instanceof Inanimado) {

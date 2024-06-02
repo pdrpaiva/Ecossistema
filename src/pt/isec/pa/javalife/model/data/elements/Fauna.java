@@ -14,10 +14,9 @@ public final class Fauna extends ElementoBase implements IElementoComImagem, IEl
 
     private static final double FORCA_INICIAL = 50;
     private static final double FORCA_MAXIMA = 100;
-    private static final double CUSTO_MOVIMENTO = 0.1;
+    private static final double CUSTO_MOVIMENTO = 0.5;
     private static final int TEMPO_REPRODUCAO = 10;
-    private static final double DISTANCIA_REPRODUCAO = 50;
-    private static final int TAMANHO = 13;
+    private static final double DISTANCIA_REPRODUCAO = 20;
     private static final double CUSTO_ATAQUE = 10;
     private double forca;
     private String imagem;
@@ -169,6 +168,7 @@ public final class Fauna extends ElementoBase implements IElementoComImagem, IEl
                 if (fauna != this && Area.distancia(this.getArea(), fauna.getArea()) < Fauna.DISTANCIA_REPRODUCAO) {
                     return fauna;
                 }
+
             }
         }
         return null;
