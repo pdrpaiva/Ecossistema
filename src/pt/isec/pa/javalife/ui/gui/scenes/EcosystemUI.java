@@ -19,6 +19,7 @@ import javafx.stage.Stage;
 import pt.isec.pa.javalife.model.data.area.Area;
 import pt.isec.pa.javalife.model.data.ecosystem.EcossistemaManager;
 import pt.isec.pa.javalife.model.data.elements.*;
+import pt.isec.pa.javalife.ui.gui.resources.ImageResourceManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -486,8 +487,8 @@ public class EcosystemUI {
                 gc.setFill(Color.GRAY);
                 gc.fillRect(area.esquerda(), area.cima(), width, height);
             } else if (elemento instanceof Fauna) {
-                gc.setFill(Color.RED);
-                gc.fillRect(area.esquerda(), area.cima(), width, height);
+                Fauna f = (Fauna) elemento;
+                gc.drawImage(ImageResourceManager.getImage(f.getImagem()), f.getArea().esquerda(), f.getArea().cima(), width, height);
             } else {
                 System.out.println("Elemento desconhecido: " + elemento.getClass().getName());
             }

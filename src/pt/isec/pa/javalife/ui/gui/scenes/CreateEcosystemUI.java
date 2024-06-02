@@ -99,7 +99,7 @@ public class CreateEcosystemUI {
         return box;
     }
 
-//    private HBox createTimeUnitField() {
+    //    private HBox createTimeUnitField() {
 //        HBox box = new HBox(10);
 //        box.setAlignment(Pos.CENTER_LEFT);
 //        Label label = new Label("Tempo");
@@ -111,36 +111,36 @@ public class CreateEcosystemUI {
 //        box.getChildren().addAll(label, sliderTempo);
 //        return box;
 //    }
-private VBox createTimeUnitField() {
-    VBox box = new VBox(5);
-    box.setAlignment(Pos.CENTER);
+    private VBox createTimeUnitField() {
+        VBox box = new VBox(5);
+        box.setAlignment(Pos.CENTER);
 
-    Label label = new Label("");
-    label.getStyleClass().add("label");
-    label.setMinWidth(120);
+        Label label = new Label("");
+        label.getStyleClass().add("label");
+        label.setMinWidth(120);
 
-    sliderTempo = new Slider(1, 1000, 100);
-    sliderTempo.getStyleClass().add("slider");
-    sliderTempo.setPrefWidth(200);
+        sliderTempo = new Slider(1, 1000, 100);
+        sliderTempo.getStyleClass().add("slider");
+        sliderTempo.setPrefWidth(200);
 
-    // Configurar os Tick Marks
-    sliderTempo.setShowTickMarks(true);
-    sliderTempo.setShowTickLabels(true);
-    sliderTempo.setMajorTickUnit(100);
-    sliderTempo.setMinorTickCount(4);
-    sliderTempo.setBlockIncrement(5);
+        // Configurar os Tick Marks
+        sliderTempo.setShowTickMarks(true);
+        sliderTempo.setShowTickLabels(true);
+        sliderTempo.setMajorTickUnit(100);
+        sliderTempo.setMinorTickCount(4);
+        sliderTempo.setBlockIncrement(5);
 
-    Label lblSliderValue = new Label(String.format("%.0f Unidades de Tempo", sliderTempo.getValue()));
-    lblSliderValue.getStyleClass().add("slider-value");
-    lblSliderValue.setAlignment(Pos.CENTER); // Centraliza o texto dentro da Label
+        Label lblSliderValue = new Label(String.format("%.0f Unidades de Tempo", sliderTempo.getValue()));
+        lblSliderValue.getStyleClass().add("slider-value");
+        lblSliderValue.setAlignment(Pos.CENTER); // Centraliza o texto dentro da Label
 
-    sliderTempo.valueProperty().addListener((obs, oldval, newVal) ->
-            lblSliderValue.setText(String.format("%.0f Unidades de Tempo", newVal.doubleValue()))
-    );
+        sliderTempo.valueProperty().addListener((obs, oldval, newVal) ->
+                lblSliderValue.setText(String.format("%.0f Unidades de Tempo", newVal.doubleValue()))
+        );
 
-    box.getChildren().addAll(sliderTempo, lblSliderValue);
-    return box;
-}
+        box.getChildren().addAll(sliderTempo, lblSliderValue);
+        return box;
+    }
 
     private void registerHandlers() {
         createButton.setOnAction(event -> {

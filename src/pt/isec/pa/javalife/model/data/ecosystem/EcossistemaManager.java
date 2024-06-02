@@ -317,4 +317,8 @@ public class EcossistemaManager implements Serializable {
         commandManager.executeCommand(cmd);
         support.firePropertyChange("sol_aplicado", null, null);
     }
+
+    public void setFaunaImage(String nome) {
+        ecossistema.setFaunaImage(nome);
+    }
 }

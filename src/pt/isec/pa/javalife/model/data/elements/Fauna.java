@@ -39,7 +39,7 @@ public final class Fauna extends ElementoBase implements IElementoComImagem, IEl
     public Fauna(double cima, double esquerda, int largura, int altura, Ecossistema ecossistema) {
         super(Elemento.FAUNA, cima, esquerda, largura, altura);
         this.forca = FORCA_INICIAL;
-        this.imagem = "default.png"; // Placeholder para a imagem, pode ser alterada conforme necessário
+        this.imagem = "lion"; // Placeholder para a imagem, pode ser alterada conforme necessário
         this.vivo = true;
         this.faunaContext = new FaunaContext(this, ecossistema);
         this.direcaoAtual = Direction.RIGHT;

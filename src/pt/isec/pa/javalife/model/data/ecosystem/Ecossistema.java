@@ -582,4 +582,14 @@ public void evolve(IGameEngine gameEngine, long currentTime) {
         this.unidadesX = estado.getUnidadesX();
         this.unidadesY = estado.getUnidadesY();
     }
+
+    public void setFaunaImage(String nome) {
+        for (IElemento elemento : elementos) {
+            if (elemento.getTipo() == Elemento.FAUNA) {
+                Fauna fauna = (Fauna) elemento;
+                fauna.setImagem(nome);
+                System.out.println("Fauna ID: " + fauna.getId() + ", Image set to: " + nome);
+            }
+        }
+    }
 }
