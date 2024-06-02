@@ -19,6 +19,6 @@ public class ApplySunCmd implements ICommand {
 
     @Override
     public void undo() {
-
+        manager.getEcossistema().removerSol();
     }
 }

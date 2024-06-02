@@ -242,6 +242,10 @@ public class EcossistemaManager implements Serializable {
         ecossistema.aplicarSol();
     }
 
+    public void removerSol() {
+        ecossistema.removerSol();
+    }
+
     public void exportarElementosParaCSV(File file) throws IOException {
         ecossistema.exportarElementosParaCSV(file);
     }

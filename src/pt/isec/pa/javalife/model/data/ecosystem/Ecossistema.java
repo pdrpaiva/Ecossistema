@@ -328,7 +328,7 @@ public void evolve(IGameEngine gameEngine, long currentTime) {
 
 }
 
-public void aplicarSol() {
+    public void aplicarSol() {
         solAtivo = true;
         tempoSolRestante = 10; // 10 unidades de tempo
         for (IElemento elemento : elementos) {
@@ -339,6 +339,11 @@ public void aplicarSol() {
             }
         }
         support.firePropertyChange("sol_aplicado", null, null);
+    }
+
+    public void removerSol() {
+        solAtivo = false;
+        System.out.println("CONAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     }
 
 
