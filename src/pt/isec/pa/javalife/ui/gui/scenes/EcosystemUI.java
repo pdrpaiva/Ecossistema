@@ -59,37 +59,39 @@ public class EcosystemUI {
         BorderPane root = new BorderPane();
         root.getStyleClass().add("root");
 
-        // Top menu bar
-        // MenuBar menuBar = new MenuBar(); // Remover a barra de menu
+        // Remove o Top menu bar e a ToolBar
+        // ToolBar toolBar = new ToolBar(); // Remover a barra de menu
 
-        // Adicionar botões de Undo, Redo, Export e Import
-        ToolBar toolBar = new ToolBar();
-        toolBar.getStyleClass().add("toolbar"); // Adiciona a classe "toolbar"
+        // Botões que estavam na ToolBar
         btnUndo = new Button();
         btnUndo.getStyleClass().addAll("play-pause", "transparent-button");
         setButtonImage(btnUndo, "undo.png");
+        Tooltip.install(btnUndo, new Tooltip("Desfazer"));
 
         btnRedo = new Button();
         btnRedo.getStyleClass().addAll("play-pause", "transparent-button");
         setButtonImage(btnRedo, "redo.png");
+        Tooltip.install(btnRedo, new Tooltip("Refazer"));
 
-        btnExport = new Button("Export");
-        btnImport = new Button("Import");
+        btnExport = new Button();
+        btnExport.getStyleClass().addAll("play-pause", "transparent-button");
+        setButtonImage(btnExport, "export.png");
+        Tooltip.install(btnExport, new Tooltip("Exportar"));
+
+        btnImport = new Button();
+        btnImport.getStyleClass().addAll("play-pause", "transparent-button");
+        setButtonImage(btnImport, "import.png");
+        Tooltip.install(btnImport, new Tooltip("Importar"));
 
         btnPlayPause = new Button();
         btnPlayPause.getStyleClass().addAll("play-pause", "transparent-button");
         setButtonImage(btnPlayPause, "pause.png"); // Define a imagem inicial como "play"
+        Tooltip.install(btnPlayPause, new Tooltip("Play/Pause"));
 
         btnVoltar = new Button();
         btnVoltar.getStyleClass().add("transparent-button");
         setButtonImage(btnVoltar, "back.png");
-
-        toolBar.getItems().addAll(btnUndo, createSeparator(), btnRedo,createSeparator(), btnExport,createSeparator(), btnImport,createSeparator(), btnPlayPause,createSeparator(), btnVoltar);
-
-        VBox topContainer = new VBox();
-        topContainer.getChildren().addAll(toolBar);
-        topContainer.setAlignment(Pos.TOP_RIGHT);
-        root.setTop(topContainer);
+        Tooltip.install(btnVoltar, new Tooltip("Voltar"));
 
         // Área central do ecossistema com Canvas
         canvas = new Canvas(ecossistemaManager.getLargura(), ecossistemaManager.getAltura());
@@ -104,12 +106,19 @@ public class EcosystemUI {
         sidebar.getStyleClass().add("sidebar");
         sidebar.setAlignment(Pos.TOP_CENTER);
 
+        // Adicionar botões de Undo, Redo, Export e Import na sidebar
+        //sidebar.getChildren().addAll(btnUndo, btnRedo, btnExport, btnImport);
+
         // HBox para Play/Pause e Voltar lado a lado
         HBox hboxPlayPauseVoltar = new HBox(10);
-        hboxPlayPauseVoltar.setAlignment(Pos.TOP_RIGHT);
+        hboxPlayPauseVoltar.setAlignment(Pos.TOP_CENTER);
 
-        hboxPlayPauseVoltar.getChildren().addAll(btnPlayPause, btnVoltar);
+        hboxPlayPauseVoltar.getChildren().addAll(btnUndo, btnRedo, btnExport, btnImport,btnPlayPause, btnVoltar);
         sidebar.getChildren().add(hboxPlayPauseVoltar);
+
+        // Separador
+        Separator separator2 = new Separator();
+        sidebar.getChildren().add(separator2);
 
         // Botões de adicionar elementos
         Label addLabel = new Label("ADICIONAR");
@@ -121,8 +130,11 @@ public class EcosystemUI {
         btnInanimado = new Button("Inanimado");
 
         btnFauna.getStyleClass().add("sidebar-button");
+        Tooltip.install(btnFauna, new Tooltip("Adicionar Fauna"));
         btnFlora.getStyleClass().add("sidebar-button");
+        Tooltip.install(btnFlora, new Tooltip("Adicionar Flora"));
         btnInanimado.getStyleClass().add("sidebar-button");
+        Tooltip.install(btnInanimado, new Tooltip("Adicionar Inanimado"));
 
         GridPane addGrid = new GridPane();
         addGrid.setHgap(10);
@@ -145,9 +157,13 @@ public class EcosystemUI {
         sidebar.getChildren().add(interactionLabel);
 
         btnAplicarSol = new Button("Sol");
+        Tooltip.install(btnAplicarSol, new Tooltip("Aplicar Sol"));
         btnAplicarHerbicida = new Button("Herbicida");
+        Tooltip.install(btnAplicarHerbicida, new Tooltip("Aplicar Herbicida"));
         btnInjetarForca = new Button("Força");
+        Tooltip.install(btnInjetarForca, new Tooltip("Injetar Força"));
         btnApagar = new Button("Apagar");
+        Tooltip.install(btnApagar, new Tooltip("Apagar"));
 
         btnAplicarSol.getStyleClass().add("sidebar-button");
         btnAplicarHerbicida.getStyleClass().add("sidebar-button");
@@ -170,7 +186,9 @@ public class EcosystemUI {
         sidebar.getChildren().add(snapshotLabel);
 
         btnSalvarSnapshot = new Button("Guardar");
+        Tooltip.install(btnSalvarSnapshot, new Tooltip("Guardar Snapshot"));
         btnRestaurarSnapshot = new Button("Restaurar");
+        Tooltip.install(btnRestaurarSnapshot, new Tooltip("Restaurar Snapshot"));
 
         btnSalvarSnapshot.getStyleClass().add("sidebar-button");
         btnRestaurarSnapshot.getStyleClass().add("sidebar-button");
@@ -208,7 +226,7 @@ public class EcosystemUI {
         infoLabel.getStyleClass().add("info-label");
         sidebar.getChildren().add(infoLabel);
 
-        // Update the infoLabel whenever necessary
+        // Update the infoLabel whenever necessário
         txtId.textProperty().addListener((observable, oldValue, newValue) -> {
             updateInfoLabel(infoLabel);
         });
@@ -232,7 +250,6 @@ public class EcosystemUI {
         // Ajustar o tamanho da janela conforme o ecossistema
         ajustarTamanhoJanela(ecossistemaManager.getLargura(), ecossistemaManager.getAltura());
     }
-
 
     private void registerHandlers() {
         // Handler para Play/Pause
@@ -529,7 +546,7 @@ public class EcosystemUI {
 
     private void ajustarTamanhoJanela(int largura, int altura) {
         primaryStage.setWidth(largura + 250); // Ajuste o valor adicional conforme necessário
-        primaryStage.setHeight(altura + 100); // Ajuste o valor adicional conforme necessário
+        primaryStage.setHeight(altura + 40); // Ajuste o valor adicional conforme necessário
         canvas.setWidth(largura);
         canvas.setHeight(altura);
         updateEcosystemDisplay(); // Atualiza a exibição do ecossistema após o ajuste

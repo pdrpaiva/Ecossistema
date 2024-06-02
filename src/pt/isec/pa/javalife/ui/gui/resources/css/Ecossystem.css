@@ -6,7 +6,7 @@
 }
 
 .play-pause {
-    -fx-background-size: 20px 20px;
+    -fx-background-size: 50px 50px;
     -fx-background-repeat: no-repeat;
     -fx-background-position: center;
 }
@@ -51,7 +51,7 @@
 
 .transparent-button {
     -fx-background-color: transparent;
-    -fx-background-size: 20px 20px;
+    -fx-background-size: 50px 50px;
     -fx-background-repeat: no-repeat;
     -fx-background-position: center;
     -fx-padding: 0;
