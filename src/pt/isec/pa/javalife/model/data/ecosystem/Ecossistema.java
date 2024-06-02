@@ -19,7 +19,7 @@ import java.util.*;
 public class Ecossistema implements IGameEngineEvolve, IOriginator,Serializable {
     private final Set<IElemento> elementos;
     private int totalPassos = 0;
-    private int escalaUnidade = 2;
+
     private int unidadesX = 300;
     private int unidadesY = 300;
     private static int nextFaunaId = 1;
@@ -140,7 +140,7 @@ public class Ecossistema implements IGameEngineEvolve, IOriginator,Serializable 
         return elementos.stream().filter(elemento -> elemento.getId() == id).findFirst().orElse(null);
     }
 
-    // Método para aplicar herbicida em um elemento do tipo Flora
+    // Método para aplicar herbicida para a Flora
     public void aplicarHerbicida(Flora flora) {
         if (flora != null) {
             removerElemento(flora.getId());
@@ -148,7 +148,7 @@ public class Ecossistema implements IGameEngineEvolve, IOriginator,Serializable 
         }
     }
 
-    // Método para injetar força em um elemento do tipo Fauna
+    // Método para injetar força p Fauna
     public void injetarForca(Fauna fauna) {
         if (fauna != null) {
             fauna.setForca(fauna.getForca() + 50);
@@ -156,27 +156,6 @@ public class Ecossistema implements IGameEngineEvolve, IOriginator,Serializable 
         }
     }
 
-    // Método para aplicar o efeito do Sol
-//    public void aplicarSol() {
-//        solAtivo = true;
-//        tempoSolRestante = 10; // 10 unidades de tempo
-//        support.firePropertyChange("sol_aplicado", null, null);
-//    }
-
-
-    // Método para aplicar o efeito do Sol
-//    public void aplicarSol() {
-//        solAtivo = true;
-//        tempoSolRestante = 10; // 10 unidades de tempo
-//        for (IElemento elemento : elementos) {
-//            if (elemento instanceof Fauna) {
-//                Fauna fauna = (Fauna) elemento;
-//                velocidadesOriginais.put(fauna, fauna.getVelocidade());
-//                fauna.setVelocidade(fauna.getVelocidade() / 2); // Reduz a velocidade à metade
-//            }
-//        }
-//        support.firePropertyChange("sol_aplicado", null, null);
-//    }
 
     public void removerElemento(int id) {
         IElemento elemento = buscarElemento(id);
@@ -212,39 +191,7 @@ public class Ecossistema implements IGameEngineEvolve, IOriginator,Serializable 
         return area.esquerda() < 0 || area.direita() > getLargura() || area.cima() < 0 || area.baixo() > getAltura();
     }
 
-//    @Override
-//    public void evolve(IGameEngine gameEngine, long currentTime) {
-//        Set<IElemento> elementosParaRemover = new HashSet<>();
-//
-//        for (IElemento elemento : new HashSet<>(elementos)) {
-//            if (elemento.getTipo() == Elemento.FAUNA) {
-//                Fauna fauna = (Fauna) elemento;
-//                FaunaContext context = fauna.getFaunaContext();
-//                context.setData(fauna);
-//                boolean mudou = context.executar();
-//
-//                if (!fauna.isVivo()) {
-//                    elementosParaRemover.add(fauna);
-//                }
-//            } else if (elemento.getTipo() == Elemento.FLORA) {
-//                Flora flora = (Flora) elemento;
-//                flora.setForca(flora.getForca() + 0.5);
-//                if (flora.getForca() >= 90 && flora.getNumeroReproducoes() < 2) {
-//                    Area areaLivre = encontrarAreaAdjacenteLivre(flora.getArea());
-//                    if (areaLivre != null) {
-//                        Flora novaFlora = criarFlora(areaLivre, 50, flora.getImagem());
-//                        adicionarElemento(novaFlora);
-//                        flora.setForca(50);
-//                        flora.incrementaNumeroReproducoes();
-//                    }
-//                }
-//            }
-//        }
-//
-//        elementos.removeAll(elementosParaRemover);
-//        totalPassos++;
-//        support.firePropertyChange("evolucao", null, null); // Notifica a mudança
-//    }
+
 @Override
 public void evolve(IGameEngine gameEngine, long currentTime) {
     Set<IElemento> elementosParaRemover = new HashSet<>();
@@ -266,19 +213,10 @@ public void evolve(IGameEngine gameEngine, long currentTime) {
                 }
             }
 
-//            // Se o sol estiver ativo, a fauna se move à metade da velocidade
-//            if (solAtivo) {
-//                fauna.setVelocidade(fauna.getVelocidade() / 2);
-//            }
-
             if (!fauna.isVivo()) {
                 elementosParaRemover.add(fauna);
             }
         } else if (elemento.getTipo() == Elemento.FLORA) {
-           // Flora flora = (Flora) elemento;
-             //   flora.setForca(flora.getForca() + 0.5);
-
-
             Flora flora = (Flora) elemento;
             if (solAtivo) {
                 flora.setForca(flora.getForca() + 1.0); // Flora ganha força ao dobro da velocidade
@@ -287,28 +225,8 @@ public void evolve(IGameEngine gameEngine, long currentTime) {
             }
             flora.evolve(this, currentTime);
 
-//            if (flora.getForca() >= 90 && flora.getNumeroReproducoes() < 2) {
-//
-//                Area areaLivre = encontrarAreaAdjacenteLivre(flora.getArea());
-//                if (areaLivre != null) {
-//                    Flora novaFlora = criarFlora(areaLivre, 50, flora.getImagem());
-//                    adicionarElemento(novaFlora);
-//                    flora.setForca(50);
-//                    flora.incrementaNumeroReproducoes();
-//                }
-//            }
         }
     }
-
-//    // Atualiza o tempo restante do efeito do sol
-//    if (solAtivo) {
-//        tempoSolRestante--;
-//        // System.out.println(tempoSolRestante);
-//        if (tempoSolRestante <= 0) {
-//            solAtivo = false;
-//            support.firePropertyChange("sol_expirado", null, null);
-//        }
-//    }
 
     if (solAtivo) {
         tempoSolRestante--;
@@ -335,7 +253,7 @@ public void evolve(IGameEngine gameEngine, long currentTime) {
             if (elemento instanceof Fauna) {
                 Fauna fauna = (Fauna) elemento;
                 velocidadesOriginais.put(fauna, fauna.getVelocidade());
-                fauna.setVelocidade(fauna.getVelocidade() / 2); // Reduz a velocidade à metade
+                fauna.setVelocidade(fauna.getVelocidade() / 2); // Reduz a velocidade
             }
         }
         support.firePropertyChange("sol_aplicado", null, null);
@@ -348,7 +266,7 @@ public void evolve(IGameEngine gameEngine, long currentTime) {
             if (elemento instanceof Fauna) {
                 Fauna fauna = (Fauna) elemento;
                 velocidadesOriginais.put(fauna, fauna.getVelocidade());
-                fauna.setVelocidade(fauna.getVelocidade() * 2); // Reduz a velocidade à metade
+                fauna.setVelocidade(fauna.getVelocidade() * 2); //Volta a colocar a velocidade normal
             }
         }
         support.firePropertyChange("sol_aplicado", null, null);
@@ -488,13 +406,19 @@ public void evolve(IGameEngine gameEngine, long currentTime) {
 
     public void exportarElementosParaCSV(File file) throws IOException {
         try (FileWriter writer = new FileWriter(file)) {
-            writer.append("Tipo;Forca;PosX;PosY\n");
+            writer.append("Tipo;Forca;PosX;PosY;Largura;Altura\n");
             for (IElemento elemento : elementos) {
                 String tipo = elemento.getClass().getSimpleName();
                 double forca = (elemento instanceof IElementoComForca) ? ((IElementoComForca) elemento).getForca() : 0;
                 double posX = elemento.getArea().esquerda();
                 double posY = elemento.getArea().cima();
-                writer.append(String.format("%s;%.2f;%.2f;%.2f\n", tipo, forca, posX, posY));
+                int largura = (elemento instanceof Fauna) ? ((Fauna) elemento).getLargura() :
+                        (elemento instanceof Flora) ? ((Flora) elemento).getLargura() :
+                                (elemento instanceof Inanimado) ? ((Inanimado) elemento).getLargura() : 0;
+                int altura = (elemento instanceof Fauna) ? ((Fauna) elemento).getAltura() :
+                        (elemento instanceof Flora) ? ((Flora) elemento).getAltura() :
+                                (elemento instanceof Inanimado) ? ((Inanimado) elemento).getAltura() : 0;
+                writer.append(String.format("%s;%.2f;%.2f;%.2f;%d;%d\n", tipo, forca, posX, posY, largura, altura));
             }
         }
     }
@@ -506,45 +430,51 @@ public void evolve(IGameEngine gameEngine, long currentTime) {
             String line = reader.readLine(); // Ignora a linha do cabeçalho
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(";");
-                if (parts.length < 4) continue; // Verifica se a linha tem ao menos 4 colunas
+                if (parts.length < 6) {
+                    System.out.println("Linha ignorada (número de colunas insuficiente): " + line);
+                    continue; // Verifica se a linha tem ao menos 6 colunas
+                }
 
                 String tipo = parts[0];
                 double forca = parseDouble(parts[1], numberFormat);
                 double posX = parseDouble(parts[2], numberFormat);
                 double posY = parseDouble(parts[3], numberFormat);
+                int largura = Integer.parseInt(parts[4]);
+                int altura = Integer.parseInt(parts[5]);
 
-                double largura = 13; // Tamanho padrão, ajuste conforme necessário
-                double altura = 13;  // Tamanho padrão, ajuste conforme necessário
-                if (tipo.equals("Inanimado")) {
-                    largura = altura = 13; // Supondo tamanho fixo para Inanimado, ajuste conforme necessário
-                } else if (tipo.equals("Flora")) {
-                    largura = altura = 13; // Supondo tamanho fixo para Flora, ajuste conforme necessário
-                }
+                System.out.println("Importando: " + tipo + " com forca: " + forca + ", posX: " + posX + ", posY: " + posY + ", largura: " + largura + ", altura: " + altura);
 
                 Area area = new Area(posY, posX, posY + altura, posX + largura);
                 if (verificarAreaLivre(area) && !verificarLimites(area)) {
                     switch (tipo) {
                         case "Fauna":
-                            Fauna fauna = new Fauna(posY, posX, this);
+                            Fauna fauna = new Fauna(posY, posX, largura, altura, this);
                             fauna.setForca(forca);
                             adicionarElemento(fauna);
+                            System.out.println("Fauna adicionada");
                             break;
                         case "Flora":
-                            Flora flora = new Flora(posY, posX);
+                            Flora flora = new Flora(posY, posX, largura, altura);
                             flora.setForca(forca);
                             adicionarElemento(flora);
+                            System.out.println("Flora adicionada");
                             break;
                         case "Inanimado":
-                            Inanimado inanimado = new Inanimado(posY, posX);
+                            Inanimado inanimado = new Inanimado(posY, posX, largura, altura);
                             adicionarElemento(inanimado);
+                            System.out.println("Inanimado adicionado");
+                            break;
+                        default:
+                            System.out.println("Tipo desconhecido: " + tipo);
                             break;
                     }
+                } else {
+                    System.out.println("Área não válida ou fora dos limites: " + area);
                 }
             }
         }
         support.firePropertyChange("elementos_importados", null, null); // Notifica a mudança
     }
-
     private double parseDouble(String value, NumberFormat numberFormat) {
         try {
             return numberFormat.parse(value).doubleValue();

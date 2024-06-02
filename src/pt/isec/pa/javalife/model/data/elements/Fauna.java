@@ -49,6 +49,13 @@ public final class Fauna extends ElementoBase implements IElementoComImagem, IEl
         this.tamanho1 = largura ;
         this.tamanho2 = altura ;// Definindo tamanho como a área
     }
+    public int getLargura() {
+        return tamanho1;
+    }
+
+    public int getAltura() {
+        return tamanho2;
+    }
 
     private static int gerarTamanhoAleatorio() {
         Random rand = new Random();

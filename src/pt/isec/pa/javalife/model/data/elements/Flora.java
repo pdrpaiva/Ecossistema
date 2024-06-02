@@ -32,6 +32,13 @@ public final class Flora extends ElementoBase implements IElementoComForca, IEle
         Random rand = new Random();
         return 10 + rand.nextInt(50 - 10 + 1);
     }
+    public int getLargura() {
+        return largura1;
+    }
+
+    public int getAltura() {
+        return altura1;
+    }
 
     //    public void evolve(Ecossistema ecossistema, long tempoAtual) {
 //        if (forca == 0) {
