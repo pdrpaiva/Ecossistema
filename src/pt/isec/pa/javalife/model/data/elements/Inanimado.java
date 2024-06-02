@@ -7,6 +7,7 @@ public final class Inanimado extends ElementoBase {
 
 
     private int tamanho;
+    private boolean pertenceACerca;
 
     public Inanimado(double cima, double esquerda) {
         this(cima, esquerda, gerarTamanhoAleatorio(), gerarTamanhoAleatorio());
@@ -15,6 +16,12 @@ public final class Inanimado extends ElementoBase {
     public Inanimado(double cima, double esquerda, int largura, int altura) {
         super(Elemento.INANIMADO, cima, esquerda, largura, altura);
         this.tamanho = Math.max(largura, altura); // Definindo o tamanho como o maior valor entre largura e altura
+    }
+
+    public Inanimado(double cima, double esquerda, int largura, int altura, boolean pertenceACerca) {
+        super(Elemento.INANIMADO, cima, esquerda, largura, altura);
+        this.tamanho = Math.max(largura, altura); // Definindo o tamanho como o maior valor entre largura e altura
+        this.pertenceACerca = pertenceACerca;
     }
 
     private static int gerarTamanhoAleatorio() {
@@ -37,18 +44,12 @@ public final class Inanimado extends ElementoBase {
     public void setPosicaoY(int y) {
         setPosition(area.esquerda(), y);
     }
-
-    public int getSize() {
-        return this.tamanho;
+    public boolean isPertenceACerca() {
+        return pertenceACerca;
     }
 
-    public void setSize(int tamanho) {
-        this.tamanho = tamanho;
+    public void setPertenceACerca(boolean pertenceACerca) {
+        this.pertenceACerca = pertenceACerca;
     }
 
-    public void mover(double deslocamentoX, double deslocamentoY) {
-        double largura = area.direita() - area.esquerda();
-        double altura = area.baixo() - area.cima();
-        this.area = new Area(area.cima() + deslocamentoY, area.esquerda() + deslocamentoX, area.cima() + deslocamentoY + altura, area.esquerda() + deslocamentoX + largura);
-    }
 }

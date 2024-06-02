@@ -180,6 +180,13 @@ public class Ecossistema implements IGameEngineEvolve, IOriginator,Serializable 
 
     public void removerElemento(int id) {
         IElemento elemento = buscarElemento(id);
+        if (elemento instanceof Inanimado) {
+            Inanimado inanimado = (Inanimado) elemento;
+            if (inanimado.isPertenceACerca()) {
+                System.out.println("Não é possível remover um agente inanimado da cerca.");
+                return;
+            }
+        }
         if (elemento != null) {
             elementos.remove(elemento);
             support.firePropertyChange("elemento_removido", null, elemento); // Notifica a mudança
@@ -342,19 +349,19 @@ public void aplicarSol() {
         int espessuraParede = 4;
 
         // Parede Superior
-        Inanimado topo = new Inanimado(0, 0);
+        Inanimado topo = new Inanimado(0, 0,espessuraParede,this.getLargura(),true);
         topo.setArea(0, 0, espessuraParede, this.getLargura());
 
         // Parede Inferior
-        Inanimado fundo = new Inanimado(0, 0);
+        Inanimado fundo = new Inanimado(0, 0,espessuraParede,this.getLargura(),true);
         fundo.setArea(this.getAltura() - espessuraParede, 0, this.getAltura(), this.getLargura());
 
         // Parede Esquerda
-        Inanimado esquerda = new Inanimado(0, 0);
+        Inanimado esquerda = new Inanimado(0, 0,espessuraParede,this.getAltura(),true);
         esquerda.setArea(0, 0, this.getAltura(), espessuraParede);
 
         // Parede Direita
-        Inanimado direita = new Inanimado(0, this.getLargura() - espessuraParede);
+        Inanimado direita = new Inanimado(0, this.getLargura() - espessuraParede,this.getAltura(),espessuraParede,true);
         direita.setArea(0, this.getLargura() - espessuraParede, this.getAltura(), this.getLargura());
 
         // Adiciona as paredes ao ecossistema
