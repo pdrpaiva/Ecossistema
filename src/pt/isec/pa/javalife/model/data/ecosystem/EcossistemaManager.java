@@ -130,6 +130,11 @@ public class EcossistemaManager implements Serializable {
         commandManager.executeCommand(cmd);
         support.firePropertyChange("elemento_adicionado", null, elemento);
     }
+
+    public void adicionarElementoAleatoriamente2(Elemento tipoElemento) {
+        IElemento elemento = ecossistema.adicionarElementoAleatoriamente(tipoElemento);
+        adicionarElemento(elemento);
+    }
     public void editarElemento(IElemento original, IElemento updated) {
         ICommand cmd = new EditElementoCmd(this, original, updated);
         commandManager.executeCommand(cmd);

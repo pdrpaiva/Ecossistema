@@ -424,13 +424,12 @@ public void aplicarSol() {
         support.firePropertyChange("ecossistema_atualizado", null, this); // Notifica a mudança
     }
 
-    public void adicionarElementoAleatoriamente(Elemento tipoElemento) {
+    public IElemento adicionarElementoAleatoriamente(Elemento tipoElemento) {
         int altura = getUnidadesY();
         int largura = getUnidadesX();
         Random random = new Random();
 
-        boolean adicionado = false;
-        while (!adicionado) {
+        while (true) {
             double x = random.nextInt(largura);
             double y = random.nextInt(altura);
 
@@ -444,24 +443,21 @@ public void aplicarSol() {
                     area = new Area(y, x, y + valorRandom, x + valorRandom);
                     if (isAreaFree(area)) {
                         elemento = new Inanimado(y, x);
-                        adicionarElemento(elemento);
-                        adicionado = true;
+                        return elemento;
                     }
                     break;
                 case FAUNA:
-                    area = new Area(y, x, y + valorRandom, x + valorRandom); // Supondo tamanho de fauna como 32x32
+                    area = new Area(y, x, y + valorRandom, x + valorRandom);
                     if (isAreaFree(area)) {
                         elemento = new Fauna(y, x, this);
-                        adicionarElemento(elemento);
-                        adicionado = true;
+                        return elemento;
                     }
                     break;
                 case FLORA:
-                    area = new Area(y, x, y + valorRandom, x + valorRandom); // Supondo tamanho de flora como 13x13
+                    area = new Area(y, x, y + valorRandom, x + valorRandom);
                     if (isAreaFree(area)) {
                         elemento = new Flora(y, x);
-                        adicionarElemento(elemento);
-                        adicionado = true;
+                        return elemento;
                     }
                     break;
             }

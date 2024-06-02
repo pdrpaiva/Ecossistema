@@ -265,19 +265,20 @@ public class EcosystemUI {
 
         // Handler para adicionar elementos
         btnFauna.setOnAction(event -> {
-            ecossistemaManager.adicionarElementoAleatoriamente(Elemento.FAUNA);
+            ecossistemaManager.adicionarElementoAleatoriamente2(Elemento.FAUNA);
             Platform.runLater(this::updateEcosystemDisplay);
         });
 
         btnFlora.setOnAction(event -> {
-            ecossistemaManager.adicionarElementoAleatoriamente(Elemento.FLORA);
+            ecossistemaManager.adicionarElementoAleatoriamente2(Elemento.FLORA);
             Platform.runLater(this::updateEcosystemDisplay);
         });
 
         btnInanimado.setOnAction(event -> {
-            ecossistemaManager.adicionarElementoAleatoriamente(Elemento.INANIMADO);
+            ecossistemaManager.adicionarElementoAleatoriamente2(Elemento.INANIMADO);
             Platform.runLater(this::updateEcosystemDisplay);
         });
+
 
 
         btnVoltar.setOnAction(event -> {

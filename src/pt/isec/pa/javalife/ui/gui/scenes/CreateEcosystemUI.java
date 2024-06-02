@@ -173,7 +173,8 @@ private VBox createTimeUnitField() {
 
     private void adicionarElementos(EcossistemaManager manager, Elemento tipo, int quantidade) {
         for (int i = 0; i < quantidade; i++) {
-            manager.adicionarElementoAleatoriamente(tipo);
+            manager.adicionarElementoAleatoriamente2(tipo);
+            manager.
         }
     }
 
