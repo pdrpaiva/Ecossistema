@@ -125,30 +125,29 @@ public class EcossistemaManager implements Serializable {
     public IElemento buscarElemento(int id) {
         return ecossistema.buscarElemento(id);
     }
+    public void adicionarElemento(IElemento elemento) {
+        ICommand cmd = new AddElementoCmd(this, elemento);
+        commandManager.executeCommand(cmd);
+        support.firePropertyChange("elemento_adicionado", null, elemento);
+    }
+    public void editarElemento(IElemento original, IElemento updated) {
+        ICommand cmd = new EditElementoCmd(this, original, updated);
+        commandManager.executeCommand(cmd);
+        support.firePropertyChange("elemento_editado", original, updated);
+    }
 
-//    public void adicionarElemento(IElemento elemento) {
-//        ICommand cmd = new AddElementoCmd(this, elemento);
-//        commandManager.executeCommand(cmd);
-//        support.firePropertyChange("elemento_adicionado", null, elemento);
-//    }
-public void adicionarElemento(IElemento elemento) {
-    ecossistema.adicionarElemento(elemento);
-    support.firePropertyChange("elemento_adicionado", null, elemento);
-}
-//    public void editarElemento(IElemento original, IElemento updated) {
-//        ICommand cmd = new EditElementoCmd(this, original, updated);
-//        commandManager.executeCommand(cmd);
-//        support.firePropertyChange("elemento_editado", original, updated);
-//    }
+    public void removerElemento(IElemento elemento) {
+        ICommand cmd = new RemoveElementoCmd(this, elemento);
+        commandManager.executeCommand(cmd);
+        support.firePropertyChange("elemento_removido", elemento, null);
+    }
 
-//    public void removerElemento(IElemento elemento) {
-//        ICommand cmd = new RemoveElementoCmd(this, elemento);
-//        commandManager.executeCommand(cmd);
-//        support.firePropertyChange("elemento_removido", elemento, null);
-//    }
     public void removerElemento(int id) {
-    ecossistema.removerElemento(id);
-}
+        IElemento elemento = buscarElemento(id);
+        if (elemento != null) {
+            removerElemento(elemento);
+        }
+    }
 
     public boolean verificarAreaLivre(Area area) {
         return ecossistema.verificarAreaLivre(area);
@@ -260,10 +259,12 @@ public void adicionarElemento(IElemento elemento) {
 
     public void undo() {
         commandManager.undo();
+        support.firePropertyChange("undo", null, null);
     }
 
     public void redo() {
         commandManager.redo();
+        support.firePropertyChange("redo", null, null);
     }
 
     // Métodos para snapshots

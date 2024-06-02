@@ -326,10 +326,7 @@ public void evolve(IGameEngine gameEngine, long currentTime) {
     totalPassos++;
     support.firePropertyChange("evolucao", null, null); // Notifica a mudança
 
-
-
 }
-
 
 public void aplicarSol() {
         solAtivo = true;

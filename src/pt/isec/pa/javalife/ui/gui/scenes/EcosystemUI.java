@@ -312,7 +312,6 @@ public class EcosystemUI {
             }
         });
 
-        // Handlers para Undo e Redo
         btnUndo.setOnAction(event -> {
             ecossistemaManager.undo();
             Platform.runLater(this::updateEcosystemDisplay);
