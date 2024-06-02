@@ -8,6 +8,7 @@ import pt.isec.pa.javalife.model.data.fsm.FaunaState;
 
 import java.util.Random;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public final class Fauna extends ElementoBase implements IElementoComImagem, IElementoComForca {
 
@@ -248,31 +249,43 @@ public final class Fauna extends ElementoBase implements IElementoComImagem, IEl
         }
     }
 
-    public void verificarReproducao(Fauna outraFauna) {
-        if (Area.distancia(this.getArea(), outraFauna.getArea()) < DISTANCIA_REPRODUCAO) {
-            System.out.println("GOIABA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            incrementarTempoProximidadeOutroFauna();
-            outraFauna.incrementarTempoProximidadeOutroFauna();
+    public void verificarReproducao(Set<IElemento> elementos) {
+        // Filtra elementos do tipo Fauna
+        Set<Fauna> elementosFauna = elementos.stream()
+                .filter(e -> e instanceof Fauna)
+                .map(e -> (Fauna) e)
+                .collect(Collectors.toSet());
 
-            if (getTempoProximidadeOutroFauna() >= TEMPO_REPRODUCAO && outraFauna.getTempoProximidadeOutroFauna() >= TEMPO_REPRODUCAO) {
-                Area areaReproducao = faunaContext.getEcossistema().encontrarAreaAdjacenteLivre(this.getArea());
-                System.out.println("AREA_REPRODUCAO!!!!!!!!!!!!!!!!!!!!!!!");
-                if (areaReproducao != null) {
-                    System.out.println("AREA REPRODUCAO NÃO É NULL!!!!!!!!!!!!!");
-                    if(faunaContext.getEcossistema().criarFauna(areaReproducao.cima(), areaReproducao.esquerda()) == null){
-                        System.out.println("NÃO REPRODUZIU????????????????????????????????");
-                    }else {
-                        System.out.println("REPRODUZIU????????????????????????????????");
-                    }
-                    perderForca(25);
-                    outraFauna.perderForca(25);
-                    resetarTempoProximidadeOutroFauna();
-                    outraFauna.resetarTempoProximidadeOutroFauna();
-                }
+        boolean pertoFauna = false;
+
+        for (Fauna outro : elementosFauna) {
+            if (outro != this && Area.distancia(this.getArea(), outro.getArea()) < DISTANCIA_REPRODUCAO) {
+                pertoFauna = true;
+                break;
             }
+        }
+
+        if (pertoFauna) {
+            incrementarTempoProximidadeOutroFauna();
         } else {
             resetarTempoProximidadeOutroFauna();
-            outraFauna.resetarTempoProximidadeOutroFauna();
+        }
+
+        if (tempoProximidadeOutroFauna >= TEMPO_REPRODUCAO && pertoFauna && this.forca >= 25) {
+            reproduzir(elementosFauna);
+            resetarTempoProximidadeOutroFauna();
+        }
+    }
+    private void reproduzir(Set<Fauna> elementosFauna) {
+        // Encontra uma zona livre ou com flora mais próxima
+        Area areaReproducao = faunaContext.getEcossistema().encontrarAreaAdjacenteLivre(this.getArea());
+        if (areaReproducao != null) {
+            Fauna novaFauna = faunaContext.getEcossistema().criarFauna(areaReproducao.cima(), areaReproducao.esquerda());
+            if (novaFauna != null) {
+                elementosFauna.add(novaFauna);
+                System.out.println("REPRODUIUAISDJOASD!!!!!!!!!!!!!!!!!!!!!!");
+                this.perderForca(25);
+            }
         }
     }
 
