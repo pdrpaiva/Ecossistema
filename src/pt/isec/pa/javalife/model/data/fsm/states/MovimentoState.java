@@ -1,13 +1,16 @@
 package pt.isec.pa.javalife.model.data.fsm.states;
 
 import pt.isec.pa.javalife.model.data.area.Area;
+import pt.isec.pa.javalife.model.data.elements.ElementoBase;
 import pt.isec.pa.javalife.model.data.elements.Fauna;
+import pt.isec.pa.javalife.model.data.elements.IElemento;
 import pt.isec.pa.javalife.model.data.fsm.Direction;
 import pt.isec.pa.javalife.model.data.fsm.FaunaContext;
 import pt.isec.pa.javalife.model.data.fsm.FaunaState;
 import pt.isec.pa.javalife.model.data.fsm.FaunaStateAdapter;
 
 import java.util.Random;
+import java.util.Set;
 
 public class MovimentoState extends FaunaStateAdapter {
     private static final double PERDA_FORCA_MOVIMENTO = 0.5;
@@ -18,6 +21,7 @@ public class MovimentoState extends FaunaStateAdapter {
 
     @Override
     public boolean executar() {
+        Set<IElemento> elementoBases= data.getFaunaContext().getEcossistema().getElementos();
         // Verifica se a força está abaixo do limiar para procurar comida
         if (data.getForca() < 35) {
             changeState(FaunaState.PROCURA_COMIDA);
@@ -36,7 +40,7 @@ public class MovimentoState extends FaunaStateAdapter {
             if (strongerFauna != null) {
                 data.moveParaAlvo(strongerFauna);
                 System.out.println("A seguir fauna mais forte");
-                data.verificarReproducao(strongerFauna);
+                data.verificarReproducao(elementoBases);
                 return true;
             }
         }
