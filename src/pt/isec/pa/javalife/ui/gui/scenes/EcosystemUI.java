@@ -325,7 +325,7 @@ public class EcosystemUI {
 
         // Handler para aplicar Sol
         btnAplicarSol.setOnAction(event -> {
-            ecossistemaManager.aplicarSol(); // Define a duração do efeito do Sol
+            ecossistemaManager.applySun(); // Define a duração do efeito do Sol
             Platform.runLater(this::updateEcosystemDisplay);
         });
 

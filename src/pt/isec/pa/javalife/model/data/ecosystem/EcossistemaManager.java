@@ -238,9 +238,9 @@ public class EcossistemaManager implements Serializable {
         ecossistema.injetarForca(fauna);
     }
 
-    public void aplicarSol() {
-        ecossistema.aplicarSol();
-    }
+//    public void aplicarSol() {
+//        ecossistema.aplicarSol();
+//    }
 
     public void removerSol() {
         ecossistema.removerSol();
@@ -310,5 +310,11 @@ public class EcossistemaManager implements Serializable {
         ICommand cmd = new ApplyHerbicideCmd(this, flora);
         commandManager.executeCommand(cmd);
         support.firePropertyChange("herbicida_aplicado", null, flora);
+    }
+
+    public void applySun() {
+        ICommand cmd = new ApplySunCmd(this);
+        commandManager.executeCommand(cmd);
+        support.firePropertyChange("sol_aplicado", null, null);
     }
 }

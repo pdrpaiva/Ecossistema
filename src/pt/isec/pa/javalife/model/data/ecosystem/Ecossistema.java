@@ -328,7 +328,7 @@ public void evolve(IGameEngine gameEngine, long currentTime) {
 
 }
 
-    public void aplicarSol() {
+    public void applySun() {
         solAtivo = true;
         tempoSolRestante = 10; // 10 unidades de tempo
         for (IElemento elemento : elementos) {
@@ -343,7 +343,15 @@ public void evolve(IGameEngine gameEngine, long currentTime) {
 
     public void removerSol() {
         solAtivo = false;
-        System.out.println("CONAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        tempoSolRestante = 0; // 10 unidades de tempo
+        for (IElemento elemento : elementos) {
+            if (elemento instanceof Fauna) {
+                Fauna fauna = (Fauna) elemento;
+                velocidadesOriginais.put(fauna, fauna.getVelocidade());
+                fauna.setVelocidade(fauna.getVelocidade() * 2); // Reduz a velocidade à metade
+            }
+        }
+        support.firePropertyChange("sol_aplicado", null, null);
     }
 
 
