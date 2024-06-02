@@ -292,4 +292,9 @@ public class EcossistemaManager implements Serializable {
     public boolean hasRedo() {
         return careTaker.hasRedo();
     }
+
+    public void clearCommandHistory() {
+        commandManager.clearHistory();
+        support.firePropertyChange("command_history_cleared", null, null);
+    }
 }

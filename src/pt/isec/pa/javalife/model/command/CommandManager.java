@@ -35,4 +35,9 @@ public class CommandManager {
         }
     }
 
+    public void clearHistory() {
+        commandHistory.clear();
+        currentCommandIndex = -1;
+    }
+
 }
