@@ -167,19 +167,7 @@ public final class Fauna extends ElementoBase implements IElementoComImagem, IEl
 
         return strongerFauna;
     }
-    public Fauna findNearbyFauna() {
-        Ecossistema ecossistema = faunaContext.getEcossistema();
-        for (IElemento elemento : ecossistema.getElementos()) {
-            if (elemento instanceof Fauna) {
-                Fauna fauna = (Fauna) elemento;
-                if (fauna != this && Area.distancia(this.getArea(), fauna.getArea()) < Fauna.DISTANCIA_REPRODUCAO) {
-                    return fauna;
-                }
 
-            }
-        }
-        return null;
-    }
     public void moveParaAlvo(IElemento alvo) {
         double deltaX = alvo.getArea().esquerda() - this.getArea().esquerda();
         double deltaY = alvo.getArea().cima() - this.getArea().cima();
@@ -190,7 +178,7 @@ public final class Fauna extends ElementoBase implements IElementoComImagem, IEl
         boolean obstaculoDirX = temObstaculoNaDirecao(dirX);
         boolean obstaculoDirY = temObstaculoNaDirecao(dirY);
 
-        // Se a direção alternativa ainda não expirou, continue usando-a
+        // Se a direção alternativa ainda não expirou
         if (direcaoAlternativa != null && contadorIteracoes < MAX_ITERACOES) {
             contadorIteracoes++;
             direcaoAtual = direcaoAlternativa;
@@ -236,7 +224,6 @@ public final class Fauna extends ElementoBase implements IElementoComImagem, IEl
         setForca(getForca() - quantidade);
         if (getForca() <= 0) {
             setVivo(false);
-            faunaContext.changeState(FaunaState.MORTO.getInstance(faunaContext, this));
         }
     }
 
@@ -290,7 +277,6 @@ public final class Fauna extends ElementoBase implements IElementoComImagem, IEl
             Fauna novaFauna = faunaContext.getEcossistema().criarFauna(areaReproducao.cima(), areaReproducao.esquerda());
             if (novaFauna != null) {
                 elementosFauna.add(novaFauna);
-                System.out.println("REPRODUIUAISDJOASD!!!!!!!!!!!!!!!!!!!!!!");
                 this.perderForca(25);
             }
         }

@@ -8,11 +8,9 @@ import java.util.Random;
 public final class Flora extends ElementoBase implements IElementoComForca, IElementoComImagem {
     private static final double FORCA_INICIAL = 50;
     private static final double INCREMENTO_FORCA = 0.5;
-    private static final int TAMANHO = 13;
     private double forca;
     private String imagem;
     private int numeroReproducoes;
-    private boolean tentativaDeReproduzir = false;
     private int altura1;
     private int largura1;
 
@@ -40,29 +38,10 @@ public final class Flora extends ElementoBase implements IElementoComForca, IEle
         return altura1;
     }
 
-    //    public void evolve(Ecossistema ecossistema, long tempoAtual) {
-//        if (forca == 0) {
-//            return;
-//        }
-//
-//        // Comentar esta linha pois não temos eventos ainda.
-//        // forca += ecossistema.isEventoSolAtivo() ? INCREMENTO_FORCA * 2 : INCREMENTO_FORCA;
-//        forca += INCREMENTO_FORCA;
-//
-//        if (forca >= 90 && numeroReproducoes < 2) {
-//            if (tentarReproduzir(ecossistema)) {
-//                forca = 60;
-//                numeroReproducoes++;
-//            }
-//        }
-//    }
     public void evolve(Ecossistema ecossistema, long tempoAtual) {
         if (forca == 0) {
             return;
         }
-
-        // Incrementa a força
-        // forca += INCREMENTO_FORCA;
 
         // Tenta reproduzir se a força for >= 90 e o número de reproduções for < 2
         if (forca >= 90 && numeroReproducoes < 2) {
@@ -126,13 +105,6 @@ public final class Flora extends ElementoBase implements IElementoComForca, IEle
         this.imagem = imagem;
     }
 
-    public int getNumeroReproducoes() {
-        return numeroReproducoes;
-    }
-
-    public void incrementaNumeroReproducoes() {
-        numeroReproducoes += numeroReproducoes + 1;
-    }
 
     @Override
     public void setPosicaoX(int x) {

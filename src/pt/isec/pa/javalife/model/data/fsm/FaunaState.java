@@ -4,7 +4,7 @@
     import pt.isec.pa.javalife.model.data.fsm.states.*;
 
     public enum FaunaState {
-        MOVIMENTO, PROCURA_COMIDA, ALIMENTACAO,ATAQUE,MORTO;
+        MOVIMENTO, PROCURA_COMIDA, ALIMENTACAO,ATAQUE;
 
         public static IFaunaState getInstance(FaunaState type, FaunaContext context, Fauna data){
             return switch (type){
@@ -12,7 +12,7 @@
                 case PROCURA_COMIDA -> new ProcuraComidaState(context,data);
                 case ALIMENTACAO -> new AlimentacaoState(context,data);
                 case ATAQUE -> new AtaqueState(context,data);
-                case MORTO -> new MortoState(context,data);
+
             };
         }
 
@@ -22,7 +22,6 @@
                 case PROCURA_COMIDA -> new ProcuraComidaState(context,data);
                 case ALIMENTACAO -> new AlimentacaoState(context,data);
                 case ATAQUE -> new AtaqueState(context,data);
-                case MORTO -> new MortoState(context,data);
             };
         }
     }

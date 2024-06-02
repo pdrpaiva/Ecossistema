@@ -64,8 +64,6 @@ public final class Inanimado extends ElementoBase {
         return pertenceACerca;
     }
 
-    public void setPertenceACerca(boolean pertenceACerca) {
-        this.pertenceACerca = pertenceACerca;
-    }
+
 
 }

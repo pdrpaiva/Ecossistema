@@ -23,22 +23,4 @@ public class CareTaker {
         originator.restore(history.pop());
     }
 
-    public void redo() {
-        if (redoHist.isEmpty()) return;
-        history.push(originator.save());
-        originator.restore(redoHist.pop());
-    }
-
-    public void reset() {
-        history.clear();
-        redoHist.clear();
-    }
-
-    public boolean hasUndo() {
-        return !history.isEmpty();
-    }
-
-    public boolean hasRedo() {
-        return !redoHist.isEmpty();
-    }
 }

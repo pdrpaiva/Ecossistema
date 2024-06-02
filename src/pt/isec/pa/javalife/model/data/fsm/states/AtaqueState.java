@@ -3,7 +3,6 @@ package pt.isec.pa.javalife.model.data.fsm.states;
 import pt.isec.pa.javalife.model.data.elements.Elemento;
 import pt.isec.pa.javalife.model.data.elements.Fauna;
 import pt.isec.pa.javalife.model.data.elements.IElemento;
-import pt.isec.pa.javalife.model.data.elements.IElementoComForca;
 import pt.isec.pa.javalife.model.data.fsm.FaunaContext;
 import pt.isec.pa.javalife.model.data.fsm.FaunaState;
 import pt.isec.pa.javalife.model.data.fsm.FaunaStateAdapter;

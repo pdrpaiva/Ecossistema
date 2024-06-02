@@ -22,9 +22,6 @@ public class Ecossistema implements IGameEngineEvolve, IOriginator,Serializable 
 
     private int unidadesX = 300;
     private int unidadesY = 300;
-    private static int nextFaunaId = 1;
-    private static int nextFloraId = 1;
-    private static int nextInanimadoId = 1;
     private final PropertyChangeSupport support;
     private boolean solAtivo = false;
     private long tempoSolRestante = 0;
@@ -96,9 +93,6 @@ public class Ecossistema implements IGameEngineEvolve, IOriginator,Serializable 
         return totalPassos;
     }
 
-    public void resetarContadorDePassos() {
-        totalPassos = 0;
-    }
 
     public Fauna encontrarFaunaMaisFraca(int ignorarID) {
         double menorForca = Double.MAX_VALUE;
@@ -121,41 +115,10 @@ public class Ecossistema implements IGameEngineEvolve, IOriginator,Serializable 
         support.firePropertyChange("elementos", null, null); // Notifica a mudança
     }
 
-    public Fauna encontrarFaunaMaisForte(int ignorarID) {
-        double maiorForca = 0;
-        Fauna maisForte = null;
-        for (IElemento elemento : elementos) {
-            if (elemento.getTipo() == Elemento.FAUNA && elemento.getId() != ignorarID) {
-                Fauna fauna = (Fauna) elemento;
-                if (fauna.getForca() > maiorForca) {
-                    maiorForca = fauna.getForca();
-                    maisForte = fauna;
-                }
-            }
-        }
-        return maisForte;
-    }
 
     public IElemento buscarElemento(int id) {
         return elementos.stream().filter(elemento -> elemento.getId() == id).findFirst().orElse(null);
     }
-
-    // Método para aplicar herbicida para a Flora
-    public void aplicarHerbicida(Flora flora) {
-        if (flora != null) {
-            removerElemento(flora.getId());
-            support.firePropertyChange("elemento_removido", null, flora);
-        }
-    }
-
-    // Método para injetar força p Fauna
-    public void injetarForca(Fauna fauna) {
-        if (fauna != null) {
-            fauna.setForca(fauna.getForca() + 50);
-            support.firePropertyChange("forca_injetada", null, fauna);
-        }
-    }
-
 
     public void removerElemento(int id) {
         IElemento elemento = buscarElemento(id);
@@ -317,43 +280,12 @@ public void evolve(IGameEngine gameEngine, long currentTime) {
         return null;
     }
 
-    public int gerarProximoIdFauna() {
-        return nextFaunaId++;
-    }
-
-    public int gerarProximoIdFlora() {
-        return nextFloraId++;
-    }
-
-    public int gerarProximoIdInanimado() {
-        return nextInanimadoId++;
-    }
-
     public Fauna criarFauna(double cima, double esquerda) {
         Fauna fauna = new Fauna(cima, esquerda, this);
         adicionarElemento(fauna);
         return fauna;
     }
 
-    public Flora criarFlora(Area area, double forca, String imagem) {
-        Flora flora = new Flora(area.cima(), area.esquerda());
-        flora.setForca(forca);
-        flora.setImagem(imagem);
-        adicionarElemento(flora);
-        return flora;
-    }
-
-    public Inanimado criarInanimado(Area area) {
-        Inanimado inanimado = new Inanimado(area.cima(), area.esquerda());
-        adicionarElemento(inanimado);
-        return inanimado;
-    }
-
-    public void setEcossistema(Ecossistema novoEcossistema) {
-        limparElementos();
-        elementos.addAll(novoEcossistema.obterElementos());
-        support.firePropertyChange("ecossistema_atualizado", null, this); // Notifica a mudança
-    }
 
     public IElemento adicionarElementoAleatoriamente(Elemento tipoElemento) {
         int altura = getUnidadesY();
@@ -398,10 +330,6 @@ public void evolve(IGameEngine gameEngine, long currentTime) {
     // Métodos para gerenciar os listeners
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         support.addPropertyChangeListener(listener);
-    }
-
-    public void removePropertyChangeListener(PropertyChangeListener listener) {
-        support.removePropertyChangeListener(listener);
     }
 
     public void exportarElementosParaCSV(File file) throws IOException {

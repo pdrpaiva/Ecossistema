@@ -48,10 +48,6 @@ public class EcossistemaManager implements Serializable {
         return resultado;
     }
 
-    public void pararJogo() {
-        gameEngine.stop();
-    }
-
     public void pausarJogo() {
         gameEngine.pause();
     }
@@ -64,61 +60,16 @@ public class EcossistemaManager implements Serializable {
         gameEngine.setInterval(novoIntervalo);
     }
 
-    public GameEngineState getEstadoAtual() {
-        return gameEngine.getCurrentState();
-    }
-
-    public void definirUnidadesX(int unidadesX) {
-        ecossistema.definirUnidadesX(unidadesX);
-    }
-
-    public void definirUnidadesY(int unidadesY) {
-        ecossistema.definirUnidadesY(unidadesY);
-    }
 
     public IElemento encontrarElementoMaisProximo(Area origem, Elemento tipo) {
         return ecossistema.encontrarElementoMaisProximo(origem, tipo);
     }
 
-    public boolean isAreaLivre(Area area) {
-        return ecossistema.isAreaFree(area);
-    }
-
-    public int getUnidadesX() {
-        return ecossistema.getUnidadesX();
-    }
-
-    public int getUnidadesY() {
-        return ecossistema.getUnidadesY();
-    }
-
-//    public Set<IElemento> getElementos() {
-//        return ecossistema.getElementos();
-//    }
-
-    public Set<IElemento> getElementos() {
-      return ecossistema.getElementos();
-   }
-
-    public int obterPassos() {
-        return ecossistema.obterPassos();
-    }
-
-    public void resetarContadorDePassos() {
-        ecossistema.resetarContadorDePassos();
-    }
-
-    public Fauna encontrarFaunaMaisFraca(int ignorarID) {
-        return ecossistema.encontrarFaunaMaisFraca(ignorarID);
-    }
 
     public void limparElementos() {
         ecossistema.limparElementos();
     }
 
-    public Fauna encontrarFaunaMaisForte(int ignorarID) {
-        return ecossistema.encontrarFaunaMaisForte(ignorarID);
-    }
 
     public IElemento buscarElemento(int id) {
         return ecossistema.buscarElemento(id);
@@ -132,11 +83,6 @@ public class EcossistemaManager implements Serializable {
     public void adicionarElementoAleatoriamente2(Elemento tipoElemento) {
         IElemento elemento = ecossistema.adicionarElementoAleatoriamente(tipoElemento);
         adicionarElemento(elemento);
-    }
-    public void editarElemento(IElemento original, IElemento updated) {
-        ICommand cmd = new EditElementoCmd(this, original, updated);
-        commandManager.executeCommand(cmd);
-        support.firePropertyChange("elemento_editado", original, updated);
     }
 
     public void removerElemento(IElemento elemento) {
@@ -152,71 +98,15 @@ public class EcossistemaManager implements Serializable {
         }
     }
 
-    public boolean verificarAreaLivre(Area area) {
-        return ecossistema.verificarAreaLivre(area);
-    }
-
-    public boolean verificarLimites(Area area) {
-        return ecossistema.verificarLimites(area);
-    }
-
-    public void evoluir(long tempoAtual) {
-        ecossistema.evolve(gameEngine, tempoAtual);
-        support.firePropertyChange("evolucao", null, null);
-    }
 
     public void criarCerca() {
         ecossistema.cerca();
-    }
-
-    public Area encontrarAreaAdjacenteLivre(Area area) {
-        return ecossistema.encontrarAreaAdjacenteLivre(area);
-    }
-
-    public int gerarProximoIdFauna() {
-        return ecossistema.gerarProximoIdFauna();
-    }
-
-    public int gerarProximoIdFlora() {
-        return ecossistema.gerarProximoIdFlora();
-    }
-
-    public int gerarProximoIdInanimado() {
-        return ecossistema.gerarProximoIdInanimado();
-    }
-
-    public Fauna criarFauna(double cima, double esquerda) {
-        return ecossistema.criarFauna(cima, esquerda);
-    }
-
-    public Flora criarFlora(Area area, double forca, String imagem) {
-        return ecossistema.criarFlora(area, forca, imagem);
-    }
-
-    public Inanimado criarInanimado(Area area) {
-        return ecossistema.criarInanimado(area);
-    }
-
-    public void adicionarElementoAleatoriamente(Elemento tipoElemento) {
-        ecossistema.adicionarElementoAleatoriamente(tipoElemento);
-    }
-
-    public void setEcossistema(Ecossistema novoEcossistema) {
-        ecossistema.setEcossistema(novoEcossistema);
-        support.firePropertyChange("ecossistema_atualizado", null, ecossistema);
     }
 
     public Ecossistema getEcossistema() {
         return ecossistema;
     }
 
-    public void adicionarPropertyChangeListener(String nomePropriedade, PropertyChangeListener listener) {
-        support.addPropertyChangeListener(nomePropriedade, listener);
-    }
-
-    public void removerPropertyChangeListener(String nomePropriedade, PropertyChangeListener listener) {
-        support.removePropertyChangeListener(nomePropriedade, listener);
-    }
 
     public boolean isRunning() {
         return gameEngine.getCurrentState() == GameEngineState.RUNNING;
@@ -230,21 +120,6 @@ public class EcossistemaManager implements Serializable {
         return ecossistema.getElementos();
     }
 
-    public void aplicarHerbicida(Flora flora) {
-        ecossistema.aplicarHerbicida(flora);
-    }
-
-    public void injetarForca(Fauna fauna) {
-        ecossistema.injetarForca(fauna);
-    }
-
-//    public void aplicarSol() {
-//        ecossistema.aplicarSol();
-//    }
-
-    public void removerSol() {
-        ecossistema.removerSol();
-    }
 
     public void exportarElementosParaCSV(File file) throws IOException {
         ecossistema.exportarElementosParaCSV(file);
@@ -283,18 +158,6 @@ public class EcossistemaManager implements Serializable {
         careTaker.undo();
     }
 
-    public void replaySnapshot() throws IOException, ClassNotFoundException {
-        careTaker.redo();
-    }
-
-    public boolean hasUndo() {
-        return careTaker.hasUndo();
-    }
-
-    public boolean hasRedo() {
-        return careTaker.hasRedo();
-    }
-
     public void clearCommandHistory() {
         commandManager.clearHistory();
         support.firePropertyChange("command_history_cleared", null, null);
@@ -318,7 +181,4 @@ public class EcossistemaManager implements Serializable {
         support.firePropertyChange("sol_aplicado", null, null);
     }
 
-    public void setFaunaImage(String nome) {
-        ecossistema.setFaunaImage(nome);
-    }
 }

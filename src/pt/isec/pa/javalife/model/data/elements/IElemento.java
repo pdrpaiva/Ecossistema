@@ -7,9 +7,9 @@ import java.io.Serializable;
 public sealed interface IElemento
         extends Serializable
         permits ElementoBase {
-    int getId(); // retorna o identificador
-    Elemento getTipo(); // retorna o tipo
-    Area getArea(); // retorna a área ocupada
+    int getId();
+    Elemento getTipo();
+    Area getArea();
     void setPosicaoX(int x);
     void setPosicaoY(int y);
 

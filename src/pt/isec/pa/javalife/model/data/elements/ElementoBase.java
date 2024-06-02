@@ -36,11 +36,6 @@ public abstract sealed class ElementoBase
         this.area = new Area(cima, esquerda, cima + altura, esquerda + largura);
     }
 
-    public void mover(double deslocamentoX, double deslocamentoY) {
-        double largura = area.direita() - area.esquerda();
-        double altura = area.baixo() - area.cima();
-        this.area = new Area(area.cima() + deslocamentoY, area.esquerda() + deslocamentoX, area.cima() + deslocamentoY + altura, area.esquerda() + deslocamentoX + largura);
-    }
 
     public double getPositionX() {
         return area.esquerda();
@@ -48,30 +43,6 @@ public abstract sealed class ElementoBase
 
     public double getPositionY() {
         return area.cima();
-    }
-
-    public double getWidth() {
-        return area.direita() - area.esquerda();
-    }
-
-    public double getHeight() {
-        return area.baixo() - area.cima();
-    }
-
-    public String getStringName() {
-        return switch (tipo) {
-            case FAUNA -> "Fauna";
-            case FLORA -> "Flora";
-            case INANIMADO -> "Inanimado";
-        };
-    }
-
-    public boolean isReadOnly() {
-        return false; // Implementação padrão para readOnly, se necessário
-    }
-
-    public void setReadonly(boolean readOnly) {
-        // Implementação para definir readOnly, se necessário
     }
 
     @Override
