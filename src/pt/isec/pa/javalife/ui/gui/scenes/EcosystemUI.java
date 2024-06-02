@@ -325,7 +325,7 @@ public class EcosystemUI {
 
         // Handler para aplicar Sol
         btnAplicarSol.setOnAction(event -> {
-            ecossistemaManager.aplicarSol();
+            ecossistemaManager.aplicarSol(); // Define a duração do efeito do Sol
             Platform.runLater(this::updateEcosystemDisplay);
         });
 
@@ -333,7 +333,7 @@ public class EcosystemUI {
         btnAplicarHerbicida.setOnAction(event -> {
             IElemento elemento = ecossistemaManager.buscarElemento(currentElementIDSelected);
             if (elemento instanceof Flora) {
-                ecossistemaManager.aplicarHerbicida((Flora) elemento);
+                ecossistemaManager.applyHerbicide((Flora) elemento);
                 Platform.runLater(this::updateEcosystemDisplay);
             } else {
                 showAlert(Alert.AlertType.WARNING, "Aviso", "Selecione um elemento do tipo Flora para aplicar o herbicida.");
@@ -344,7 +344,7 @@ public class EcosystemUI {
         btnInjetarForca.setOnAction(event -> {
             IElemento elemento = ecossistemaManager.buscarElemento(currentElementIDSelected);
             if (elemento instanceof Fauna) {
-                ecossistemaManager.injetarForca((Fauna) elemento);
+                ecossistemaManager.injectForce((Fauna) elemento, 50); // Define a quantidade de força a ser injetada
                 Platform.runLater(this::updateEcosystemDisplay);
             } else {
                 showAlert(Alert.AlertType.WARNING, "Aviso", "Selecione um elemento do tipo Fauna para injetar força.");

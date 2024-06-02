@@ -2,9 +2,7 @@ package pt.isec.pa.javalife.model.data.ecosystem;
 
 import pt.isec.pa.javalife.model.command.CommandManager;
 import pt.isec.pa.javalife.model.command.ICommand;
-import pt.isec.pa.javalife.model.command.commands.AddElementoCmd;
-import pt.isec.pa.javalife.model.command.commands.EditElementoCmd;
-import pt.isec.pa.javalife.model.command.commands.RemoveElementoCmd;
+import pt.isec.pa.javalife.model.command.commands.*;
 import pt.isec.pa.javalife.model.data.area.Area;
 import pt.isec.pa.javalife.model.data.elements.*;
 import pt.isec.pa.javalife.model.gameengine.GameEngine;
@@ -296,5 +294,17 @@ public class EcossistemaManager implements Serializable {
     public void clearCommandHistory() {
         commandManager.clearHistory();
         support.firePropertyChange("command_history_cleared", null, null);
+    }
+
+    public void injectForce(Fauna fauna, double additionalForce) {
+        ICommand cmd = new InjectForceCmd(this, fauna, additionalForce);
+        commandManager.executeCommand(cmd);
+        support.firePropertyChange("forca_injetada", null, fauna);
+    }
+
+    public void applyHerbicide(Flora flora) {
+        ICommand cmd = new ApplyHerbicideCmd(this, flora);
+        commandManager.executeCommand(cmd);
+        support.firePropertyChange("herbicida_aplicado", null, flora);
     }
 }
