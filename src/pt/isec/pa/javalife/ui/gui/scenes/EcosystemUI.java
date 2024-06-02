@@ -1,7 +1,9 @@
 package pt.isec.pa.javalife.ui.gui.scenes;
 
 import javafx.application.Platform;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -33,7 +35,7 @@ public class EcosystemUI {
     private Slider strenghtSlider;
     private int currentElementIDSelected = -1;
     private Map<Integer, Area> previousPositions;
-    private MenuItem exportMenuItem, importMenuItem;
+    private Button btnExport, btnImport;
 
     private Button btnAplicarSol, btnAplicarHerbicida, btnInjetarForca, btnApagar;
 
@@ -58,22 +60,35 @@ public class EcosystemUI {
         root.getStyleClass().add("root");
 
         // Top menu bar
-        MenuBar menuBar = new MenuBar();
-        Menu fileMenu = new Menu("File");
-        exportMenuItem = new MenuItem("Export");
-        importMenuItem = new MenuItem("Import");
-        fileMenu.getItems().addAll(exportMenuItem, importMenuItem);
+        // MenuBar menuBar = new MenuBar(); // Remover a barra de menu
 
-        menuBar.getMenus().add(fileMenu);
-
-        // Adicionar botões de Undo e Redo
+        // Adicionar botões de Undo, Redo, Export e Import
         ToolBar toolBar = new ToolBar();
-        btnUndo = new Button("Undo");
-        btnRedo = new Button("Redo");
-        toolBar.getItems().addAll(btnUndo, btnRedo);
+        toolBar.getStyleClass().add("toolbar"); // Adiciona a classe "toolbar"
+        btnUndo = new Button();
+        btnUndo.getStyleClass().addAll("play-pause", "transparent-button");
+        setButtonImage(btnUndo, "undo.png");
+
+        btnRedo = new Button();
+        btnRedo.getStyleClass().addAll("play-pause", "transparent-button");
+        setButtonImage(btnRedo, "redo.png");
+
+        btnExport = new Button("Export");
+        btnImport = new Button("Import");
+
+        btnPlayPause = new Button();
+        btnPlayPause.getStyleClass().addAll("play-pause", "transparent-button");
+        setButtonImage(btnPlayPause, "pause.png"); // Define a imagem inicial como "play"
+
+        btnVoltar = new Button();
+        btnVoltar.getStyleClass().add("transparent-button");
+        setButtonImage(btnVoltar, "back.png");
+
+        toolBar.getItems().addAll(btnUndo, createSeparator(), btnRedo,createSeparator(), btnExport,createSeparator(), btnImport,createSeparator(), btnPlayPause,createSeparator(), btnVoltar);
 
         VBox topContainer = new VBox();
-        topContainer.getChildren().addAll(menuBar, toolBar);
+        topContainer.getChildren().addAll(toolBar);
+        topContainer.setAlignment(Pos.TOP_RIGHT);
         root.setTop(topContainer);
 
         // Área central do ecossistema com Canvas
@@ -92,20 +107,9 @@ public class EcosystemUI {
         // HBox para Play/Pause e Voltar lado a lado
         HBox hboxPlayPauseVoltar = new HBox(10);
         hboxPlayPauseVoltar.setAlignment(Pos.TOP_RIGHT);
-        btnPlayPause = new Button();
-        btnPlayPause.getStyleClass().addAll("play-pause", "transparent-button");
-        setButtonImage(btnPlayPause, "pause.png"); // Define a imagem inicial como "play"
-
-        btnVoltar = new Button();
-        btnVoltar.getStyleClass().add("transparent-button");
-        setButtonImage(btnVoltar, "back.png");
 
         hboxPlayPauseVoltar.getChildren().addAll(btnPlayPause, btnVoltar);
         sidebar.getChildren().add(hboxPlayPauseVoltar);
-
-        // Separador
-        Separator separator = new Separator();
-        sidebar.getChildren().add(separator);
 
         // Botões de adicionar elementos
         Label addLabel = new Label("ADICIONAR");
@@ -120,11 +124,20 @@ public class EcosystemUI {
         btnFlora.getStyleClass().add("sidebar-button");
         btnInanimado.getStyleClass().add("sidebar-button");
 
-        sidebar.getChildren().addAll(btnFauna, btnFlora, btnInanimado);
+        GridPane addGrid = new GridPane();
+        addGrid.setHgap(10);
+        addGrid.setVgap(10);
 
-        // Separador
-        Separator separator2 = new Separator();
-        sidebar.getChildren().add(separator2);
+        // Add buttons to the grid
+        addGrid.add(btnFauna, 0, 0);
+        addGrid.add(btnFlora, 1, 0);
+
+        // Add the Inanimado button in the center
+        GridPane.setColumnSpan(btnInanimado, 2);
+        GridPane.setHalignment(btnInanimado, HPos.CENTER);
+        addGrid.add(btnInanimado, 0, 1);
+
+        sidebar.getChildren().add(addGrid);
 
         // Botões de interação
         Label interactionLabel = new Label("INTERAÇÃO");
@@ -133,7 +146,7 @@ public class EcosystemUI {
 
         btnAplicarSol = new Button("Sol");
         btnAplicarHerbicida = new Button("Herbicida");
-        btnInjetarForca = new Button("Injetar Força");
+        btnInjetarForca = new Button("Força");
         btnApagar = new Button("Apagar");
 
         btnAplicarSol.getStyleClass().add("sidebar-button");
@@ -141,22 +154,34 @@ public class EcosystemUI {
         btnInjetarForca.getStyleClass().add("sidebar-button");
         btnApagar.getStyleClass().add("sidebar-button");
 
-        sidebar.getChildren().addAll(btnAplicarSol, btnAplicarHerbicida, btnInjetarForca, btnApagar);
+        GridPane interactionGrid = new GridPane();
+        interactionGrid.setHgap(10);
+        interactionGrid.setVgap(10);
+        interactionGrid.add(btnAplicarSol, 0, 0);
+        interactionGrid.add(btnAplicarHerbicida, 1, 0);
+        interactionGrid.add(btnInjetarForca, 0, 1);
+        interactionGrid.add(btnApagar, 1, 1);
+
+        sidebar.getChildren().add(interactionGrid);
 
         // Botões de snapshot
         Label snapshotLabel = new Label("SNAPSHOT");
         snapshotLabel.getStyleClass().add("sidebar-title");
         sidebar.getChildren().add(snapshotLabel);
 
-        btnSalvarSnapshot = new Button("Salvar Snapshot");
-        btnRestaurarSnapshot = new Button("Restaurar Snapshot");
-        // btnReplaySnapshot = new Button("Replay Snapshot");
+        btnSalvarSnapshot = new Button("Guardar");
+        btnRestaurarSnapshot = new Button("Restaurar");
 
         btnSalvarSnapshot.getStyleClass().add("sidebar-button");
         btnRestaurarSnapshot.getStyleClass().add("sidebar-button");
-        //btnReplaySnapshot.getStyleClass().add("sidebar-button");
 
-        sidebar.getChildren().addAll(btnSalvarSnapshot, btnRestaurarSnapshot);
+        GridPane snapshotGrid = new GridPane();
+        snapshotGrid.setHgap(10);
+        snapshotGrid.setVgap(10);
+        snapshotGrid.add(btnSalvarSnapshot, 0, 0);
+        snapshotGrid.add(btnRestaurarSnapshot, 1, 0);
+
+        sidebar.getChildren().add(snapshotGrid);
 
         // TextFields para informação do elemento
         txtX = new TextField();
@@ -207,6 +232,7 @@ public class EcosystemUI {
         // Ajustar o tamanho da janela conforme o ecossistema
         ajustarTamanhoJanela(ecossistemaManager.getLargura(), ecossistemaManager.getAltura());
     }
+
 
     private void registerHandlers() {
         // Handler para Play/Pause
@@ -309,7 +335,7 @@ public class EcosystemUI {
         });
 
         // Handler para exportar elementos para CSV
-        exportMenuItem.setOnAction(event -> {
+        btnExport.setOnAction(event -> {
             if (!ecossistemaManager.isPaused()) {
                 showAlert(Alert.AlertType.WARNING, "Aviso", "Pause a simulação antes de exportar.");
                 return;
@@ -327,7 +353,7 @@ public class EcosystemUI {
             }
         });
 
-        importMenuItem.setOnAction(event -> {
+        btnImport.setOnAction(event -> {
             if (!ecossistemaManager.isPaused()) {
                 showAlert(Alert.AlertType.WARNING, "Aviso", "Pause a simulação antes de importar.");
                 return;
@@ -502,8 +528,8 @@ public class EcosystemUI {
     }
 
     private void ajustarTamanhoJanela(int largura, int altura) {
-        primaryStage.setWidth(largura + 240); // Ajuste o valor adicional conforme necessário
-        primaryStage.setHeight(altura + 65); // Ajuste o valor adicional conforme necessário
+        primaryStage.setWidth(largura + 250); // Ajuste o valor adicional conforme necessário
+        primaryStage.setHeight(altura + 100); // Ajuste o valor adicional conforme necessário
         canvas.setWidth(largura);
         canvas.setHeight(altura);
         updateEcosystemDisplay(); // Atualiza a exibição do ecossistema após o ajuste
@@ -528,10 +554,17 @@ public class EcosystemUI {
         }
         String energiaFormatted = String.format("%.2f", energiaValue);
 
-           infoLabel.setText(String.format("Id: %s | Força: %s | %s", id, energiaFormatted, estado));
+        infoLabel.setText(String.format("Id: %s | Força: %s | %s", id, energiaFormatted, estado));
     }
 
     public Scene getScene() {
         return scene;
+    }
+
+    private Separator createSeparator() {
+        Separator separator = new Separator();
+        separator.setOrientation(Orientation.VERTICAL);
+        separator.getStyleClass().add("separator");
+        return separator;
     }
 }
