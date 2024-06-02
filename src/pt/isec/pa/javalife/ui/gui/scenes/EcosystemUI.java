@@ -569,7 +569,7 @@ public class EcosystemUI {
         }
         String energiaFormatted = String.format("%.2f", energiaValue);
 
-        infoLabel.setText(String.format("Id: %s | Força: %s | %s", id, energiaFormatted, estado));
+        infoLabel.setText(String.format("|Id: %s | Força: %s |", id, energiaFormatted));
     }
 
     public Scene getScene() {

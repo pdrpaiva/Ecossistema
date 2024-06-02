@@ -14,8 +14,6 @@ public class MainMenuUI {
     private Stage primaryStage;
 
     private Button btnNewSimulation;
-    private Button btnLoadSimulation;
-    private Button btnSettings;
     private Button btnExit;
 
     public MainMenuUI(Stage primaryStage) {
@@ -28,26 +26,26 @@ public class MainMenuUI {
         HBox root = new HBox();
         root.setAlignment(Pos.CENTER);
         root.setStyle("-fx-background-color: #01270E;");
-        root.setSpacing(20); // Ajustar o espaçamento entre os elementos
+        root.setSpacing(20);
 
         // Adicionando uma classe CSS específica para MainMenuUI
         root.getStyleClass().add("MainMenuUI");
 
         // Adicionando uma imagem
         ImageView imageView = new ImageView(new Image(getClass().getResource("/pt/isec/pa/javalife/ui/gui/resources/images/teste.png").toExternalForm()));
-        imageView.setFitWidth(350); // Ajustando o tamanho da imagem
+        imageView.setFitWidth(350);
         imageView.setPreserveRatio(true);
 
         // Criando uma VBox para os botões
-        VBox buttonContainer = new VBox(10); // Diminuir o espaçamento entre os botões
+        VBox buttonContainer = new VBox(10); // Ajustar o espaçamento entre os botões
         buttonContainer.setAlignment(Pos.CENTER);
 
+        // Inicializando os botões
         btnNewSimulation = new Button("NOVA SIMULAÇÃO");
-        btnLoadSimulation = new Button("CARREGAR SIMULAÇÃO");
-        btnSettings = new Button("DEFINIÇÕES");
         btnExit = new Button("SAIR");
 
-        buttonContainer.getChildren().addAll(btnNewSimulation, btnLoadSimulation, btnSettings, btnExit);
+        // Adicionando os botões ao contêiner de botões
+        buttonContainer.getChildren().addAll(btnNewSimulation, btnExit);
 
         // Ajustar largura do buttonContainer para ser igual à largura do logo
         buttonContainer.setMinWidth(300);
@@ -64,14 +62,6 @@ public class MainMenuUI {
         btnNewSimulation.setOnAction(event -> {
             NewSimulationUI newSimulationUI = new NewSimulationUI(primaryStage);
             primaryStage.setScene(newSimulationUI.getScene());
-        });
-
-        btnLoadSimulation.setOnAction(event -> {
-            // Handle load simulation action
-        });
-
-        btnSettings.setOnAction(event -> {
-            // Handle settings action
         });
 
         btnExit.setOnAction(event -> primaryStage.close());

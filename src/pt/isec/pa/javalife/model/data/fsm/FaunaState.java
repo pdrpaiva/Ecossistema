@@ -6,15 +6,6 @@
     public enum FaunaState {
         MOVIMENTO, PROCURA_COMIDA, ALIMENTACAO,ATAQUE;
 
-        public static IFaunaState getInstance(FaunaState type, FaunaContext context, Fauna data){
-            return switch (type){
-                case MOVIMENTO -> new MovimentoState(context,data);
-                case PROCURA_COMIDA -> new ProcuraComidaState(context,data);
-                case ALIMENTACAO -> new AlimentacaoState(context,data);
-                case ATAQUE -> new AtaqueState(context,data);
-
-            };
-        }
 
         public IFaunaState getInstance(FaunaContext context, Fauna data){
             return switch (this){
